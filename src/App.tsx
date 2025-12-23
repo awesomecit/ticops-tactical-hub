@@ -27,6 +27,7 @@ import GameplayView from "@/pages/GameplayView";
 import SpectatorView from "@/pages/SpectatorView";
 import RefereeView from "@/pages/RefereeView";
 import NotFound from "@/pages/NotFound";
+import Shop from "@/pages/Shop";
 
 const queryClient = new QueryClient();
 
