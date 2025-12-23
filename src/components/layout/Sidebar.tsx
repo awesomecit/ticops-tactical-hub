@@ -13,6 +13,7 @@ import {
   ChevronLeft,
   User,
   Backpack,
+  ShoppingBag,
 } from 'lucide-react';
 import { useUIStore } from '@/stores/uiStore';
 import { useAuthStore } from '@/stores/authStore';
@@ -36,6 +37,7 @@ const getNavItems = (unreadCount: number): NavItem[] => [
   { icon: Trophy, labelKey: 'nav.leaderboard', path: '/leaderboard' },
   { icon: MapPin, labelKey: 'nav.locations', path: '/locations' },
   { icon: Backpack, labelKey: 'nav.equipment', path: '/equipment' },
+  { icon: ShoppingBag, labelKey: 'nav.marketplace', path: '/marketplace' },
   { icon: User, labelKey: 'nav.profile', path: '/profile' },
 ];
 

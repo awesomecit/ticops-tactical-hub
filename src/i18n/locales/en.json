@@ -84,7 +84,8 @@
     "referee": "Referee",
     "spectator": "Spectator",
     "profile": "Profile",
-    "equipment": "Equipment"
+    "equipment": "Equipment",
+    "marketplace": "Marketplace"
   },
   "auth": {
     "login": "Login",
