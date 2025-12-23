@@ -19,7 +19,7 @@ export const DEMO_USERS: DemoUser[] = [
     password: 'demo123',
     role: 'player',
     label: 'Giocatore',
-    description: 'Accesso base: partite, classifica, chat',
+    description: 'Partite, classifica, chat, mercatino, achievement',
     icon: '🎮',
     user: {
       id: 'demo_player',
@@ -46,7 +46,7 @@ export const DEMO_USERS: DemoUser[] = [
     password: 'demo123',
     role: 'team_leader',
     label: 'Capitano Squadra',
-    description: 'Gestione squadra, inviti, inbox team',
+    description: 'Gestione squadra, radio team, inviti, organizza match',
     icon: '👑',
     user: {
       id: 'demo_team_leader',
@@ -73,7 +73,7 @@ export const DEMO_USERS: DemoUser[] = [
     password: 'demo123',
     role: 'referee',
     label: 'Arbitro',
-    description: 'Gestione partite, conferme kill, sanzioni',
+    description: 'Gestione partite live, conferme kill, vista arbitro',
     icon: '⚖️',
     user: {
       id: 'demo_referee',
@@ -154,7 +154,7 @@ export const DEMO_USERS: DemoUser[] = [
     password: 'demo123',
     role: 'admin',
     label: 'Amministratore',
-    description: 'Accesso completo, pannello admin',
+    description: 'Pannello admin completo, gestione utenti, campi, radio',
     icon: '🔐',
     user: {
       id: 'demo_admin',
