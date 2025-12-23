@@ -1,16 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Skull, Crosshair, MapPin, MessageCircle, ArrowLeft, Heart, Target, Footprints, Trophy } from 'lucide-react';
+import { Skull, Crosshair, MapPin, MessageCircle, ArrowLeft, Heart, Target, Footprints, Trophy, Radio, Scan } from 'lucide-react';
 import { GlowButton } from '@/components/ui/GlowButton';
 import { TacticalMap, KillDeclarationModal } from '@/components/gameplay';
-import { RadioBox } from '@/components/radio';
+import { RadioBox, RadioTransmitButton, FrequencyScanner, InterferenceEffect } from '@/components/radio';
 import { AchievementUnlockAnimation, MatchEndCelebration } from '@/components/achievements';
 import { useRadioStore } from '@/stores/radioStore';
 import { useAchievementStore } from '@/stores/achievementStore';
+import { useRadioCountermeasures } from '@/hooks/useRadioCountermeasures';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { MatchCelebration } from '@/types/achievements';
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet';
 import {
   MOCK_GAME_STATE,
   MOCK_PLAYER_STATS,
@@ -25,8 +34,21 @@ const GameplayView: React.FC = () => {
   const [playerStats, setPlayerStats] = useState(MOCK_PLAYER_STATS);
   const [killModalOpen, setKillModalOpen] = useState(false);
   const [matchEnded, setMatchEnded] = useState(false);
+  const [scannerOpen, setScannerOpen] = useState(false);
   const { status: radioStatus, activateRadio, connect, channels } = useRadioStore();
   const { achievements, updateProgress, setCelebration, pendingCelebration } = useAchievementStore();
+  
+  // Radio countermeasures (for demo)
+  const { 
+    isBeingScanned, 
+    isBeingJammed, 
+    jammingIntensity,
+    simulateScan,
+    simulateJamming,
+  } = useRadioCountermeasures({
+    onScanned: () => toast({ title: '⚠️ Scansione rilevata!', description: 'Un ingegnere nemico sta cercando la tua frequenza.', variant: 'destructive' }),
+    onJammed: () => toast({ title: '📡 Disturbo radio!', description: 'Le tue comunicazioni sono disturbate.', variant: 'destructive' }),
+  });
 
   // Activate radio for gameplay
   useEffect(() => {
@@ -117,6 +139,13 @@ const GameplayView: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#0a0a0f] text-white flex flex-col">
+      {/* Interference Effect Overlay */}
+      <InterferenceEffect 
+        isActive={isBeingScanned || isBeingJammed} 
+        type={isBeingJammed ? 'jamming' : 'scanning'}
+        intensity={isBeingJammed ? jammingIntensity : 'low'}
+      />
+      
       {/* Achievement animations */}
       <AchievementUnlockAnimation />
       
