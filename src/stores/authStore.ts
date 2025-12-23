@@ -22,6 +22,7 @@ interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  isHydrated: boolean; // Track if store has been initialized from localStorage
   login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
   setUser: (user: User) => void;
@@ -29,10 +30,30 @@ interface AuthState {
   loginAsRole: (role: UserRole) => Promise<{ success: boolean; error?: string }>;
 }
 
+// Initialize from localStorage immediately
+const getInitialState = () => {
+  try {
+    const storedUser = localStorage.getItem('currentUser');
+    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+    
+    if (isLoggedIn && storedUser) {
+      const user = JSON.parse(storedUser);
+      return { user, isAuthenticated: true, isHydrated: true };
+    }
+  } catch {
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('currentUser');
+  }
+  return { user: null, isAuthenticated: false, isHydrated: true };
+};
+
+const initialState = getInitialState();
+
 export const useAuthStore = create<AuthState>((set) => ({
-  user: null,
-  isAuthenticated: false,
+  user: initialState.user,
+  isAuthenticated: initialState.isAuthenticated,
   isLoading: false,
+  isHydrated: initialState.isHydrated,
   
   login: async (email: string, password: string) => {
     set({ isLoading: true });
@@ -126,17 +147,3 @@ export const useAuthStore = create<AuthState>((set) => ({
     return { success: false, error: 'Ruolo non trovato' };
   },
 }));
-
-// Initialize from localStorage on app load
-const storedUser = localStorage.getItem('currentUser');
-const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-
-if (isLoggedIn && storedUser) {
-  try {
-    const user = JSON.parse(storedUser);
-    useAuthStore.setState({ user, isAuthenticated: true });
-  } catch {
-    localStorage.removeItem('isLoggedIn');
-    localStorage.removeItem('currentUser');
-  }
-}
