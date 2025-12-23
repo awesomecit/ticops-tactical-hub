@@ -11,6 +11,7 @@ interface FieldCardProps {
   field: Field;
   compact?: boolean;
   className?: string;
+  style?: React.CSSProperties;
 }
 
 const typeLabels: Record<string, string> = {
@@ -25,7 +26,7 @@ const typeColors: Record<string, string> = {
   mixed: 'bg-purple-500/20 text-purple-400 border-purple-500/30',
 };
 
-export const FieldCard: React.FC<FieldCardProps> = ({ field, compact = false, className }) => {
+export const FieldCard: React.FC<FieldCardProps> = ({ field, compact = false, className, style }) => {
   const navigate = useNavigate();
 
   const handleViewDetails = () => {
@@ -99,6 +100,7 @@ export const FieldCard: React.FC<FieldCardProps> = ({ field, compact = false, cl
       glow="primary"
       interactive
       className={cn('animate-slide-in-up', className)}
+      style={style}
     >
       <TacticalCardContent>
         <div className="flex flex-col lg:flex-row gap-6">
