@@ -15,6 +15,9 @@ import Locations from "@/pages/Locations";
 import Register from "@/pages/Register";
 import AdminLayout from "@/pages/admin/AdminLayout";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
+import AdminFields from "@/pages/admin/AdminFields";
+import AdminReferees from "@/pages/admin/AdminReferees";
+import AdminUsers from "@/pages/admin/AdminUsers";
 import Login from "@/pages/Login";
 import NotFound from "@/pages/NotFound";
 
@@ -41,6 +44,9 @@ const App = () => (
           </Route>
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<AdminDashboard />} />
+            <Route path="fields" element={<AdminFields />} />
+            <Route path="referees" element={<AdminReferees />} />
+            <Route path="users" element={<AdminUsers />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
