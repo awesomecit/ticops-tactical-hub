@@ -2,7 +2,7 @@ import { create } from 'zustand';
 
 export interface Notification {
   id: string;
-  type: 'match' | 'team' | 'kill' | 'rank' | 'system' | 'message';
+  type: 'match' | 'team' | 'kill' | 'rank' | 'system' | 'message' | 'match_found' | 'marketplace';
   title: string;
   message: string;
   timestamp: Date;
