@@ -8,7 +8,8 @@ import {
   Crosshair, 
   Flag, 
   BarChart3,
-  Radio
+  Radio,
+  LayoutGrid
 } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import {
@@ -35,6 +36,7 @@ const adminNavItems = [
   { title: 'Radio', url: '/admin/radio', icon: Radio },
   { title: 'Report', url: '/admin/reports', icon: Flag },
   { title: 'Analytics', url: '/admin/analytics', icon: BarChart3 },
+  { title: 'Tutte le Viste', url: '/admin/views', icon: LayoutGrid },
 ];
 
 export const AdminSidebar: React.FC = () => {

@@ -26,6 +26,7 @@ import AdminMatchDetails from "@/pages/admin/AdminMatchDetails";
 import AdminReports from "@/pages/admin/AdminReports";
 import AdminAnalytics from "@/pages/admin/AdminAnalytics";
 import AdminRadio from "@/pages/admin/AdminRadio";
+import AdminAllViews from "@/pages/admin/AdminAllViews";
 import Login from "@/pages/Login";
 import GameplayView from "@/pages/GameplayView";
 import SpectatorView from "@/pages/SpectatorView";
@@ -96,6 +97,7 @@ const App = () => (
             <Route path="reports" element={<AdminReports />} />
             <Route path="analytics" element={<AdminAnalytics />} />
             <Route path="radio" element={<AdminRadio />} />
+            <Route path="views" element={<AdminAllViews />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
