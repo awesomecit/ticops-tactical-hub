@@ -285,8 +285,14 @@ const GameplayView: React.FC = () => {
         </div>
       </div>
 
-      {/* ACTION BUTTONS */}
-      <div className="bg-black/90 p-4">
+      {/* ACTION BUTTONS + PTT */}
+      <div className="bg-black/90 p-4 space-y-4">
+        {/* Radio PTT Button - Prominente */}
+        <div className="flex justify-center">
+          <RadioTransmitButton size="lg" showWaveform />
+        </div>
+        
+        {/* Action Grid */}
         <div className="grid grid-cols-4 gap-3">
           <GlowButton
             variant="ghost"
@@ -331,17 +337,66 @@ const GameplayView: React.FC = () => {
             <span className="text-xs font-bold">PING</span>
           </GlowButton>
 
-          <GlowButton
-            variant="ghost"
-            className={cn(
-              "flex-col gap-1 h-16 min-h-[64px] border-2",
-              "border-gray-500/50 bg-gray-500/10 text-gray-400",
-              "hover:bg-gray-500/20 hover:border-gray-500"
-            )}
-          >
-            <MessageCircle className="h-6 w-6" />
-            <span className="text-xs font-bold">CHAT</span>
-          </GlowButton>
+          <Sheet open={scannerOpen} onOpenChange={setScannerOpen}>
+            <SheetTrigger asChild>
+              <GlowButton
+                variant="ghost"
+                className={cn(
+                  "flex-col gap-1 h-16 min-h-[64px] border-2",
+                  "border-amber-500/50 bg-amber-500/10 text-amber-400",
+                  "hover:bg-amber-500/20 hover:border-amber-500"
+                )}
+              >
+                <Scan className="h-6 w-6" />
+                <span className="text-xs font-bold">SCANNER</span>
+              </GlowButton>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-80 bg-card border-border">
+              <SheetHeader>
+                <SheetTitle className="flex items-center gap-2">
+                  <Radio className="h-5 w-5 text-primary" />
+                  Scanner Frequenze
+                </SheetTitle>
+                <SheetDescription>
+                  Scansiona le frequenze nemiche (Abilità Ingegnere)
+                </SheetDescription>
+              </SheetHeader>
+              <div className="mt-4">
+                <FrequencyScanner 
+                  hasEngineerBadge={true}
+                  onChannelDetected={(ch) => {
+                    toast({
+                      title: '📡 Frequenza Rilevata!',
+                      description: `${ch.frequency} MHz - ${ch.isEncrypted ? 'Cifrata' : ch.teamName || 'Sconosciuta'}`,
+                    });
+                  }}
+                />
+                
+                {/* Demo buttons for testing interference */}
+                <div className="mt-6 space-y-2">
+                  <p className="text-xs text-muted-foreground uppercase tracking-wider">Demo Contromisure</p>
+                  <div className="flex gap-2">
+                    <Button 
+                      size="sm" 
+                      variant="outline"
+                      className="flex-1 text-xs"
+                      onClick={() => simulateScan(3)}
+                    >
+                      Simula Scan
+                    </Button>
+                    <Button 
+                      size="sm" 
+                      variant="destructive"
+                      className="flex-1 text-xs"
+                      onClick={() => simulateJamming('medium', 3)}
+                    >
+                      Simula Jamming
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </SheetContent>
+          </Sheet>
         </div>
       </div>
 
