@@ -1,190 +1,464 @@
 import React, { useState } from 'react';
-import { Trophy, Medal, Target, Crosshair, TrendingUp, ChevronUp, ChevronDown } from 'lucide-react';
-import { mockUser, mockRanks } from '@/mocks/data';
-import { TacticalCard, TacticalCardHeader, TacticalCardTitle, TacticalCardContent } from '@/components/ui/TacticalCard';
-import { RankBadge } from '@/components/ui/RankBadge';
+import { Globe, MapPin, Users, UsersRound, TrendingUp } from 'lucide-react';
+import {
+  TacticalCard,
+  TacticalCardHeader,
+  TacticalCardTitle,
+  TacticalCardContent,
+} from '@/components/ui/TacticalCard';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import {
+  TierBadge,
+  RankPosition,
+  LeaderboardRow,
+  TierProgressBar,
+  TierDistributionChart,
+  TierType,
+} from '@/components/ranking';
+import {
+  getCurrentUser,
+  MOCK_GLOBAL_TOP_5,
+  MOCK_GLOBAL_AROUND_USER,
+  MOCK_REGIONAL_LOMBARDIA_TOP_3,
+  MOCK_TEAM_RANKINGS,
+  getRankChange,
+} from '@/mocks';
 import { cn } from '@/lib/utils';
 
-const mockLeaderboard = [
-  { ...mockUser, id: '1', callsign: 'APEX', stats: { ...mockUser.stats, xp: 12500, wins: 48 }, rank: mockRanks[5] },
-  { ...mockUser, id: '2', callsign: 'VENOM', stats: { ...mockUser.stats, xp: 11200, wins: 45 }, rank: mockRanks[5] },
-  { ...mockUser, id: '3', callsign: 'GHOST', stats: { ...mockUser.stats, xp: 9800, wins: 42 }, rank: mockRanks[4] },
-  { ...mockUser, id: '4', callsign: 'SHADOW', stats: { ...mockUser.stats, xp: 8500, wins: 38 }, rank: mockRanks[4] },
-  { ...mockUser, id: '5', callsign: 'PHOENIX', stats: { ...mockUser.stats, xp: 7200, wins: 35 }, rank: mockRanks[3] },
-  { ...mockUser, id: '6', callsign: 'VIPER', stats: { ...mockUser.stats, xp: 6800, wins: 32 }, rank: mockRanks[3] },
-  { ...mockUser, id: '7', callsign: 'STORM', stats: { ...mockUser.stats, xp: 5500, wins: 28 }, rank: mockRanks[3] },
-  { ...mockUser, id: '8', callsign: 'BLADE', stats: { ...mockUser.stats, xp: 4200, wins: 24 }, rank: mockRanks[2] },
+// Mock friends data (subset of users marked as friends)
+const MOCK_FRIENDS_RANKINGS = [
+  {
+    rank: 45,
+    previousRank: 48,
+    userId: 'friend_001',
+    username: 'TacticalMike',
+    tier: 'gold' as TierType,
+    tierLevel: 2,
+    elo: 1520,
+    eloChange: 22,
+    stats: { matches: 89, wins: 51, winRate: 57.3, kdRatio: 1.58 },
+  },
+  {
+    rank: 127,
+    previousRank: 130,
+    userId: 'user_003',
+    username: 'GhostSniper92',
+    tier: 'gold' as TierType,
+    tierLevel: 4,
+    elo: 1680,
+    eloChange: 35,
+    stats: { matches: 156, wins: 98, winRate: 62.8, kdRatio: 1.81 },
+    isCurrentUser: true,
+  },
+  {
+    rank: 234,
+    previousRank: 230,
+    userId: 'friend_002',
+    username: 'WannaBeRef',
+    tier: 'silver' as TierType,
+    tierLevel: 5,
+    elo: 1280,
+    eloChange: -8,
+    stats: { matches: 45, wins: 22, winRate: 48.9, kdRatio: 1.14 },
+  },
 ];
 
 const Leaderboard: React.FC = () => {
-  const [sortBy, setSortBy] = useState<'xp' | 'wins' | 'kd'>('xp');
+  const [activeTab, setActiveTab] = useState('global');
+  const currentUser = getCurrentUser();
 
-  const sortedLeaderboard = [...mockLeaderboard].sort((a, b) => {
-    if (sortBy === 'xp') return b.stats.xp - a.stats.xp;
-    if (sortBy === 'wins') return b.stats.wins - a.stats.wins;
-    const aKd = a.stats.kills / Math.max(a.stats.deaths, 1);
-    const bKd = b.stats.kills / Math.max(b.stats.deaths, 1);
-    return bKd - aKd;
-  });
+  // Find current user's ranking
+  const userRanking = MOCK_GLOBAL_AROUND_USER.find(r => r.isCurrentUser);
+  const userTeamRanking = MOCK_TEAM_RANKINGS.find(r => r.isUserTeam);
 
-  const getMedalColor = (position: number) => {
-    if (position === 0) return 'text-accent';
-    if (position === 1) return 'text-slate-300';
-    if (position === 2) return 'text-amber-600';
-    return 'text-muted-foreground';
-  };
+  // Combine top 5 with around user for global view
+  const globalRankings = [
+    ...MOCK_GLOBAL_TOP_5,
+    { divider: true, label: '...' },
+    ...MOCK_GLOBAL_AROUND_USER,
+  ];
 
   return (
-    <div className="space-y-6 animate-slide-in-up">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-3xl text-glow-primary">Classifiche</h1>
-          <p className="text-muted-foreground mt-1">
-            I migliori operatori sul campo
-          </p>
-        </div>
+    <div className="space-y-6 animate-fade-in">
+      {/* Page Header */}
+      <div>
+        <h1 className="text-2xl sm:text-3xl font-display uppercase text-glow-primary">
+          Classifiche
+        </h1>
+        <p className="text-muted-foreground mt-1">
+          I migliori operatori sul campo di battaglia
+        </p>
       </div>
 
-      {/* Top 3 Podium */}
-      <div className="grid grid-cols-3 gap-4">
-        {/* 2nd Place */}
-        <TacticalCard glow="primary" className="order-1 mt-8">
-          <TacticalCardContent className="text-center py-6">
-            <div className="h-16 w-16 mx-auto bg-slate-600/20 clip-tactical flex items-center justify-center border border-slate-500/50 mb-3">
-              <Medal className="h-8 w-8 text-slate-300" />
-            </div>
-            <span className="text-2xl font-mono font-bold text-slate-300">#2</span>
-            <h3 className="font-display text-lg uppercase text-foreground mt-2">
-              {sortedLeaderboard[1]?.callsign}
-            </h3>
-            <RankBadge rank={sortedLeaderboard[1]?.rank} size="sm" className="mt-2" />
-            <p className="font-mono text-sm text-muted-foreground mt-2">
-              {sortedLeaderboard[1]?.stats.xp.toLocaleString()} XP
-            </p>
-          </TacticalCardContent>
-        </TacticalCard>
-
-        {/* 1st Place */}
-        <TacticalCard glow="accent" variant="large" className="order-0 sm:order-1 col-span-3 sm:col-span-1">
-          <TacticalCardContent className="text-center py-8">
-            <div className="h-20 w-20 mx-auto bg-accent/20 clip-tactical flex items-center justify-center border-2 border-accent mb-3">
-              <Trophy className="h-10 w-10 text-accent" />
-            </div>
-            <span className="text-3xl font-mono font-bold text-accent">#1</span>
-            <h3 className="font-display text-xl uppercase text-foreground mt-2">
-              {sortedLeaderboard[0]?.callsign}
-            </h3>
-            <RankBadge rank={sortedLeaderboard[0]?.rank} size="md" className="mt-2" />
-            <p className="font-mono text-lg text-accent mt-2">
-              {sortedLeaderboard[0]?.stats.xp.toLocaleString()} XP
-            </p>
-          </TacticalCardContent>
-        </TacticalCard>
-
-        {/* 3rd Place */}
-        <TacticalCard glow="primary" className="order-2 mt-12">
-          <TacticalCardContent className="text-center py-6">
-            <div className="h-16 w-16 mx-auto bg-amber-900/20 clip-tactical flex items-center justify-center border border-amber-700/50 mb-3">
-              <Medal className="h-8 w-8 text-amber-600" />
-            </div>
-            <span className="text-2xl font-mono font-bold text-amber-600">#3</span>
-            <h3 className="font-display text-lg uppercase text-foreground mt-2">
-              {sortedLeaderboard[2]?.callsign}
-            </h3>
-            <RankBadge rank={sortedLeaderboard[2]?.rank} size="sm" className="mt-2" />
-            <p className="font-mono text-sm text-muted-foreground mt-2">
-              {sortedLeaderboard[2]?.stats.xp.toLocaleString()} XP
-            </p>
-          </TacticalCardContent>
-        </TacticalCard>
-      </div>
-
-      {/* Sort Tabs */}
-      <div className="flex gap-2">
-        {([
-          { key: 'xp', label: 'XP Totale', icon: TrendingUp },
-          { key: 'wins', label: 'Vittorie', icon: Trophy },
-          { key: 'kd', label: 'K/D Ratio', icon: Target },
-        ] as const).map(({ key, label, icon: Icon }) => (
-          <button
-            key={key}
-            onClick={() => setSortBy(key)}
-            className={cn(
-              "flex items-center gap-2 px-4 py-2 font-display uppercase text-sm tracking-wider clip-tactical-sm transition-all",
-              sortBy === key
-                ? "bg-primary text-primary-foreground"
-                : "bg-card border border-border text-muted-foreground hover:border-primary hover:text-primary"
-            )}
-          >
-            <Icon className="h-4 w-4" />
-            {label}
-          </button>
-        ))}
-      </div>
-
-      {/* Full Leaderboard */}
-      <TacticalCard>
-        <TacticalCardHeader>
-          <TacticalCardTitle>Classifica Completa</TacticalCardTitle>
-        </TacticalCardHeader>
-        <TacticalCardContent className="p-0">
-          <div className="divide-y divide-border">
-            {sortedLeaderboard.map((player, index) => (
-              <div
-                key={player.id}
-                className="flex items-center gap-4 p-4 hover:bg-muted/30 transition-colors animate-slide-in-up"
-                style={{ animationDelay: `${index * 50}ms` }}
-              >
-                <span className={cn(
-                  "w-8 font-mono text-xl font-bold text-center",
-                  getMedalColor(index)
-                )}>
-                  {index + 1}
-                </span>
-
-                <div className="h-12 w-12 bg-card clip-tactical-sm border border-border flex items-center justify-center">
-                  <span className="font-display font-bold text-lg text-primary">
-                    {player.callsign.charAt(0)}
-                  </span>
-                </div>
-
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <span className="font-display uppercase text-foreground">
-                      {player.callsign}
-                    </span>
-                    {index < 3 && (
-                      <ChevronUp className="h-4 w-4 text-secondary" />
-                    )}
+      <div className="grid lg:grid-cols-[1fr_280px] gap-6">
+        {/* Main Content */}
+        <div className="space-y-6">
+          {/* Your Rank Card */}
+          <TacticalCard glow="primary">
+            <TacticalCardContent className="p-4 sm:p-6">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
+                {/* Tier Badge */}
+                <div className="flex-shrink-0 flex items-center gap-4">
+                  <TierBadge
+                    tier={currentUser.tier as TierType}
+                    level={currentUser.tierLevel}
+                    size="lg"
+                  />
+                  
+                  <div className="sm:hidden">
+                    <h3 className="font-display text-lg uppercase text-foreground">
+                      Il Tuo Rank
+                    </h3>
+                    <p className="font-display text-sm text-muted-foreground capitalize">
+                      {currentUser.tier} {currentUser.tierLevel}
+                    </p>
                   </div>
-                  <RankBadge rank={player.rank} size="sm" />
                 </div>
 
-                <div className="text-right hidden sm:block">
-                  <span className="font-mono text-sm text-foreground">
-                    {player.stats.xp.toLocaleString()}
-                  </span>
-                  <p className="text-xs text-muted-foreground">XP</p>
-                </div>
+                {/* Rank Info */}
+                <div className="flex-1 space-y-3">
+                  <div className="hidden sm:block">
+                    <h3 className="font-display text-lg uppercase text-foreground">
+                      Il Tuo Rank
+                    </h3>
+                    <p className="font-display text-sm text-muted-foreground capitalize">
+                      {currentUser.tier} {currentUser.tierLevel}
+                    </p>
+                  </div>
 
-                <div className="text-right hidden sm:block">
-                  <span className="font-mono text-sm text-foreground">
-                    {player.stats.wins}
-                  </span>
-                  <p className="text-xs text-muted-foreground">Vittorie</p>
-                </div>
+                  <div className="flex flex-wrap items-center gap-4 sm:gap-6">
+                    {/* National Position */}
+                    <div>
+                      <span className="text-xs text-muted-foreground font-display uppercase block mb-1">
+                        Posizione Nazionale
+                      </span>
+                      {userRanking && (
+                        <RankPosition
+                          rank={userRanking.rank}
+                          previousRank={userRanking.previousRank}
+                          size="md"
+                          showMedal={false}
+                        />
+                      )}
+                    </div>
 
-                <div className="text-right">
-                  <span className="font-mono text-sm text-foreground">
-                    {(player.stats.kills / Math.max(player.stats.deaths, 1)).toFixed(2)}
-                  </span>
-                  <p className="text-xs text-muted-foreground">K/D</p>
+                    {/* ELO */}
+                    <div>
+                      <span className="text-xs text-muted-foreground font-display uppercase block mb-1">
+                        ELO Rating
+                      </span>
+                      <div className="flex items-baseline gap-2">
+                        <span className="font-mono text-2xl font-bold text-primary">
+                          {currentUser.elo}
+                        </span>
+                        {userRanking && userRanking.eloChange !== 0 && (
+                          <span className={cn(
+                            'text-xs font-mono',
+                            userRanking.eloChange > 0 ? 'text-secondary' : 'text-destructive'
+                          )}>
+                            {userRanking.eloChange > 0 ? '+' : ''}{userRanking.eloChange}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-            ))}
-          </div>
-        </TacticalCardContent>
-      </TacticalCard>
+
+              {/* Tier Progress */}
+              <div className="mt-6 pt-4 border-t border-border/50">
+                <TierProgressBar
+                  currentElo={currentUser.elo}
+                  currentTier={currentUser.tier as TierType}
+                />
+              </div>
+            </TacticalCardContent>
+          </TacticalCard>
+
+          {/* Tabs */}
+          <Tabs value={activeTab} onValueChange={setActiveTab}>
+            <TabsList className="w-full grid grid-cols-4 bg-card border border-border">
+              <TabsTrigger
+                value="global"
+                className="flex items-center gap-2 data-[state=active]:bg-primary/10 data-[state=active]:text-primary"
+              >
+                <Globe className="h-4 w-4" />
+                <span className="hidden sm:inline">Globale</span>
+              </TabsTrigger>
+              <TabsTrigger
+                value="regional"
+                className="flex items-center gap-2 data-[state=active]:bg-primary/10 data-[state=active]:text-primary"
+              >
+                <MapPin className="h-4 w-4" />
+                <span className="hidden sm:inline">Regionale</span>
+              </TabsTrigger>
+              <TabsTrigger
+                value="friends"
+                className="flex items-center gap-2 data-[state=active]:bg-primary/10 data-[state=active]:text-primary"
+              >
+                <Users className="h-4 w-4" />
+                <span className="hidden sm:inline">Amici</span>
+              </TabsTrigger>
+              <TabsTrigger
+                value="teams"
+                className="flex items-center gap-2 data-[state=active]:bg-primary/10 data-[state=active]:text-primary"
+              >
+                <UsersRound className="h-4 w-4" />
+                <span className="hidden sm:inline">Team</span>
+              </TabsTrigger>
+            </TabsList>
+
+            {/* Global Leaderboard */}
+            <TabsContent value="global" className="mt-4">
+              <TacticalCard>
+                <TacticalCardHeader>
+                  <TacticalCardTitle className="flex items-center gap-2">
+                    <Globe className="h-5 w-5" />
+                    Classifica Globale
+                  </TacticalCardTitle>
+                </TacticalCardHeader>
+                <TacticalCardContent className="p-0">
+                  {/* Header */}
+                  <div className="flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-2 bg-muted/30 border-b border-border text-xs font-display uppercase text-muted-foreground">
+                    <div className="w-16 sm:w-20">#</div>
+                    <div className="flex-1">Player</div>
+                    <div className="hidden xs:block sm:w-16 text-right">ELO</div>
+                    <div className="hidden sm:block sm:w-14 text-right">Win%</div>
+                    <div className="w-12 sm:w-14 text-right">K/D</div>
+                  </div>
+
+                  {/* Rows */}
+                  <div className="divide-y divide-border/50">
+                    {globalRankings.map((entry, index) => {
+                      if ('divider' in entry) {
+                        return (
+                          <div
+                            key="divider"
+                            className="py-3 text-center text-muted-foreground font-mono text-sm"
+                          >
+                            • • •
+                          </div>
+                        );
+                      }
+
+                      return (
+                        <LeaderboardRow
+                          key={entry.userId}
+                          rank={entry.rank}
+                          previousRank={entry.previousRank}
+                          username={entry.username}
+                          tier={entry.tier as TierType}
+                          tierLevel={entry.tierLevel}
+                          elo={entry.elo}
+                          winRate={entry.stats.winRate}
+                          kdRatio={entry.stats.kdRatio}
+                          isCurrentUser={entry.isCurrentUser}
+                        />
+                      );
+                    })}
+                  </div>
+                </TacticalCardContent>
+              </TacticalCard>
+            </TabsContent>
+
+            {/* Regional Leaderboard */}
+            <TabsContent value="regional" className="mt-4">
+              <TacticalCard>
+                <TacticalCardHeader>
+                  <TacticalCardTitle className="flex items-center gap-2">
+                    <MapPin className="h-5 w-5" />
+                    Classifica Lombardia
+                  </TacticalCardTitle>
+                </TacticalCardHeader>
+                <TacticalCardContent className="p-0">
+                  <div className="flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-2 bg-muted/30 border-b border-border text-xs font-display uppercase text-muted-foreground">
+                    <div className="w-16 sm:w-20">#</div>
+                    <div className="flex-1">Player</div>
+                    <div className="hidden xs:block sm:w-16 text-right">ELO</div>
+                    <div className="hidden sm:block sm:w-14 text-right">Win%</div>
+                    <div className="w-12 sm:w-14 text-right">K/D</div>
+                  </div>
+
+                  <div className="divide-y divide-border/50">
+                    {MOCK_REGIONAL_LOMBARDIA_TOP_3.map((entry) => (
+                      <LeaderboardRow
+                        key={entry.userId}
+                        rank={entry.rank}
+                        previousRank={entry.previousRank}
+                        username={entry.username}
+                        tier={entry.tier as TierType}
+                        tierLevel={entry.tierLevel}
+                        elo={entry.elo}
+                        winRate={entry.stats.winRate}
+                        kdRatio={entry.stats.kdRatio}
+                      />
+                    ))}
+                  </div>
+                </TacticalCardContent>
+              </TacticalCard>
+            </TabsContent>
+
+            {/* Friends Leaderboard */}
+            <TabsContent value="friends" className="mt-4">
+              <TacticalCard>
+                <TacticalCardHeader>
+                  <TacticalCardTitle className="flex items-center gap-2">
+                    <Users className="h-5 w-5" />
+                    Classifica Amici
+                  </TacticalCardTitle>
+                </TacticalCardHeader>
+                <TacticalCardContent className="p-0">
+                  <div className="flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-2 bg-muted/30 border-b border-border text-xs font-display uppercase text-muted-foreground">
+                    <div className="w-16 sm:w-20">#</div>
+                    <div className="flex-1">Player</div>
+                    <div className="hidden xs:block sm:w-16 text-right">ELO</div>
+                    <div className="hidden sm:block sm:w-14 text-right">Win%</div>
+                    <div className="w-12 sm:w-14 text-right">K/D</div>
+                  </div>
+
+                  <div className="divide-y divide-border/50">
+                    {MOCK_FRIENDS_RANKINGS.map((entry) => (
+                      <LeaderboardRow
+                        key={entry.userId}
+                        rank={entry.rank}
+                        previousRank={entry.previousRank}
+                        username={entry.username}
+                        tier={entry.tier}
+                        tierLevel={entry.tierLevel}
+                        elo={entry.elo}
+                        winRate={entry.stats.winRate}
+                        kdRatio={entry.stats.kdRatio}
+                        isCurrentUser={entry.isCurrentUser}
+                      />
+                    ))}
+                  </div>
+                </TacticalCardContent>
+              </TacticalCard>
+            </TabsContent>
+
+            {/* Team Leaderboard */}
+            <TabsContent value="teams" className="mt-4">
+              <TacticalCard>
+                <TacticalCardHeader>
+                  <TacticalCardTitle className="flex items-center gap-2">
+                    <UsersRound className="h-5 w-5" />
+                    Classifica Team
+                  </TacticalCardTitle>
+                </TacticalCardHeader>
+                <TacticalCardContent className="p-0">
+                  <div className="flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-2 bg-muted/30 border-b border-border text-xs font-display uppercase text-muted-foreground">
+                    <div className="w-16 sm:w-20">#</div>
+                    <div className="flex-1">Team</div>
+                    <div className="hidden xs:block sm:w-16 text-right">ELO</div>
+                    <div className="hidden sm:block sm:w-14 text-right">Win%</div>
+                    <div className="w-12 sm:w-14 text-right">Members</div>
+                  </div>
+
+                  <div className="divide-y divide-border/50">
+                    {MOCK_TEAM_RANKINGS.map((entry) => (
+                      <div
+                        key={entry.teamId}
+                        className={cn(
+                          'flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-3 transition-all duration-200',
+                          'hover:bg-muted/30 cursor-pointer group',
+                          entry.isUserTeam && [
+                            'bg-primary/10 border-l-2 border-primary',
+                            'shadow-[inset_0_0_20px_rgba(255,107,0,0.1)]',
+                          ]
+                        )}
+                      >
+                        <div className="w-16 sm:w-20 flex-shrink-0">
+                          <RankPosition
+                            rank={entry.rank}
+                            previousRank={entry.previousRank}
+                            size="sm"
+                          />
+                        </div>
+
+                        <div className="h-10 w-10 rounded bg-card border border-border flex items-center justify-center font-display font-bold text-primary flex-shrink-0">
+                          {entry.tag}
+                        </div>
+
+                        <div className="flex-1 min-w-0">
+                          <span className={cn(
+                            'font-display uppercase text-sm truncate block',
+                            entry.isUserTeam ? 'text-primary' : 'text-foreground'
+                          )}>
+                            {entry.teamName}
+                          </span>
+                          {entry.isUserTeam && (
+                            <span className="text-[10px] font-mono text-muted-foreground">
+                              Il tuo team
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="hidden xs:block sm:w-16 text-right">
+                          <span className="font-mono text-sm font-bold text-primary">
+                            {entry.elo}
+                          </span>
+                          <p className="text-[10px] text-muted-foreground uppercase">ELO</p>
+                        </div>
+
+                        <div className="hidden sm:block sm:w-14 text-right">
+                          <span className="font-mono text-sm text-foreground">
+                            {entry.stats.winRate.toFixed(1)}%
+                          </span>
+                          <p className="text-[10px] text-muted-foreground uppercase">Win</p>
+                        </div>
+
+                        <div className="w-12 sm:w-14 text-right">
+                          <span className="font-mono text-sm text-foreground">
+                            {entry.memberCount}
+                          </span>
+                          <p className="text-[10px] text-muted-foreground uppercase">👥</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </TacticalCardContent>
+              </TacticalCard>
+            </TabsContent>
+          </Tabs>
+        </div>
+
+        {/* Sidebar */}
+        <div className="hidden lg:block space-y-6">
+          <TacticalCard>
+            <TacticalCardContent className="p-4">
+              <TierDistributionChart />
+            </TacticalCardContent>
+          </TacticalCard>
+
+          {/* Quick Stats */}
+          <TacticalCard>
+            <TacticalCardContent className="p-4 space-y-4">
+              <h3 className="font-display text-sm uppercase text-muted-foreground tracking-wider">
+                Le Tue Stats
+              </h3>
+              
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">Partite Giocate</span>
+                  <span className="font-mono text-foreground">{currentUser.stats.matches}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">Vittorie</span>
+                  <span className="font-mono text-secondary">{currentUser.stats.wins}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">Win Rate</span>
+                  <span className="font-mono text-foreground">{currentUser.stats.winRate.toFixed(1)}%</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">K/D Ratio</span>
+                  <span className="font-mono text-primary">{currentUser.stats.kdRatio.toFixed(2)}</span>
+                </div>
+              </div>
+            </TacticalCardContent>
+          </TacticalCard>
+        </div>
+      </div>
     </div>
   );
 };
