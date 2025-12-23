@@ -30,22 +30,20 @@ export {
 
 // Fields
 export {
-  type IMockField,
-  type FieldType,
   type FieldStatus,
-  type IMockFieldAmenity,
-  type IMockFieldSchedule,
-  type IMockFieldRequest,
   type FieldRequestStatus,
+  type FieldFilters,
   MOCK_FIELDS,
-  MOCK_FIELD_REQUESTS,
+  MOCK_FIELD_REVIEWS,
+  MOCK_AVAILABILITY,
   getFieldById,
   getFieldBySlug,
-  getActiveFields,
-  getFieldsByRegion,
-  getFieldsByType,
-  getPendingFieldRequests,
-  getFieldRequest,
+  getFieldReviews,
+  getFieldAvailability,
+  getAvailableSlotsForDate,
+  filterFields,
+  getUniqueCities,
+  getAverageRating,
 } from './fields';
 
 // Rankings
