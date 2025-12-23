@@ -73,6 +73,7 @@ const App = () => (
             <Route path="/settings" element={<Settings />} />
             <Route path="/settings" element={<Settings />} />
           </Route>
+          <Route path="/gameplay" element={<GameplayView />} />
           <Route path="/gameplay/:gameId" element={<GameplayView />} />
           <Route path="/spectator/:gameId" element={<SpectatorView />} />
           <Route path="/referee/:gameId" element={
