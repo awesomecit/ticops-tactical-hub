@@ -12,7 +12,9 @@ import {
   ExternalLink,
   Mail,
   Instagram,
-  Facebook
+  Facebook,
+  Store,
+  Calendar
 } from 'lucide-react';
 import { TacticalCard } from '@/components/ui/TacticalCard';
 import { GlowButton } from '@/components/ui/GlowButton';
@@ -51,13 +53,23 @@ const features = [
   },
   {
     icon: MessageSquare,
-    title: 'Chat & Team Comms',
-    description: 'Comunicazione integrata con canali team, chat private e messaggi rapidi in-game.'
+    title: 'Chat & Radio Team',
+    description: 'Comunicazione integrata con canali team, chat private, radio PTT e scanner frequenze.'
   },
   {
     icon: Award,
     title: 'Achievement System',
     description: 'Sblocca achievement, medaglie e ricompense per le tue imprese sul campo.'
+  },
+  {
+    icon: Store,
+    title: 'Mercatino',
+    description: 'Compra, vendi e scambia attrezzatura con altri giocatori. Recensioni e chat integrate.'
+  },
+  {
+    icon: Calendar,
+    title: 'Match Organizer',
+    description: 'Organizza partite incrociando disponibilità giocatori e campi. Quick match con sconosciuti.'
   }
 ];
 
