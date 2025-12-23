@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
@@ -25,19 +26,26 @@ export const MainLayout: React.FC = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
+      
+      {/* Sidebar only visible on lg+ screens */}
       <Sidebar />
       
+      {/* Main content: mobile-first padding, then add sidebar offset on lg+ */}
       <main
         className={cn(
-          "pt-16 pb-20 lg:pb-0 transition-all duration-300",
-          "lg:pl-64"
+          // Mobile-first: just top header offset and bottom tab bar offset
+          "pt-16 pb-20",
+          // Large screens: add left padding for sidebar, remove bottom padding (no tab bar)
+          "lg:pb-6 lg:pl-64"
         )}
       >
-        <div className="container py-6">
+        {/* Mobile-first container with responsive padding */}
+        <div className="px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
           <Outlet />
         </div>
       </main>
       
+      {/* Tab bar only on mobile (hidden on lg+) */}
       <TabBar />
     </div>
   );
