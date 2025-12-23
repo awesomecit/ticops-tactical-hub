@@ -20,6 +20,8 @@ import AdminReferees from "@/pages/admin/AdminReferees";
 import AdminUsers from "@/pages/admin/AdminUsers";
 import Login from "@/pages/Login";
 import GameplayView from "@/pages/GameplayView";
+import SpectatorView from "@/pages/SpectatorView";
+import RefereeView from "@/pages/RefereeView";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -44,6 +46,8 @@ const App = () => (
             <Route path="/locations" element={<Locations />} />
           </Route>
           <Route path="/gameplay/:gameId" element={<GameplayView />} />
+          <Route path="/spectator/:gameId" element={<SpectatorView />} />
+          <Route path="/referee/:gameId" element={<RefereeView />} />
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<AdminDashboard />} />
             <Route path="fields" element={<AdminFields />} />
