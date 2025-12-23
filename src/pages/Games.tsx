@@ -1,14 +1,18 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { format } from 'date-fns';
-import { it } from 'date-fns/locale';
-import { Calendar, MapPin, Users, Clock, Filter } from 'lucide-react';
+import { it, enUS } from 'date-fns/locale';
+import { Calendar, MapPin, Users } from 'lucide-react';
 import { mockGames } from '@/mocks/data';
 import { TacticalCard, TacticalCardContent } from '@/components/ui/TacticalCard';
 import { GlowButton } from '@/components/ui/GlowButton';
 import { cn } from '@/lib/utils';
 
 const Games: React.FC = () => {
+  const { t, i18n } = useTranslation();
   const [filter, setFilter] = React.useState<'all' | 'upcoming' | 'live' | 'completed'>('all');
+  
+  const dateLocale = i18n.language.startsWith('it') ? it : enUS;
   
   const filteredGames = mockGames.filter(game => {
     if (filter === 'all') return true;
@@ -22,25 +26,25 @@ const Games: React.FC = () => {
     cancelled: 'bg-destructive/20 text-destructive border-destructive/50',
   };
 
-  const statusLabels = {
-    upcoming: 'In Arrivo',
-    live: 'In Corso',
-    completed: 'Completata',
-    cancelled: 'Annullata',
+  const getStatusLabel = (status: string) => {
+    switch(status) {
+      case 'upcoming': return t('common.upcoming');
+      case 'live': return t('common.live');
+      case 'completed': return t('common.completed');
+      default: return status;
+    }
   };
 
   return (
     <div className="space-y-6 animate-slide-in-up">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl text-glow-primary">Partite</h1>
-          <p className="text-muted-foreground mt-1">
-            Trova e iscriviti alle prossime missioni
-          </p>
+          <h1 className="text-3xl text-glow-primary">{t('games.title')}</h1>
+          <p className="text-muted-foreground mt-1">{t('games.subtitle')}</p>
         </div>
         <GlowButton variant="primary">
           <Calendar className="h-4 w-4 mr-2" />
-          Nuova Partita
+          {t('games.newGame')}
         </GlowButton>
       </div>
 
@@ -57,7 +61,7 @@ const Games: React.FC = () => {
                 : "bg-card border border-border text-muted-foreground hover:border-primary hover:text-primary"
             )}
           >
-            {status === 'all' ? 'Tutte' : statusLabels[status]}
+            {status === 'all' ? t('games.filterAll') : getStatusLabel(status)}
           </button>
         ))}
       </div>
@@ -75,14 +79,12 @@ const Games: React.FC = () => {
           >
             <TacticalCardContent>
               <div className="flex flex-col lg:flex-row lg:items-center gap-6">
-                {/* Game Mode Icon */}
                 <div className="flex-shrink-0">
                   <div className="h-20 w-20 bg-gradient-tactical clip-tactical flex items-center justify-center border border-border">
                     <span className="text-4xl">{game.gameMode.icon}</span>
                   </div>
                 </div>
 
-                {/* Game Info */}
                 <div className="flex-1 space-y-3">
                   <div className="flex flex-wrap items-center gap-3">
                     <h3 className="font-display text-xl uppercase text-foreground">
@@ -92,7 +94,7 @@ const Games: React.FC = () => {
                       "px-2 py-0.5 text-xs font-display uppercase border clip-tactical-sm",
                       statusStyles[game.status]
                     )}>
-                      {statusLabels[game.status]}
+                      {getStatusLabel(game.status)}
                     </span>
                   </div>
 
@@ -103,7 +105,7 @@ const Games: React.FC = () => {
                   <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
                     <span className="flex items-center gap-1.5">
                       <Calendar className="h-4 w-4 text-primary" />
-                      {format(game.date, "EEEE d MMMM, HH:mm", { locale: it })}
+                      {format(game.date, "EEEE d MMMM, HH:mm", { locale: dateLocale })}
                     </span>
                     <span className="flex items-center gap-1.5">
                       <MapPin className="h-4 w-4 text-primary" />
@@ -111,11 +113,10 @@ const Games: React.FC = () => {
                     </span>
                     <span className="flex items-center gap-1.5">
                       <Users className="h-4 w-4 text-primary" />
-                      {game.registeredPlayers.length}/{game.maxPlayers} giocatori
+                      {t('games.maxPlayers', { current: game.registeredPlayers.length, max: game.maxPlayers })}
                     </span>
                   </div>
 
-                  {/* Game Mode Rules */}
                   <div className="flex flex-wrap gap-2">
                     {game.gameMode.rules.map((rule, i) => (
                       <span
@@ -128,20 +129,19 @@ const Games: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Actions */}
                 <div className="flex flex-col gap-2 lg:items-end">
                   {game.status === 'upcoming' && (
                     <GlowButton variant="primary" className="w-full lg:w-auto">
-                      Iscriviti
+                      {t('games.joinGame')}
                     </GlowButton>
                   )}
                   {game.status === 'live' && (
                     <GlowButton variant="secondary" className="w-full lg:w-auto">
-                      Segui Live
+                      {t('games.watchLive')}
                     </GlowButton>
                   )}
                   <GlowButton variant="ghost" size="sm" className="w-full lg:w-auto">
-                    Dettagli
+                    {t('games.details')}
                   </GlowButton>
                 </div>
               </div>
@@ -153,9 +153,7 @@ const Games: React.FC = () => {
       {filteredGames.length === 0 && (
         <TacticalCard>
           <TacticalCardContent className="py-12 text-center">
-            <p className="text-muted-foreground">
-              Nessuna partita trovata con i filtri selezionati.
-            </p>
+            <p className="text-muted-foreground">{t('games.noGames')}</p>
           </TacticalCardContent>
         </TacticalCard>
       )}

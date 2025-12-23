@@ -1,5 +1,6 @@
 import React from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { NavLink } from 'react-router-dom';
 import {
   LayoutDashboard,
   Crosshair,
@@ -8,7 +9,6 @@ import {
   Trophy,
   MapPin,
   Shield,
-  Settings,
   LogOut,
   ChevronLeft,
 } from 'lucide-react';
@@ -18,28 +18,28 @@ import { cn } from '@/lib/utils';
 
 interface NavItem {
   icon: React.ElementType;
-  label: string;
+  labelKey: string;
   path: string;
   badge?: number;
 }
 
 const navItems: NavItem[] = [
-  { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
-  { icon: Crosshair, label: 'Partite', path: '/games' },
-  { icon: Users, label: 'Team', path: '/team' },
-  { icon: MessageSquare, label: 'Chat', path: '/chat', badge: 3 },
-  { icon: Trophy, label: 'Classifiche', path: '/leaderboard' },
-  { icon: MapPin, label: 'Campi', path: '/locations' },
+  { icon: LayoutDashboard, labelKey: 'nav.dashboard', path: '/' },
+  { icon: Crosshair, labelKey: 'nav.games', path: '/games' },
+  { icon: Users, labelKey: 'nav.team', path: '/team' },
+  { icon: MessageSquare, labelKey: 'nav.chat', path: '/chat', badge: 3 },
+  { icon: Trophy, labelKey: 'nav.leaderboard', path: '/leaderboard' },
+  { icon: MapPin, labelKey: 'nav.locations', path: '/locations' },
 ];
 
 const adminItems: NavItem[] = [
-  { icon: Shield, label: 'Admin', path: '/admin' },
+  { icon: Shield, labelKey: 'nav.admin', path: '/admin' },
 ];
 
 export const Sidebar: React.FC = () => {
+  const { t } = useTranslation();
   const { sidebarOpen, toggleSidebar } = useUIStore();
   const { logout } = useAuthStore();
-  const location = useLocation();
 
   return (
     <>
@@ -89,7 +89,7 @@ export const Sidebar: React.FC = () => {
                 }
               >
                 <item.icon className="h-5 w-5 transition-transform group-hover:scale-110" />
-                <span className="flex-1">{item.label}</span>
+                <span className="flex-1">{t(item.labelKey)}</span>
                 {item.badge && (
                   <span className="h-5 min-w-5 px-1.5 bg-primary text-primary-foreground text-xs font-bold rounded-full flex items-center justify-center">
                     {item.badge}
@@ -120,7 +120,7 @@ export const Sidebar: React.FC = () => {
                 }
               >
                 <item.icon className="h-5 w-5 transition-transform group-hover:scale-110" />
-                <span className="flex-1">{item.label}</span>
+                <span className="flex-1">{t(item.labelKey)}</span>
               </NavLink>
             ))}
           </nav>
@@ -132,7 +132,7 @@ export const Sidebar: React.FC = () => {
               className="flex items-center gap-3 w-full px-3 py-2.5 rounded-sm font-display uppercase tracking-wider text-sm text-destructive hover:bg-destructive/10 transition-colors"
             >
               <LogOut className="h-5 w-5" />
-              <span>Logout</span>
+              <span>{t('auth.logout')}</span>
             </button>
           </div>
         </div>

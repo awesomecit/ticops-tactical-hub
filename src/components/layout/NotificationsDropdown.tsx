@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { 
   Bell, 
@@ -9,11 +10,10 @@ import {
   AlertCircle,
   Check,
   CheckCheck,
-  Trash2,
   X
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
-import { it } from 'date-fns/locale';
+import { it, enUS } from 'date-fns/locale';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -45,6 +45,7 @@ const getNotificationIcon = (type: Notification['type']) => {
 };
 
 export const NotificationsDropdown: React.FC = () => {
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { 
     notifications, 
@@ -53,6 +54,8 @@ export const NotificationsDropdown: React.FC = () => {
     markAllAsRead, 
     removeNotification 
   } = useNotificationStore();
+
+  const dateLocale = i18n.language.startsWith('it') ? it : enUS;
 
   const handleNotificationClick = (notification: Notification) => {
     markAsRead(notification.id);
@@ -75,7 +78,7 @@ export const NotificationsDropdown: React.FC = () => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-80">
         <div className="flex items-center justify-between px-3 py-2 border-b border-border">
-          <h3 className="font-display font-bold text-foreground">Notifiche</h3>
+          <h3 className="font-display font-bold text-foreground">{t('notifications.title')}</h3>
           {unreadCount > 0 && (
             <Button 
               variant="ghost" 
@@ -87,7 +90,7 @@ export const NotificationsDropdown: React.FC = () => {
               }}
             >
               <CheckCheck className="h-3 w-3 mr-1" />
-              Segna tutto letto
+              {t('notifications.markAllRead')}
             </Button>
           )}
         </div>
@@ -96,7 +99,7 @@ export const NotificationsDropdown: React.FC = () => {
           {notifications.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-8 text-muted-foreground">
               <Bell className="h-8 w-8 mb-2 opacity-50" />
-              <p className="text-sm">Nessuna notifica</p>
+              <p className="text-sm">{t('notifications.noNotifications')}</p>
             </div>
           ) : (
             <div className="py-1">
@@ -128,7 +131,7 @@ export const NotificationsDropdown: React.FC = () => {
                       {notification.message}
                     </p>
                     <p className="text-xs text-muted-foreground/70 mt-0.5">
-                      {formatDistanceToNow(notification.timestamp, { addSuffix: true, locale: it })}
+                      {formatDistanceToNow(notification.timestamp, { addSuffix: true, locale: dateLocale })}
                     </p>
                   </div>
                   <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -139,7 +142,7 @@ export const NotificationsDropdown: React.FC = () => {
                           markAsRead(notification.id);
                         }}
                         className="p-1 hover:bg-background rounded"
-                        title="Segna come letto"
+                        title={t('inbox.markAsRead')}
                       >
                         <Check className="h-3 w-3 text-muted-foreground" />
                       </button>
@@ -150,7 +153,7 @@ export const NotificationsDropdown: React.FC = () => {
                         removeNotification(notification.id);
                       }}
                       className="p-1 hover:bg-background rounded"
-                      title="Rimuovi"
+                      title={t('common.delete')}
                     >
                       <X className="h-3 w-3 text-muted-foreground" />
                     </button>
@@ -166,7 +169,7 @@ export const NotificationsDropdown: React.FC = () => {
           className="justify-center text-primary cursor-pointer"
           onClick={() => navigate('/settings')}
         >
-          Gestisci notifiche
+          {t('settings.notifications')}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
