@@ -14,6 +14,7 @@ import Leaderboard from "@/pages/Leaderboard";
 import Locations from "@/pages/Locations";
 import Admin from "@/pages/Admin";
 import Register from "@/pages/Register";
+import Login from "@/pages/Login";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +27,7 @@ const App = () => (
         <Sonner />
         <Routes>
           <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
           <Route element={<MainLayout />}>
             <Route path="/" element={<Dashboard />} />
             <Route path="/games" element={<Games />} />
