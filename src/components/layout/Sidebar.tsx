@@ -15,6 +15,7 @@ import {
   Backpack,
   ShoppingBag,
   CalendarClock,
+  Award,
 } from 'lucide-react';
 import { useUIStore } from '@/stores/uiStore';
 import { useAuthStore } from '@/stores/authStore';
@@ -37,6 +38,7 @@ const getNavItems = (unreadCount: number): NavItem[] => [
   { icon: Users, labelKey: 'nav.team', path: '/team' },
   { icon: MessageSquare, labelKey: 'nav.chat', path: '/chat', badge: unreadCount },
   { icon: Trophy, labelKey: 'nav.leaderboard', path: '/leaderboard' },
+  { icon: Award, labelKey: 'nav.achievements', path: '/achievements' },
   { icon: MapPin, labelKey: 'nav.locations', path: '/locations' },
   { icon: Backpack, labelKey: 'nav.equipment', path: '/equipment' },
   { icon: ShoppingBag, labelKey: 'nav.marketplace', path: '/marketplace' },
