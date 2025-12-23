@@ -84,7 +84,8 @@
     "referee": "Arbitro",
     "spectator": "Spettatore",
     "profile": "Profilo",
-    "equipment": "Equipaggiamento"
+    "equipment": "Equipaggiamento",
+    "marketplace": "Mercatino"
   },
   "auth": {
     "login": "Accedi",
