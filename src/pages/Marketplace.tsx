@@ -30,7 +30,7 @@ import {
   X,
   Truck,
 } from 'lucide-react';
-import { ListingCard, ListingDetailModal, CreateListingModal, NotificationDemo } from '@/components/marketplace';
+import { ListingCard, ListingDetailModal, CreateListingModal, NotificationDemo, ListingChatDrawer } from '@/components/marketplace';
 import { mockListings, categoryLabels, conditionLabels } from '@/mocks/marketplace';
 import { MarketplaceListing, ListingCategory, ListingCondition, MarketplaceFilters } from '@/types/marketplace';
 import { useToast } from '@/hooks/use-toast';
@@ -52,6 +52,7 @@ const Marketplace: React.FC = () => {
   const [detailModalOpen, setDetailModalOpen] = useState(false);
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
 
   // Calculate max price from listings
   const maxPrice = useMemo(() => {
@@ -415,11 +416,22 @@ const Marketplace: React.FC = () => {
 
       {/* Detail Modal */}
       {selectedListing && (
-        <ListingDetailModal
-          listing={selectedListing}
-          open={detailModalOpen}
-          onOpenChange={setDetailModalOpen}
-        />
+        <>
+          <ListingDetailModal
+            listing={selectedListing}
+            open={detailModalOpen}
+            onOpenChange={setDetailModalOpen}
+            onOpenChat={() => {
+              setDetailModalOpen(false);
+              setChatOpen(true);
+            }}
+          />
+          <ListingChatDrawer
+            listing={selectedListing}
+            open={chatOpen}
+            onOpenChange={setChatOpen}
+          />
+        </>
       )}
 
       {/* Create Listing Modal */}
