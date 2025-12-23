@@ -1,20 +1,32 @@
 import React, { useEffect } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 import { TabBar } from './TabBar';
 import { useUIStore } from '@/stores/uiStore';
 import { useAuthStore } from '@/stores/authStore';
 import { useAchievementNotifications } from '@/hooks/useAchievementNotifications';
+import { useRealtimeNotifications } from '@/hooks/useRealtimeNotifications';
+import { usePresence } from '@/hooks/usePresence';
 import { cn } from '@/lib/utils';
 
 export const MainLayout: React.FC = () => {
   const { sidebarOpen } = useUIStore();
   const { isAuthenticated } = useAuthStore();
   const navigate = useNavigate();
+  const location = useLocation();
   
-  // Global achievement notifications
+  // Global real-time features
   useAchievementNotifications();
+  useRealtimeNotifications(isAuthenticated);
+  const { updateCurrentPage } = usePresence('global', isAuthenticated);
+
+  // Track page changes for presence
+  useEffect(() => {
+    if (isAuthenticated) {
+      updateCurrentPage(location.pathname);
+    }
+  }, [location.pathname, isAuthenticated, updateCurrentPage]);
 
   useEffect(() => {
     if (!isAuthenticated) {
