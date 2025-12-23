@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { 
   X, Heart, Share2, MapPin, Eye, Truck, Star, Calendar, 
-  ChevronLeft, ChevronRight, MessageSquare, Send, Tag, Shield
+  ChevronLeft, ChevronRight, MessageSquare, Send, Tag, Shield, ShoppingBag
 } from 'lucide-react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -18,6 +18,10 @@ import { formatDistanceToNow, format } from 'date-fns';
 import { it } from 'date-fns/locale';
 import { useToast } from '@/hooks/use-toast';
 import { z } from 'zod';
+import { useMarketplaceTransactionStore } from '@/stores/marketplaceTransactionStore';
+import { SellerStatsCard } from './SellerStatsCard';
+import { CompleteTransactionModal } from './CompleteTransactionModal';
+import { ReviewModal } from './ReviewModal';
 
 interface ListingDetailModalProps {
   listing: MarketplaceListing | null;
@@ -51,10 +55,16 @@ export function ListingDetailModal({
   onOpenChat,
 }: ListingDetailModalProps) {
   const { toast } = useToast();
+  const { getUserStats, getReviewsForUser } = useMarketplaceTransactionStore();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [contactForm, setContactForm] = useState({ name: '', email: '', message: '' });
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [sending, setSending] = useState(false);
+  const [transactionModalOpen, setTransactionModalOpen] = useState(false);
+  const [showSellerStats, setShowSellerStats] = useState(false);
+
+  const sellerStats = getUserStats(listing.sellerId);
+  const sellerReviews = getReviewsForUser(listing.sellerId);
 
   if (!listing) return null;
 
@@ -283,31 +293,46 @@ export function ListingDetailModal({
 
               {/* Seller Info */}
               <div className="space-y-3">
-                <h3 className="font-semibold text-foreground">Venditore</h3>
-                <div className="flex items-center justify-between rounded-lg border border-border/50 bg-muted/30 p-4">
-                  <div className="flex items-center gap-3">
-                    <Avatar className="h-12 w-12">
-                      <AvatarImage src={listing.sellerAvatar} />
-                      <AvatarFallback>{listing.sellerName.charAt(0)}</AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <p className="font-medium text-foreground">{listing.sellerName}</p>
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <span className="flex items-center gap-1">
-                          <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
-                          {listing.sellerRating.toFixed(1)}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <Shield className="h-4 w-4 text-green-500" />
-                          Verificato
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  <Button variant="outline" size="sm">
-                    Vedi profilo
+                <div className="flex items-center justify-between">
+                  <h3 className="font-semibold text-foreground">Venditore</h3>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={() => setShowSellerStats(!showSellerStats)}
+                  >
+                    {showSellerStats ? 'Nascondi statistiche' : 'Vedi statistiche'}
                   </Button>
                 </div>
+                
+                {showSellerStats ? (
+                  <SellerStatsCard
+                    userId={listing.sellerId}
+                    userName={listing.sellerName}
+                    userAvatar={listing.sellerAvatar}
+                    stats={sellerStats}
+                    reviews={sellerReviews}
+                  />
+                ) : (
+                  <SellerStatsCard
+                    userId={listing.sellerId}
+                    userName={listing.sellerName}
+                    userAvatar={listing.sellerAvatar}
+                    stats={sellerStats}
+                    reviews={sellerReviews}
+                    compact
+                  />
+                )}
+
+                {/* Complete Transaction Button */}
+                {listing.status === 'active' && (
+                  <Button 
+                    className="w-full gap-2" 
+                    onClick={() => setTransactionModalOpen(true)}
+                  >
+                    <ShoppingBag className="h-4 w-4" />
+                    Ho completato l'acquisto/scambio
+                  </Button>
+                )}
               </div>
 
               <Separator />
@@ -405,6 +430,13 @@ export function ListingDetailModal({
           </ScrollArea>
         </div>
       </DialogContent>
+
+      {/* Transaction Modal */}
+      <CompleteTransactionModal
+        listing={listing}
+        open={transactionModalOpen}
+        onOpenChange={setTransactionModalOpen}
+      />
     </Dialog>
   );
 }
