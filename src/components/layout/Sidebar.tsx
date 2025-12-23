@@ -12,11 +12,12 @@ import {
   LogOut,
   ChevronLeft,
   User,
+  Backpack,
 } from 'lucide-react';
 import { useUIStore } from '@/stores/uiStore';
 import { useAuthStore } from '@/stores/authStore';
 import { cn } from '@/lib/utils';
-import { getTotalUnreadCount } from '@/mocks/chat';
+import { useChatStore } from '@/stores/chatStore';
 
 interface NavItem {
   icon: React.ElementType;
@@ -25,13 +26,14 @@ interface NavItem {
   badge?: number;
 }
 
-const getNavItems = (): NavItem[] => [
+const getNavItems = (unreadCount: number): NavItem[] => [
   { icon: LayoutDashboard, labelKey: 'nav.dashboard', path: '/' },
   { icon: Crosshair, labelKey: 'nav.games', path: '/games' },
   { icon: Users, labelKey: 'nav.team', path: '/team' },
-  { icon: MessageSquare, labelKey: 'nav.chat', path: '/chat', badge: getTotalUnreadCount() },
+  { icon: MessageSquare, labelKey: 'nav.chat', path: '/chat', badge: unreadCount },
   { icon: Trophy, labelKey: 'nav.leaderboard', path: '/leaderboard' },
   { icon: MapPin, labelKey: 'nav.locations', path: '/locations' },
+  { icon: Backpack, labelKey: 'nav.equipment', path: '/equipment' },
   { icon: User, labelKey: 'nav.profile', path: '/profile' },
 ];
 
@@ -43,7 +45,8 @@ export const Sidebar: React.FC = () => {
   const { t } = useTranslation();
   const { sidebarOpen, toggleSidebar } = useUIStore();
   const { logout } = useAuthStore();
-  const navItems = getNavItems();
+  const { getTotalUnreadCount } = useChatStore();
+  const navItems = getNavItems(getTotalUnreadCount());
 
   return (
     <>
