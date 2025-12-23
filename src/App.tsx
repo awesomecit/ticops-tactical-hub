@@ -7,6 +7,7 @@ import { MainLayout } from "@/components/layout/MainLayout";
 import Dashboard from "@/pages/Dashboard";
 import Games from "@/pages/Games";
 import Team from "@/pages/Team";
+import TeamInbox from "@/pages/TeamInbox";
 import Chat from "@/pages/Chat";
 import ChatView from "@/pages/ChatView";
 import Leaderboard from "@/pages/Leaderboard";
@@ -27,6 +28,7 @@ const App = () => (
             <Route path="/" element={<Dashboard />} />
             <Route path="/games" element={<Games />} />
             <Route path="/team" element={<Team />} />
+            <Route path="/team/inbox" element={<TeamInbox />} />
             <Route path="/chat" element={<Chat />} />
             <Route path="/chat/:conversationId" element={<ChatView />} />
             <Route path="/leaderboard" element={<Leaderboard />} />

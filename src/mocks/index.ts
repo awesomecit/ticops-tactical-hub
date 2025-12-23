@@ -79,5 +79,15 @@ export {
   getTotalUnreadCount,
 } from './chat';
 
+// Inbox
+export {
+  type IMockInboxItem,
+  type InboxItemType,
+  MOCK_INBOX_ITEMS,
+  getInboxItemsByTeam,
+  getInboxItemsByType,
+  getUnreadCountByType,
+} from './inbox';
+
 // Legacy exports for backward compatibility
 export { mockRanks, mockUser, mockTeams, mockGames, mockMessages, mockNotifications } from './data';
