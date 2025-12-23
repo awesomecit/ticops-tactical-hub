@@ -19,6 +19,7 @@ import AdminFields from "@/pages/admin/AdminFields";
 import AdminReferees from "@/pages/admin/AdminReferees";
 import AdminUsers from "@/pages/admin/AdminUsers";
 import Login from "@/pages/Login";
+import GameplayView from "@/pages/GameplayView";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -42,6 +43,7 @@ const App = () => (
             <Route path="/leaderboard" element={<Leaderboard />} />
             <Route path="/locations" element={<Locations />} />
           </Route>
+          <Route path="/gameplay/:gameId" element={<GameplayView />} />
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<AdminDashboard />} />
             <Route path="fields" element={<AdminFields />} />
