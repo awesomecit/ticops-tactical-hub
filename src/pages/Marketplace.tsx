@@ -30,16 +30,20 @@ import {
   X,
   Truck,
 } from 'lucide-react';
-import { ListingCard, ListingDetailModal, CreateListingModal } from '@/components/marketplace';
+import { ListingCard, ListingDetailModal, CreateListingModal, NotificationDemo } from '@/components/marketplace';
 import { mockListings, categoryLabels, conditionLabels } from '@/mocks/marketplace';
 import { MarketplaceListing, ListingCategory, ListingCondition, MarketplaceFilters } from '@/types/marketplace';
 import { useToast } from '@/hooks/use-toast';
 import { useFavoritesStore } from '@/stores/favoritesStore';
+import { useMarketplaceNotifications } from '@/hooks/useMarketplaceNotifications';
 
 const Marketplace: React.FC = () => {
   const { t } = useTranslation();
   const { toast } = useToast();
   const { favorites, toggleFavorite } = useFavoritesStore();
+  
+  // Enable mock notifications for demo
+  useMarketplaceNotifications(true);
   
   const [searchQuery, setSearchQuery] = useState('');
   const [filters, setFilters] = useState<MarketplaceFilters>({});
@@ -219,6 +223,11 @@ const Marketplace: React.FC = () => {
         <X className="w-4 h-4 mr-2" />
         Cancella filtri
       </Button>
+
+      <Separator />
+
+      {/* Notification Demo */}
+      <NotificationDemo />
     </div>
   );
 
