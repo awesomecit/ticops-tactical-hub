@@ -59,6 +59,8 @@ export const MOCK_CONVERSATIONS: IMockConversation[] = [
     },
     unreadCount: 1,
     isOnline: false,
+    entityType: 'player',
+    entityId: 'user_004',
   },
   {
     id: 'conv_003',
@@ -84,6 +86,8 @@ export const MOCK_CONVERSATIONS: IMockConversation[] = [
     },
     unreadCount: 0,
     isOnline: true,
+    entityType: 'player',
+    entityId: 'user_002',
   },
   {
     id: 'conv_005',
@@ -109,6 +113,52 @@ export const MOCK_CONVERSATIONS: IMockConversation[] = [
       timestamp: new Date(Date.now() - 1000 * 60 * 60 * 48),
     },
     unreadCount: 0,
+  },
+  // Field conversation
+  {
+    id: 'conv_field_001',
+    type: 'field',
+    name: 'Campo Alpha Zone',
+    participants: ['current_user', 'field_1'],
+    lastMessage: {
+      text: 'Il campo è disponibile per prenotazioni',
+      senderId: 'field_1',
+      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 3),
+    },
+    unreadCount: 1,
+    entityType: 'field',
+    entityId: '1',
+  },
+  // Shop conversation
+  {
+    id: 'conv_shop_001',
+    type: 'shop',
+    name: 'Tactical Gear Milano',
+    participants: ['current_user', 'shop_1'],
+    lastMessage: {
+      text: 'Ciao! Il prodotto che cerchi è disponibile',
+      senderId: 'shop_1',
+      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 6),
+    },
+    unreadCount: 2,
+    entityType: 'shop',
+    entityId: 'shop_1',
+  },
+  // Referee conversation
+  {
+    id: 'conv_referee_001',
+    type: 'private',
+    name: 'RefereeMaster',
+    participants: ['current_user', 'referee_1'],
+    lastMessage: {
+      text: 'Confermo la mia disponibilità per sabato',
+      senderId: 'referee_1',
+      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 12),
+    },
+    unreadCount: 0,
+    entityType: 'referee',
+    entityId: 'referee_1',
+    isOnline: true,
   },
 ];
 

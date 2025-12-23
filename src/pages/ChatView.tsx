@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, MoreVertical, Send, Smile } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { GlowButton } from '@/components/ui/GlowButton';
-import { MessageBubble, QuickReplyBar, TypingIndicator } from '@/components/chat';
+import { MessageBubble, QuickReplyBar, TypingIndicator, EntityAvatar, EntityType } from '@/components/chat';
 import {
   getConversationById,
   getMessagesByConversation,
@@ -13,12 +13,12 @@ import {
 import { getCurrentUser } from '@/mocks';
 import { cn } from '@/lib/utils';
 
-const typeBadges: Record<ConversationType, { emoji: string; label: string }> = {
-  private: { emoji: '🔵', label: 'Privato' },
-  team: { emoji: '🟢', label: 'Team' },
-  match: { emoji: '🟠', label: 'Partita' },
-  field: { emoji: '📍', label: 'Campo' },
-  shop: { emoji: '🛒', label: 'Shop' },
+const typeBadges: Record<ConversationType, { label: string }> = {
+  private: { label: 'Privato' },
+  team: { label: 'Team' },
+  match: { label: 'Partita' },
+  field: { label: 'Campo' },
+  shop: { label: 'Shop' },
 };
 
 const ChatView: React.FC = () => {
@@ -126,6 +126,10 @@ const ChatView: React.FC = () => {
   }
 
   const badge = typeBadges[conversation.type];
+  
+  // Determine entity type for avatar
+  const avatarEntityType: EntityType | undefined = conversation.entityType || 
+    (conversation.type === 'field' ? 'field' : conversation.type === 'shop' ? 'shop' : undefined);
 
   return (
     <div className="flex flex-col h-[calc(100vh-8rem)] lg:h-[calc(100vh-6rem)] -m-4 lg:-m-6">
@@ -138,15 +142,15 @@ const ChatView: React.FC = () => {
           <ArrowLeft className="h-5 w-5" />
         </button>
 
-        {/* Avatar */}
-        <div className="relative">
-          <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center font-display font-bold text-primary border-2 border-border">
-            {conversation.name.charAt(0).toUpperCase()}
-          </div>
-          {conversation.type === 'private' && conversation.isOnline && (
-            <span className="absolute bottom-0 right-0 h-3 w-3 bg-secondary rounded-full border-2 border-card" />
-          )}
-        </div>
+        {/* Avatar with Entity support */}
+        <EntityAvatar
+          entityType={avatarEntityType}
+          name={conversation.name}
+          avatar={conversation.avatar}
+          isOnline={conversation.type === 'private' ? conversation.isOnline : undefined}
+          size="md"
+          showBadge={!!avatarEntityType}
+        />
 
         {/* Info */}
         <div className="flex-1 min-w-0">
@@ -154,7 +158,11 @@ const ChatView: React.FC = () => {
             <h2 className="font-display uppercase text-sm text-foreground truncate">
               {conversation.name}
             </h2>
-            <span className="text-sm">{badge.emoji}</span>
+            {avatarEntityType && (
+              <span className="text-xs text-muted-foreground uppercase bg-muted px-1.5 py-0.5 rounded">
+                {badge.label}
+              </span>
+            )}
           </div>
           <p className="text-xs text-muted-foreground">
             {conversation.type === 'private'
