@@ -38,6 +38,7 @@ import Equipment from "@/pages/Equipment";
 import GameDetail from "@/pages/GameDetail";
 import Marketplace from "@/pages/Marketplace";
 import Organize from "@/pages/Organize";
+import AccessDenied from "@/pages/AccessDenied";
 
 const queryClient = new QueryClient();
 
@@ -72,9 +73,14 @@ const App = () => (
           </Route>
           <Route path="/gameplay/:gameId" element={<GameplayView />} />
           <Route path="/spectator/:gameId" element={<SpectatorView />} />
-          <Route path="/referee/:gameId" element={<RefereeView />} />
+          <Route path="/referee/:gameId" element={
+            <ProtectedRoute roles={['referee', 'admin']} redirectTo="/access-denied">
+              <RefereeView />
+            </ProtectedRoute>
+          } />
+          <Route path="/access-denied" element={<AccessDenied />} />
           <Route path="/admin" element={
-            <ProtectedRoute requireAdmin>
+            <ProtectedRoute requireAdmin redirectTo="/access-denied">
               <AdminLayout />
             </ProtectedRoute>
           }>

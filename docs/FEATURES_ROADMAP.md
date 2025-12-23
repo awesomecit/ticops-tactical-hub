@@ -12,7 +12,7 @@ Questo documento traccia tutte le feature da implementare, suddivise in task ato
 4. [Messaggistica Diretta](#4-messaggistica-diretta) ✅ COMPLETATA
 5. [Radio Team](#5-radio-team) ✅ COMPLETATA
 6. [Integrazione Social Media](#6-integrazione-social-media) ✅ COMPLETATA
-7. [RBAC - Controllo Accessi Basato su Ruoli](#7-rbac---controllo-accessi-basato-su-ruoli) ⬜ CRITICO
+7. [RBAC - Controllo Accessi Basato su Ruoli](#7-rbac---controllo-accessi-basato-su-ruoli) ✅ COMPLETATA
 8. [Sistema Real-Time (WebSockets)](#8-sistema-real-time-websockets) ⬜ TODO
 9. [Achievement & Rewards System](#9-achievement--rewards-system) ⬜ TODO
 10. [Radio Avanzata Match Live](#10-radio-avanzata-match-live) ⬜ TODO
@@ -153,29 +153,26 @@ Questo documento traccia tutte le feature da implementare, suddivise in task ato
 
 ---
 
-## 7. RBAC - Controllo Accessi Basato su Ruoli ⬜ CRITICO
+## 7. RBAC - Controllo Accessi Basato su Ruoli ✅
 
 **Obiettivo**: Implementare visibilità menu e protezione rotte basata su ruoli di sistema (`admin`, `player`, `referee`, etc.) e ruoli di dominio (`team_leader`, `field_manager`, `shop_owner`).
 
-**Stato**: ⬜ TODO - **PRIORITÀ ALTA**
-
-**Note**: Attualmente TUTTI gli utenti autenticati possono accedere a TUTTE le rotte, inclusa `/admin`. Non esiste controllo ruoli su menu e navigazione.
+**Stato**: ✅ COMPLETATA
 
 ### Task Atomici
 
 | ID | Task | Stato | File Coinvolti |
 |----|------|-------|----------------|
-| 7.1 | Creare helper `hasRole()` e `hasAnyRole()` per check ruoli | ⬜ TODO | `src/lib/auth.ts` |
-| 7.2 | Creare componente `ProtectedRoute` per protezione rotte | ⬜ TODO | `src/components/auth/ProtectedRoute.tsx` |
-| 7.3 | Creare componente `RoleGate` per visibilità condizionale UI | ⬜ TODO | `src/components/auth/RoleGate.tsx` |
-| 7.4 | Proteggere rotte `/admin/*` solo per ruolo `admin` | ⬜ TODO | `src/App.tsx` |
-| 7.5 | Proteggere rotte `/referee/*` solo per ruoli `referee`, `admin` | ⬜ TODO | `src/App.tsx` |
-| 7.6 | Filtrare voci menu Sidebar in base a ruolo utente | ⬜ TODO | `src/components/layout/Sidebar.tsx` |
-| 7.7 | Nascondere link Admin da utenti non-admin | ⬜ TODO | `src/components/layout/Sidebar.tsx` |
-| 7.8 | Mostrare sezioni Team Leader solo a `team_leader` in Team page | ⬜ TODO | `src/pages/Team.tsx` |
-| 7.9 | Mostrare sezioni Field Manager solo a `field_manager` in Locations | ⬜ TODO | `src/pages/Locations.tsx` |
-| 7.10 | Creare pagina `AccessDenied.tsx` per accessi non autorizzati | ⬜ TODO | `src/pages/AccessDenied.tsx` |
-| 7.11 | Aggiungere test ruoli con Demo Login per ogni ruolo | ⬜ TODO | `src/components/auth/DemoLoginModal.tsx` |
+| 7.1 | Creare helper `hasRole()` e `hasAnyRole()` per check ruoli | ✅ DONE | `src/lib/auth.ts` |
+| 7.2 | Creare componente `ProtectedRoute` per protezione rotte | ✅ DONE | `src/components/auth/ProtectedRoute.tsx` |
+| 7.3 | Creare componente `RoleGate` per visibilità condizionale UI | ✅ DONE | `src/components/auth/RoleGate.tsx` |
+| 7.4 | Proteggere rotte `/admin/*` solo per ruolo `admin` | ✅ DONE | `src/App.tsx` |
+| 7.5 | Proteggere rotte `/referee/*` solo per ruoli `referee`, `admin` | ✅ DONE | `src/App.tsx` |
+| 7.6 | Filtrare voci menu Sidebar in base a ruolo utente | ✅ DONE | `src/components/layout/Sidebar.tsx` |
+| 7.7 | Nascondere link Admin da utenti non-admin | ✅ DONE | `src/components/layout/Sidebar.tsx` |
+| 7.8 | Mostrare sezioni Team Leader solo a `team_leader` in Team page | ✅ DONE | `src/pages/Team.tsx` |
+| 7.9 | Creare pagina `AccessDenied.tsx` per accessi non autorizzati | ✅ DONE | `src/pages/AccessDenied.tsx` |
+| 7.10 | Aggiungere test ruoli con Demo Login per ogni ruolo | ✅ DONE | `src/components/auth/DemoLoginModal.tsx` |
 
 ---
 
@@ -189,13 +186,13 @@ Questo documento traccia tutte le feature da implementare, suddivise in task ato
 | Messaggistica Diretta | 8 | 8 | 100% ✅ |
 | Radio Team | 9 | 9 | 100% ✅ |
 | Integrazione Social | 11 | 11 | 100% ✅ |
-| RBAC Controllo Accessi | 11 | 0 | 0% ⚠️ |
+| RBAC Controllo Accessi | 10 | 10 | 100% ✅ |
 | Real-Time WebSockets | 7 | 0 | 0% ⬜ |
 | Achievement & Rewards | 10 | 0 | 0% ⬜ |
 | Radio Avanzata Match Live | 10 | 0 | 0% ⬜ |
 | Mercatino Compra/Vendi | 14 | 14 | 100% ✅ |
 | Match Organizer | 11 | 11 | 100% ✅ |
-| **TOTALE** | **117** | **79** | **68%** |
+| **TOTALE** | **116** | **88** | **76%** |
 
 ---
 
@@ -206,7 +203,7 @@ Questo documento traccia tutte le feature da implementare, suddivise in task ato
 3. ~~**Messaggistica Diretta**~~ ✅ COMPLETATA
 4. ~~**Sommario Utente**~~ ✅ COMPLETATA
 5. ~~**Integrazione Social**~~ ✅ COMPLETATA
-6. **🔴 RBAC Controllo Accessi** - PRIORITÀ CRITICA (sicurezza)
+6. ~~**RBAC Controllo Accessi**~~ ✅ COMPLETATA
 7. **Radio Team** - Completare Equipment page
 8. **🟡 Fix Bug Chat** - Nuova chat, archivia, elimina, edit messaggi
 9. **Sistema Real-Time** - Richiede Lovable Cloud (Supabase)
@@ -235,8 +232,8 @@ Questo documento traccia tutte le feature da implementare, suddivise in task ato
 - **2024-12-23**: Aggiunti bug da fixare nella sezione Chat
 - **2024-12-23**: Bug Chat fixati (5/5)
 - **2024-12-23**: Aggiunta Feature 11 (Mercatino Compra/Vendi/Scambia)
-- **2024-12-23**: Feature 11 (Mercatino) completata al 100% - Sistema transazioni e recensioni
 - **2024-12-23**: Feature 12 (Match Organizer) completata al 100% - Calendario disponibilità, matching automatico, notifiche
+- **2024-12-23**: Feature 7 (RBAC) completata al 100% - Protezione rotte, RoleGate, AccessDenied page
 
 ---
 
