@@ -11,7 +11,8 @@ import {
   Award,
   ChevronRight,
   LogOut,
-  UserCog
+  UserCog,
+  Heart
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -20,7 +21,7 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { UserSummaryCard, EventsList, RoleSummary } from '@/components/profile';
+import { UserSummaryCard, EventsList, RoleSummary, FavoritesList } from '@/components/profile';
 import { TacticalCard, TacticalCardContent } from '@/components/ui/TacticalCard';
 import { SocialContactsForm, SocialLinks } from '@/components/social';
 import { getCurrentUser } from '@/mocks/users';
@@ -160,6 +161,10 @@ const Profile: React.FC = () => {
             <Award className="h-4 w-4" />
             <span className="hidden sm:inline">Achievement</span>
           </TabsTrigger>
+          <TabsTrigger value="favorites" className="flex-1 md:flex-none gap-2">
+            <Heart className="h-4 w-4" />
+            <span className="hidden sm:inline">Preferiti</span>
+          </TabsTrigger>
           <TabsTrigger value="settings" className="flex-1 md:flex-none gap-2">
             <UserCog className="h-4 w-4" />
             <span className="hidden sm:inline">Impostazioni</span>
@@ -272,6 +277,10 @@ const Profile: React.FC = () => {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="favorites" className="mt-6">
+          <FavoritesList />
         </TabsContent>
 
         <TabsContent value="settings" className="mt-6 space-y-6">
