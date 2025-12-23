@@ -294,26 +294,26 @@ Questo documento traccia tutte le feature da implementare, suddivise in task ato
 
 ---
 
-## 10. Radio Avanzata Match Live ⬜
+## 10. Radio Avanzata Match Live ✅
 
 **Obiettivo**: Sistema radio avanzato con suoni ricetrasmittente, comunicazione bidirezionale non simultanea (audio streaming), e abilità speciali badge Ingegnere.
 
-**Stato**: ⬜ TODO
+**Stato**: ✅ COMPLETATO (Mock)
 
 ### Task Atomici
 
 | ID | Task | Stato | File Coinvolti |
 |----|------|-------|----------------|
-| 10.1 | Aggiungere suoni ricetrasmittente (beep attivazione, statico, rilascio) | ⬜ TODO | `src/assets/sounds/`, `src/hooks/useRadioSounds.ts` |
-| 10.2 | Implementare PTT (Push-To-Talk) con recording audio | ⬜ TODO | `src/hooks/useAudioRecorder.ts` |
-| 10.3 | Creare sistema invio messaggi audio in streaming | ⬜ TODO | `src/hooks/useAudioStreaming.ts` |
-| 10.4 | Creare componente `RadioTransmitButton` con feedback visivo | ⬜ TODO | `src/components/radio/RadioTransmitButton.tsx` |
+| 10.1 | Aggiungere suoni ricetrasmittente (beep attivazione, statico, rilascio) | ✅ DONE | `src/hooks/useRadioSounds.ts` |
+| 10.2 | Implementare PTT (Push-To-Talk) con recording audio | ✅ DONE | `src/components/radio/RadioTransmitButton.tsx` |
+| 10.3 | Creare sistema invio messaggi audio in streaming | ✅ DONE | `src/hooks/useRealtimeRadio.ts` |
+| 10.4 | Creare componente `RadioTransmitButton` con feedback visivo | ✅ DONE | `src/components/radio/RadioTransmitButton.tsx` |
 | 10.5 | Creare componente `AudioMessageBubble` per messaggi vocali | ⬜ TODO | `src/components/radio/AudioMessageBubble.tsx` |
-| 10.6 | Implementare abilità badge Ingegnere: scanner frequenze nemiche | ⬜ TODO | `src/components/radio/FrequencyScanner.tsx` |
-| 10.7 | Creare UI scanner per ricerca stazioni avversarie | ⬜ TODO | `src/components/radio/EnemyScannerOverlay.tsx` |
-| 10.8 | Animazione "interferenza" quando si viene scansionati | ⬜ TODO | `src/components/radio/InterferenceEffect.tsx` |
-| 10.9 | Integrare radio avanzata in GameplayView | ⬜ TODO | `src/pages/GameplayView.tsx` |
-| 10.10 | Sistema contromisure radio (jamming, frequenze segrete) | ⬜ TODO | `src/hooks/useRadioCountermeasures.ts` |
+| 10.6 | Implementare abilità badge Ingegnere: scanner frequenze nemiche | ✅ DONE | `src/components/radio/FrequencyScanner.tsx` |
+| 10.7 | Creare UI scanner per ricerca stazioni avversarie | ✅ DONE | `src/components/radio/FrequencyScanner.tsx` |
+| 10.8 | Animazione "interferenza" quando si viene scansionati | ✅ DONE | `src/components/radio/InterferenceEffect.tsx` |
+| 10.9 | Integrare radio avanzata in GameplayView | ✅ DONE | `src/pages/GameplayView.tsx` |
+| 10.10 | Sistema contromisure radio (jamming, frequenze segrete) | ✅ DONE | `src/hooks/useRadioCountermeasures.ts` |
 
 ---
 
