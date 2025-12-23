@@ -102,25 +102,25 @@ Questo documento traccia tutte le feature da implementare, suddivise in task ato
 
 ---
 
-## 5. Radio Team
+## 5. Radio Team 🔄
 
 **Obiettivo**: Aggiungere feature radio in sezione equipment con attivazione da parte della squadra.
 
-**Stato**: ⬜ TODO
+**Stato**: 🔄 IN PROGRESS (78%)
 
 ### Task Atomici
 
 | ID | Task | Stato | File Coinvolti |
 |----|------|-------|----------------|
-| 5.1 | Creare tipo `RadioChannel` e `RadioStatus` | ⬜ TODO | `src/types/index.ts` |
-| 5.2 | Creare store `radioStore.ts` con zustand | ⬜ TODO | `src/stores/radioStore.ts` |
-| 5.3 | Creare mock canali radio per team | ⬜ TODO | `src/mocks/radio.ts` |
-| 5.4 | Creare componente `RadioBox` (widget equipment) | ⬜ TODO | `src/components/radio/RadioBox.tsx` |
-| 5.5 | Creare componente `RadioControls` (mute, volume, canale) | ⬜ TODO | `src/components/radio/RadioControls.tsx` |
-| 5.6 | Creare componente `RadioActivationModal` per team leader | ⬜ TODO | `src/components/radio/RadioActivationModal.tsx` |
-| 5.7 | Creare pagina/sezione `Equipment.tsx` | ⬜ TODO | `src/pages/Equipment.tsx` o `src/components/team/Equipment.tsx` |
-| 5.8 | Aggiungere RadioBox in GameplayView | ⬜ TODO | `src/pages/GameplayView.tsx` |
-| 5.9 | Aggiungere controlli attivazione radio in Team per team_leader | ⬜ TODO | `src/pages/Team.tsx` |
+| 5.1 | Creare tipo `RadioChannel` e `RadioStatus` | ✅ DONE | `src/types/radio.ts` |
+| 5.2 | Creare store `radioStore.ts` con zustand | ✅ DONE | `src/stores/radioStore.ts` |
+| 5.3 | Creare mock canali radio per team | ✅ DONE | `src/mocks/radio.ts` |
+| 5.4 | Creare componente `RadioBox` (widget equipment) | ✅ DONE | `src/components/radio/RadioBox.tsx` |
+| 5.5 | Creare componente `RadioControls` (mute, volume, canale) | ✅ DONE | `src/components/radio/RadioControls.tsx` |
+| 5.6 | Creare componente `RadioActivationModal` per team leader | ✅ DONE | `src/components/radio/RadioActivationModal.tsx` |
+| 5.7 | Aggiungere RadioBox in GameplayView | ✅ DONE | `src/pages/GameplayView.tsx` |
+| 5.8 | Aggiungere controlli attivazione radio in Team per team_leader | ✅ DONE | `src/pages/Team.tsx` |
+| 5.9 | Creare pagina/sezione `Equipment.tsx` | ⬜ TODO | `src/pages/Equipment.tsx` |
 
 ---
 
@@ -182,10 +182,10 @@ Questo documento traccia tutte le feature da implementare, suddivise in task ato
 | Sommario Utente | 7 | 7 | 100% ✅ |
 | Sistema Alert | 9 | 9 | 100% ✅ |
 | Messaggistica Diretta | 8 | 8 | 100% ✅ |
-| Radio Team | 9 | 0 | 0% |
+| Radio Team | 9 | 8 | 89% 🔄 |
 | Integrazione Social | 11 | 11 | 100% ✅ |
 | RBAC Controllo Accessi | 11 | 0 | 0% ⚠️ |
-| **TOTALE** | **65** | **45** | **69%** |
+| **TOTALE** | **65** | **53** | **82%** |
 
 ---
 

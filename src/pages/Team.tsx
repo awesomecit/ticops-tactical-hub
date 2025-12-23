@@ -16,6 +16,7 @@ import {
   Award,
   Shield,
   Edit2,
+  Radio,
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { it } from 'date-fns/locale';
@@ -39,7 +40,9 @@ import {
 import { ActivityItem, ActivityType } from '@/components/dashboard';
 import { TierType } from '@/components/ranking';
 import { SocialContactsForm } from '@/components/social';
+import { RadioActivationModal, RadioBox } from '@/components/radio';
 import { SocialContact } from '@/types/social';
+import { useRadioStore } from '@/stores/radioStore';
 import {
   getCurrentUser,
   getTeamById,
@@ -140,6 +143,7 @@ const Team: React.FC = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [memberFilter, setMemberFilter] = useState<'all' | 'online' | 'leader' | 'officer'>('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [radioModalOpen, setRadioModalOpen] = useState(false);
 
   const currentUser = getCurrentUser();
   const team = getTeamById(currentUser.teamId || 'team_001');
@@ -148,6 +152,9 @@ const Team: React.FC = () => {
   const [teamSocials, setTeamSocials] = useState<SocialContact[]>(
     team ? getSocialContactsByEntity(team.id, 'team') : []
   );
+  
+  const { channels: radioChannels } = useRadioStore();
+  const isTeamLeader = currentUser.teamRole === 'leader' || currentUser.role === 'team_leader';
 
   if (!team) {
     return (
@@ -308,6 +315,18 @@ const Team: React.FC = () => {
                   <TacticalCardTitle>Quick Actions</TacticalCardTitle>
                 </TacticalCardHeader>
                 <TacticalCardContent className="space-y-2">
+                  {/* Radio Activation - Only for Team Leader */}
+                  {isTeamLeader && (
+                    <GlowButton 
+                      variant="primary" 
+                      className="w-full justify-start"
+                      onClick={() => setRadioModalOpen(true)}
+                    >
+                      <Radio className="h-4 w-4 mr-2" />
+                      {radioChannels.length > 0 ? 'Gestisci Radio' : 'Attiva Radio'}
+                    </GlowButton>
+                  )}
+                  
                   <GlowButton 
                     variant="outline" 
                     className="w-full justify-start"
@@ -334,6 +353,11 @@ const Team: React.FC = () => {
                   </GlowButton>
                 </TacticalCardContent>
               </TacticalCard>
+
+              {/* Radio Status (if active) */}
+              {radioChannels.length > 0 && (
+                <RadioBox className="mt-4" />
+              )}
             </div>
           </div>
         </TabsContent>
@@ -538,6 +562,16 @@ const Team: React.FC = () => {
           </TacticalCard>
         </TabsContent>
       </Tabs>
+
+      {/* Radio Activation Modal */}
+      {team && (
+        <RadioActivationModal
+          isOpen={radioModalOpen}
+          onClose={() => setRadioModalOpen(false)}
+          teamId={team.id}
+          teamName={team.name}
+        />
+      )}
     </div>
   );
 };
