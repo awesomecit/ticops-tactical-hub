@@ -13,6 +13,7 @@ import {
   UserPlus,
   Radio,
   Play,
+  Zap,
 } from 'lucide-react';
 import { useMockData } from '@/hooks/useMockData';
 import { TacticalCard, TacticalCardContent } from '@/components/ui/TacticalCard';
@@ -200,6 +201,30 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Coming Soon Features Banner */}
+      <TacticalCard className="p-4 bg-gradient-to-r from-primary/5 via-accent/5 to-transparent border-accent/30">
+        <div className="flex items-start gap-3">
+          <Zap className="h-5 w-5 text-accent flex-shrink-0 mt-0.5" />
+          <div className="flex-1">
+            <div className="flex items-center gap-2 mb-1">
+              <h3 className="font-display font-bold text-sm">🚀 Funzionalità in arrivo</h3>
+              <span className="px-2 py-0.5 text-xs font-mono bg-accent/20 text-accent border border-accent/30 rounded">
+                MOCKUP
+              </span>
+            </div>
+            <p className="text-xs text-muted-foreground mb-2">
+              I dati mostrati sono dimostrativi. Stiamo sviluppando moduli IoT e servizi  .
+            </p>
+            <div className="flex flex-wrap gap-1.5 text-xs">
+              <span className="px-2 py-0.5 bg-card/50 border border-border/50 rounded">📡 IoT Tracking</span>
+              <span className="px-2 py-0.5 bg-card/50 border border-border/50 rounded">📦 Shop Manager</span>
+              <span className="px-2 py-0.5 bg-card/50 border border-border/50 rounded">🛒 Marketplace</span>
+              <span className="px-2 py-0.5 bg-card/50 border border-border/50 rounded">🏆 Federazioni</span>
+            </div>
+          </div>
+        </div>
+      </TacticalCard>
 
       {/* Recent Activity */}
       <div className="space-y-4">

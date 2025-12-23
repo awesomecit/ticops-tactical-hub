@@ -8,9 +8,9 @@ import {
   WizardProgress,
 } from "@/components/register";
 import { useToast } from "@/hooks/use-toast";
-import { Crosshair } from "lucide-react";
+import { Crosshair, Sparkles } from "lucide-react";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 const STEP_LABELS = ["Account", "Profilo", "Esperienza", "Team"];
 
@@ -29,6 +29,8 @@ interface RegistrationData {
 }
 
 const Register = () => {
+  const [searchParams] = useSearchParams();
+  const isBetaTester = searchParams.get('beta') === 'true';
   const [currentStep, setCurrentStep] = useState(1);
   const [registrationData, setRegistrationData] = useState<RegistrationData>({});
   const { toast } = useToast();
@@ -96,6 +98,32 @@ const Register = () => {
       </div>
 
       <Card className="w-full max-w-md p-6 md:p-8">
+        {isBetaTester && (
+          <div className="mb-6 p-4 bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 border border-primary/20 rounded-lg">
+            <div className="flex items-center gap-2 mb-2">
+              <Sparkles className="w-5 h-5 text-primary" />
+              <h3 className="font-bold text-primary">🌟 Benvenuto Beta Tester!</h3>
+            </div>
+            <p className="text-sm text-muted-foreground mb-3">
+              Grazie per far parte dei primi a testare TicOps. Come beta tester avrai:
+            </p>
+            <ul className="text-sm text-muted-foreground space-y-1">
+              <li className="flex items-center gap-2">
+                <span className="text-primary">✓</span>
+                Accesso anticipato alle nuove funzionalità
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="text-primary">✓</span>
+                Supporto prioritario dal team
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="text-primary">✓</span>
+                Badge esclusivo "Early Adopter"
+              </li>
+            </ul>
+          </div>
+        )}
+        
         <WizardProgress
           currentStep={currentStep}
           totalSteps={4}

@@ -109,6 +109,169 @@ const About: React.FC = () => {
         </div>
       </div>
 
+      {/* Coming Soon: Servizi   */}
+      <div className="relative">
+        <div className="flex items-center gap-3 mb-4">
+          <h2 className="text-xl font-display font-bold text-foreground">🚀 Coming Soon - Servizi  </h2>
+          <span className="px-3 py-1 text-xs font-mono bg-accent/20 text-accent border border-accent/30 rounded-full">
+            BETA
+          </span>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {/* Anagrafiche */}
+          <TacticalCard className="p-5 border-accent/30">
+            <div className="flex items-center gap-2 mb-3">
+              <Users className="h-6 w-6 text-accent" />
+              <h3 className="font-display font-bold text-accent">Anagrafiche Complete</h3>
+            </div>
+            <p className="text-sm text-muted-foreground mb-4">
+              Sistema completo di anagrafiche per giocatori, squadre, campi e arbitri. 
+              Gestisci profili, statistiche e certificazioni in un unico database.
+            </p>
+            <ul className="text-xs text-muted-foreground space-y-1">
+              <li className="flex items-center gap-2">✓ Profili giocatori verificati</li>
+              <li className="flex items-center gap-2">✓ Registri squadre e roster</li>
+              <li className="flex items-center gap-2">✓ Database campi certificati</li>
+              <li className="flex items-center gap-2">✓ Albo arbitri qualificati</li>
+            </ul>
+          </TacticalCard>
+
+          {/* Marketplace */}
+          <TacticalCard className="p-5 border-accent/30">
+            <div className="flex items-center gap-2 mb-3">
+              <Store className="h-6 w-6 text-accent" />
+              <h3 className="font-display font-bold text-accent">Bacheca Marketplace</h3>
+            </div>
+            <p className="text-sm text-muted-foreground mb-4">
+              Piattaforma gratuita per compravendite e scambi tra giocatori. 
+              Chat integrata, recensioni e sistema di reputazione.
+            </p>
+            <ul className="text-xs text-muted-foreground space-y-1">
+              <li className="flex items-center gap-2">✓ Annunci compra/vendi/scambia</li>
+              <li className="flex items-center gap-2">✓ Chat privata sicura</li>
+              <li className="flex items-center gap-2">✓ Sistema recensioni venditori</li>
+              <li className="flex items-center gap-2">✓ Nessuna commissione</li>
+            </ul>
+          </TacticalCard>
+
+          {/* Federazioni */}
+          <TacticalCard className="p-5 border-accent/30">
+            <div className="flex items-center gap-2 mb-3">
+              <Shield className="h-6 w-6 text-accent" />
+              <h3 className="font-display font-bold text-accent">Organizzazione Federazioni</h3>
+            </div>
+            <p className="text-sm text-muted-foreground mb-4">
+              Strumenti per federazioni e associazioni per organizzare tornei, 
+              gestire iscrizioni e certificazioni arbitrali.
+            </p>
+            <ul className="text-xs text-muted-foreground space-y-1">
+              <li className="flex items-center gap-2">✓ Gestione tornei multi-campo</li>
+              <li className="flex items-center gap-2">✓ Tesseramento giocatori</li>
+              <li className="flex items-center gap-2">✓ Calendario eventi nazionali</li>
+              <li className="flex items-center gap-2">✓ Classifiche ufficiali</li>
+            </ul>
+          </TacticalCard>
+        </div>
+      </div>
+
+      {/* Coming Soon: Moduli IoT Premium */}
+      <div className="relative">
+        <div className="flex items-center gap-3 mb-4">
+          <h2 className="text-xl font-display font-bold text-foreground">⚡ Coming Soon - Moduli IoT Professionali</h2>
+          <span className="px-3 py-1 text-xs font-mono bg-primary/20 text-primary border border-primary/30 rounded-full">
+            PREMIUM
+          </span>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* IoT Tracking Kit */}
+          <TacticalCard glow="primary" className="p-6">
+            <div className="flex items-center gap-2 mb-3">
+              <Zap className="h-7 w-7 text-primary" />
+              <h3 className="font-display font-bold text-primary text-lg">TicOps IoT Tracking Kit</h3>
+            </div>
+            <p className="text-muted-foreground mb-4">
+              Hardware modulare per tracking real-time delle partite con sensori indossabili, 
+              beacon GPS e sistema di kill detection automatico.
+            </p>
+            <div className="space-y-3">
+              <div className="p-3 bg-card/50 rounded border border-border">
+                <h4 className="text-sm font-bold text-foreground mb-1">📡 Player Tracker Module</h4>
+                <p className="text-xs text-muted-foreground">
+                  Sensore indossabile con GPS, accelerometro e giroscopio per tracking movimenti, 
+                  posizione in tempo reale e detection automatica kill.
+                </p>
+              </div>
+              <div className="p-3 bg-card/50 rounded border border-border">
+                <h4 className="text-sm font-bold text-foreground mb-1">🎯 Smart Target System</h4>
+                <p className="text-xs text-muted-foreground">
+                  Obiettivi IoT con sensori di impatto per modalità CTF e Domination. 
+                  Rilevamento automatico capture/neutralizzazione.
+                </p>
+              </div>
+              <div className="p-3 bg-card/50 rounded border border-border">
+                <h4 className="text-sm font-bold text-foreground mb-1">📍 Field Beacon Network</h4>
+                <p className="text-xs text-muted-foreground">
+                  Sistema di beacon Bluetooth per indoor positioning accurato anche senza GPS. 
+                  Triangolazione posizione con precisione minore dei 2 metri.
+                </p>
+              </div>
+            </div>
+          </TacticalCard>
+
+          {/* Shop Monitoring */}
+          <TacticalCard glow="secondary" className="p-6">
+            <div className="flex items-center gap-2 mb-3">
+              <Store className="h-7 w-7 text-secondary" />
+              <h3 className="font-display font-bold text-secondary text-lg">TicOps Shop Manager</h3>
+            </div>
+            <p className="text-muted-foreground mb-4">
+              Suite completa per negozi e armerie specializzate con inventory management, 
+              analytics vendite e sistema CRM integrato.
+            </p>
+            <div className="space-y-3">
+              <div className="p-3 bg-card/50 rounded border border-border">
+                <h4 className="text-sm font-bold text-foreground mb-1">📦 Inventory & Stock Control</h4>
+                <p className="text-xs text-muted-foreground">
+                  Gestione magazzino con barcode scanner, alert giacenze minime, 
+                  ordini automatici fornitori e tracking spedizioni.
+                </p>
+              </div>
+              <div className="p-3 bg-card/50 rounded border border-border">
+                <h4 className="text-sm font-bold text-foreground mb-1">📊 Sales Analytics Dashboard</h4>
+                <p className="text-xs text-muted-foreground">
+                  Analytics real-time su vendite, trend prodotti, margini e performance. 
+                  Report automatici e previsioni demand.
+                </p>
+              </div>
+              <div className="p-3 bg-card/50 rounded border border-border">
+                <h4 className="text-sm font-bold text-foreground mb-1">👥 CRM & Loyalty Program</h4>
+                <p className="text-xs text-muted-foreground">
+                  Gestione clienti, programma fedeltà con punti, sconti personalizzati 
+                  e notifiche push per nuovi arrivi e promozioni.
+                </p>
+              </div>
+            </div>
+          </TacticalCard>
+        </div>
+
+        <div className="mt-6 p-6 bg-gradient-to-r from-primary/5 via-accent/5 to-secondary/5 border border-primary/20 rounded-lg">
+          <div className="flex flex-col md:flex-row items-start md:items-center gap-4">
+            <div className="flex-1">
+              <h4 className="font-display font-bold text-foreground mb-2">🎁 Pre-ordina i moduli IoT</h4>
+              <p className="text-sm text-muted-foreground">
+                Registrati come Beta Tester per ricevere sconti early-bird fino al 40% 
+                sul primo ordine di hardware IoT. Accesso anticipato Q2 2026.
+              </p>
+            </div>
+            <GlowButton className="whitespace-nowrap">
+              Voglio info sui moduli IoT
+            </GlowButton>
+          </div>
+        </div>
+      </div>
+
       {/* Quick Links */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <TacticalCard className="p-4">

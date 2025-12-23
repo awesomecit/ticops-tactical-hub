@@ -32,6 +32,8 @@ import GameplayView from "@/pages/GameplayView";
 import SpectatorView from "@/pages/SpectatorView";
 import RefereeView from "@/pages/RefereeView";
 import NotFound from "@/pages/NotFound";
+import Landing from "@/pages/Landing";
+import Demo from "@/pages/Demo";
 import Shop from "@/pages/Shop";
 import FieldDetail from "@/pages/FieldDetail";
 import Profile from "@/pages/Profile";
@@ -51,6 +53,8 @@ const App = () => (
         <Toaster />
         <Sonner />
         <Routes>
+          <Route path="/landing" element={<Landing />} />
+          <Route path="/demo" element={<Demo />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route element={<MainLayout />}>
