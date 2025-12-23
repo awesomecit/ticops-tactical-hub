@@ -52,7 +52,7 @@ export const MainLayout: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background animate-fade-in">
       <Header />
       
       {/* Sidebar only visible on lg+ screens */}
