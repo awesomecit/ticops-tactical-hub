@@ -20,6 +20,8 @@ import AdminDashboard from "@/pages/admin/AdminDashboard";
 import AdminFields from "@/pages/admin/AdminFields";
 import AdminReferees from "@/pages/admin/AdminReferees";
 import AdminUsers from "@/pages/admin/AdminUsers";
+import AdminMatches from "@/pages/admin/AdminMatches";
+import AdminMatchDetails from "@/pages/admin/AdminMatchDetails";
 import Login from "@/pages/Login";
 import GameplayView from "@/pages/GameplayView";
 import SpectatorView from "@/pages/SpectatorView";
@@ -57,6 +59,8 @@ const App = () => (
             <Route path="fields" element={<AdminFields />} />
             <Route path="referees" element={<AdminReferees />} />
             <Route path="users" element={<AdminUsers />} />
+            <Route path="matches" element={<AdminMatches />} />
+            <Route path="matches/:matchId" element={<AdminMatchDetails />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>

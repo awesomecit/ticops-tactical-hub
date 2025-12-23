@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Calendar, MapPin, Users, Gamepad2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { it } from 'date-fns/locale';
@@ -17,6 +18,7 @@ interface UpcomingMatchCardProps {
 }
 
 export const UpcomingMatchCard: React.FC<UpcomingMatchCardProps> = ({
+  id,
   name,
   date,
   fieldName,
@@ -26,11 +28,13 @@ export const UpcomingMatchCard: React.FC<UpcomingMatchCardProps> = ({
   maxPlayers,
   className,
 }) => {
+  const navigate = useNavigate();
   const isFull = registeredCount >= maxPlayers;
   const isAlmostFull = registeredCount >= maxPlayers * 0.8;
 
   return (
     <div
+      onClick={() => navigate(`/games`)}
       className={cn(
         'flex items-center gap-4 p-3 rounded-sm border border-border/50 bg-card/50',
         'hover:border-primary/50 hover:bg-card transition-all duration-200',
