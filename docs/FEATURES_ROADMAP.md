@@ -120,6 +120,28 @@ Questo documento traccia tutte le feature da implementare, suddivise in task ato
 
 ---
 
+## 6. Integrazione Social Media
+
+**Obiettivo**: Integrare contatti social (Discord, Instagram, Telegram, WhatsApp) per team, campi e ruoli chiave con possibilità di accesso rapido.
+
+### Task Atomici
+
+| ID | Task | Stato | File Coinvolti |
+|----|------|-------|----------------|
+| 6.1 | Creare tipo `SocialContact` con piattaforme supportate | ⬜ TODO | `src/types/index.ts` |
+| 6.2 | Estendere tipi `Team`, `Field`, `User` con array contatti social | ⬜ TODO | `src/types/index.ts` |
+| 6.3 | Aggiornare mock data con contatti social di esempio | ⬜ TODO | `src/mocks/teams.ts`, `src/mocks/fields.ts`, `src/mocks/users.ts` |
+| 6.4 | Creare componente `SocialLinks` (lista icone cliccabili) | ⬜ TODO | `src/components/social/SocialLinks.tsx` |
+| 6.5 | Creare componente `SocialContactCard` (card contatto singolo) | ⬜ TODO | `src/components/social/SocialContactCard.tsx` |
+| 6.6 | Creare componente `AddSocialModal` per aggiungere contatti | ⬜ TODO | `src/components/social/AddSocialModal.tsx` |
+| 6.7 | Creare componente `QuickContactBar` (barra contatti rapidi) | ⬜ TODO | `src/components/social/QuickContactBar.tsx` |
+| 6.8 | Integrare `SocialLinks` in pagina Team | ⬜ TODO | `src/pages/Team.tsx` |
+| 6.9 | Integrare `SocialLinks` in FieldDetail e FieldCard | ⬜ TODO | `src/pages/FieldDetail.tsx`, `src/components/fields/FieldCard.tsx` |
+| 6.10 | Integrare `QuickContactBar` nella pagina Profile | ⬜ TODO | `src/pages/Profile.tsx` |
+| 6.11 | Aggiungere sezione contatti social in Settings per gestire i propri | ⬜ TODO | `src/pages/Settings.tsx` |
+
+---
+
 ## 📊 Riepilogo Progresso
 
 | Feature | Task Totali | Completati | Progresso |
@@ -129,7 +151,8 @@ Questo documento traccia tutte le feature da implementare, suddivise in task ato
 | Sistema Alert | 9 | 9 | 100% ✅ |
 | Messaggistica Diretta | 8 | 8 | 100% ✅ |
 | Radio Team | 9 | 0 | 0% |
-| **TOTALE** | **43** | **34** | **79%** |
+| Integrazione Social | 11 | 0 | 0% |
+| **TOTALE** | **54** | **34** | **63%** |
 
 ---
 
@@ -140,6 +163,7 @@ Questo documento traccia tutte le feature da implementare, suddivise in task ato
 3. ~~**Messaggistica Diretta**~~ ✅ COMPLETATA
 4. ~~**Sommario Utente**~~ ✅ COMPLETATA
 5. **Radio Team** - Feature avanzata gameplay
+6. **Integrazione Social** - Contatti rapidi Discord, Instagram, Telegram, WhatsApp
 
 ---
 
@@ -151,3 +175,7 @@ Questo documento traccia tutte le feature da implementare, suddivise in task ato
 
 ### Changelog
 - **2024-12-23**: Feature 1 (Ricerca Campi) completata al 100%
+- **2024-12-23**: Feature 2 (Sommario Utente) completata al 100%
+- **2024-12-23**: Feature 3 (Sistema Alert) completata al 100%
+- **2024-12-23**: Feature 4 (Messaggistica Diretta) completata al 100%
+- **2024-12-23**: Aggiunta Feature 6 (Integrazione Social Media) alla roadmap

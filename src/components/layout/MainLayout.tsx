@@ -36,7 +36,9 @@ export const MainLayout: React.FC = () => {
           // Mobile-first: just top header offset and bottom tab bar offset
           "pt-16 pb-20",
           // Large screens: add left padding for sidebar, remove bottom padding (no tab bar)
-          "lg:pb-6 lg:pl-64"
+          "lg:pb-6",
+          // Dynamic sidebar width
+          sidebarOpen ? "lg:pl-64" : "lg:pl-16"
         )}
       >
         {/* Mobile-first container with responsive padding */}

@@ -54,18 +54,20 @@ export const Sidebar: React.FC = () => {
         />
       )}
 
-      {/* Sidebar - hidden on mobile by default, always visible on lg+ */}
+      {/* Sidebar - responsive behavior */}
       <aside
         className={cn(
-          // Mobile: slide in from left, touch-friendly width
-          "fixed top-14 sm:top-16 left-0 bottom-0 z-40 w-[280px] bg-sidebar border-r border-sidebar-border transition-transform duration-300",
-          // Desktop: always visible
-          "lg:translate-x-0 lg:w-64",
-          // Mobile: slide in/out
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+          // Base styling
+          "fixed top-14 sm:top-16 left-0 bottom-0 z-40 bg-sidebar border-r border-sidebar-border transition-all duration-300",
+          // Width based on state
+          sidebarOpen ? "w-[280px] lg:w-64" : "w-0 lg:w-16",
+          // Transform for mobile slide animation
+          sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
+          // Overflow handling when collapsed
+          !sidebarOpen && "lg:overflow-hidden"
         )}
       >
-        <div className="flex flex-col h-full touch-scroll">
+        <div className={cn("flex flex-col h-full touch-scroll", !sidebarOpen && "lg:items-center")}>
           {/* Toggle button (desktop only) */}
           <button
             onClick={toggleSidebar}
@@ -76,12 +78,17 @@ export const Sidebar: React.FC = () => {
           </button>
 
           {/* Navigation - touch-friendly spacing */}
-          <nav className="flex-1 py-4 px-3 space-y-1 overflow-y-auto scrollbar-hide">
-            <div className="mb-4">
-              <span className="px-3 text-xs font-display uppercase tracking-wider text-muted-foreground">
-                Menu
-              </span>
-            </div>
+          <nav className={cn(
+            "flex-1 py-4 overflow-y-auto scrollbar-hide",
+            sidebarOpen ? "px-3 space-y-1" : "lg:px-2 lg:space-y-2"
+          )}>
+            {sidebarOpen && (
+              <div className="mb-4">
+                <span className="px-3 text-xs font-display uppercase tracking-wider text-muted-foreground">
+                  Menu
+                </span>
+              </div>
+            )}
             
             {navItems.map((item) => (
               <NavLink
@@ -96,7 +103,8 @@ export const Sidebar: React.FC = () => {
                 className={({ isActive }) =>
                   cn(
                     // Touch-friendly: min height 44px, proper padding
-                    "flex items-center gap-3 px-3 py-3 min-h-[44px] rounded-sm font-display uppercase tracking-wider text-sm transition-all duration-200 group no-select",
+                    "flex items-center gap-3 rounded-sm font-display uppercase tracking-wider text-sm transition-all duration-200 group no-select",
+                    sidebarOpen ? "px-3 py-3 min-h-[44px]" : "lg:px-2 lg:py-2 lg:justify-center",
                     isActive
                       ? "bg-sidebar-primary/10 text-sidebar-primary border-l-2 border-sidebar-primary"
                       : "text-sidebar-foreground hover:bg-sidebar-accent active:bg-sidebar-accent/80 hover:text-foreground"
@@ -104,9 +112,14 @@ export const Sidebar: React.FC = () => {
                 }
               >
                 <item.icon className="h-5 w-5 transition-transform group-hover:scale-110 flex-shrink-0" />
-                <span className="flex-1">{t(item.labelKey)}</span>
-                {item.badge && (
+                {sidebarOpen && <span className="flex-1">{t(item.labelKey)}</span>}
+                {sidebarOpen && item.badge && (
                   <span className="h-5 min-w-5 px-1.5 bg-primary text-primary-foreground text-xs font-bold rounded-full flex items-center justify-center">
+                    {item.badge}
+                  </span>
+                )}
+                {!sidebarOpen && item.badge && (
+                  <span className="absolute -top-1 -right-1 h-4 min-w-4 px-1 bg-primary text-primary-foreground text-[10px] font-bold rounded-full flex items-center justify-center">
                     {item.badge}
                   </span>
                 )}
@@ -115,11 +128,13 @@ export const Sidebar: React.FC = () => {
 
             <div className="my-4 border-t border-sidebar-border" />
 
-            <div className="mb-4">
-              <span className="px-3 text-xs font-display uppercase tracking-wider text-muted-foreground">
-                Admin
-              </span>
-            </div>
+            {sidebarOpen && (
+              <div className="mb-4">
+                <span className="px-3 text-xs font-display uppercase tracking-wider text-muted-foreground">
+                  Admin
+                </span>
+              </div>
+            )}
 
             {adminItems.map((item) => (
               <NavLink
@@ -132,7 +147,8 @@ export const Sidebar: React.FC = () => {
                 }}
                 className={({ isActive }) =>
                   cn(
-                    "flex items-center gap-3 px-3 py-3 min-h-[44px] rounded-sm font-display uppercase tracking-wider text-sm transition-all duration-200 group no-select",
+                    "flex items-center gap-3 rounded-sm font-display uppercase tracking-wider text-sm transition-all duration-200 group no-select",
+                    sidebarOpen ? "px-3 py-3 min-h-[44px]" : "lg:px-2 lg:py-2 lg:justify-center",
                     isActive
                       ? "bg-sidebar-primary/10 text-sidebar-primary border-l-2 border-sidebar-primary"
                       : "text-sidebar-foreground hover:bg-sidebar-accent active:bg-sidebar-accent/80 hover:text-foreground"
@@ -140,7 +156,7 @@ export const Sidebar: React.FC = () => {
                 }
               >
                 <item.icon className="h-5 w-5 transition-transform group-hover:scale-110 flex-shrink-0" />
-                <span className="flex-1">{t(item.labelKey)}</span>
+                {sidebarOpen && <span className="flex-1">{t(item.labelKey)}</span>}
               </NavLink>
             ))}
           </nav>
@@ -149,10 +165,13 @@ export const Sidebar: React.FC = () => {
           <div className="p-3 border-t border-sidebar-border">
             <button
               onClick={() => logout()}
-              className="flex items-center gap-3 w-full px-3 py-3 min-h-[44px] rounded-sm font-display uppercase tracking-wider text-sm text-destructive hover:bg-destructive/10 active:bg-destructive/20 transition-colors no-select"
+              className={cn(
+                "flex items-center gap-3 w-full rounded-sm font-display uppercase tracking-wider text-sm text-destructive hover:bg-destructive/10 active:bg-destructive/20 transition-colors no-select",
+                sidebarOpen ? "px-3 py-3 min-h-[44px]" : "lg:px-2 lg:py-2 lg:justify-center"
+              )}
             >
               <LogOut className="h-5 w-5 flex-shrink-0" />
-              <span>{t('auth.logout')}</span>
+              {sidebarOpen && <span>{t('auth.logout')}</span>}
             </button>
           </div>
         </div>
