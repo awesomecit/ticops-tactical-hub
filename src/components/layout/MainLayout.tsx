@@ -1,17 +1,20 @@
 import React, { useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 import { TabBar } from './TabBar';
 import { useUIStore } from '@/stores/uiStore';
 import { useAuthStore } from '@/stores/authStore';
+import { useAchievementNotifications } from '@/hooks/useAchievementNotifications';
 import { cn } from '@/lib/utils';
 
 export const MainLayout: React.FC = () => {
   const { sidebarOpen } = useUIStore();
   const { isAuthenticated } = useAuthStore();
   const navigate = useNavigate();
+  
+  // Global achievement notifications
+  useAchievementNotifications();
 
   useEffect(() => {
     if (!isAuthenticated) {
