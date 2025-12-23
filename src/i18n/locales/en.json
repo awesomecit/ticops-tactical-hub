@@ -82,7 +82,8 @@
     "about": "About",
     "admin": "Admin",
     "referee": "Referee",
-    "spectator": "Spectator"
+    "spectator": "Spectator",
+    "profile": "Profile"
   },
   "auth": {
     "login": "Login",
