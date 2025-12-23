@@ -44,6 +44,7 @@ import {
 } from '@/components/ui/sheet';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { AlertToggle } from '@/components/alerts';
 
 const Shop = () => {
   const { t } = useTranslation();
@@ -334,6 +335,15 @@ const Shop = () => {
                               Nuovo
                             </Badge>
                           )}
+                          {/* Alert Toggle for price drop */}
+                          <div className="absolute bottom-2 right-2">
+                            <AlertToggle
+                              entityType="product"
+                              entityId={product.id}
+                              entityName={product.name}
+                              size="sm"
+                            />
+                          </div>
                         </div>
                         
                         <div className="p-4 space-y-2">
@@ -397,7 +407,7 @@ const Shop = () => {
                     <Card key={shop.id} className="p-4 hover:border-primary/50 transition-colors cursor-pointer">
                       <div className="flex gap-4">
                         {/* Shop Logo Placeholder */}
-                        <div className="w-16 h-16 rounded-lg bg-muted flex items-center justify-center shrink-0">
+                        <div className="w-16 h-16 rounded-lg bg-muted flex items-center justify-center shrink-0 relative">
                           <Store className="w-8 h-8 text-muted-foreground/50" />
                         </div>
                         
@@ -409,6 +419,13 @@ const Shop = () => {
                                 ✓ Verificato
                               </Badge>
                             )}
+                            {/* Alert Toggle for shop discounts */}
+                            <AlertToggle
+                              entityType="shop"
+                              entityId={shop.id}
+                              entityName={shop.name}
+                              size="sm"
+                            />
                           </div>
                           
                           <p className="text-sm text-muted-foreground flex items-center gap-1">
