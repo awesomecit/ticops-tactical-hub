@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Skull, Crosshair, MapPin, MessageCircle, ArrowLeft, Heart, Target, Footprints } from 'lucide-react';
+import { Skull, Crosshair, MapPin, MessageCircle, ArrowLeft, Heart, Target, Footprints, Radio } from 'lucide-react';
 import { GlowButton } from '@/components/ui/GlowButton';
 import { TacticalMap, KillDeclarationModal } from '@/components/gameplay';
+import { RadioBox } from '@/components/radio';
+import { useRadioStore } from '@/stores/radioStore';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import {
@@ -18,6 +20,21 @@ const GameplayView: React.FC = () => {
   const [gameState] = useState(MOCK_GAME_STATE);
   const [playerStats, setPlayerStats] = useState(MOCK_PLAYER_STATS);
   const [killModalOpen, setKillModalOpen] = useState(false);
+  const { status: radioStatus, activateRadio, connect, channels } = useRadioStore();
+
+  // Activate radio for gameplay
+  useEffect(() => {
+    if (!radioStatus.isConnected) {
+      activateRadio('team_001');
+      // Small delay then connect to main channel
+      setTimeout(() => {
+        const mainChannel = channels.find(c => c.type === 'team');
+        if (mainChannel) {
+          connect(mainChannel.id);
+        }
+      }, 100);
+    }
+  }, []);
 
   // Force dark mode
   useEffect(() => {
@@ -131,9 +148,10 @@ const GameplayView: React.FC = () => {
         />
       </div>
 
-      {/* STATUS BAR */}
+      {/* STATUS BAR + RADIO */}
       <div className="bg-black/80 border-t border-b border-gray-800 px-4 py-3">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-3">
+          {/* Player Status */}
           <div
             className={cn(
               "flex items-center gap-2 px-3 py-1.5 rounded-sm",
@@ -159,6 +177,10 @@ const GameplayView: React.FC = () => {
             </span>
           </div>
 
+          {/* Radio Box (Compact) */}
+          <RadioBox compact />
+
+          {/* Stats */}
           <div className="flex items-center gap-4 text-sm">
             <div className="flex items-center gap-1.5">
               <Target className="h-4 w-4 text-green-500" />
