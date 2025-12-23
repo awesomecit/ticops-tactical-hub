@@ -13,6 +13,7 @@ import ChatView from "@/pages/ChatView";
 import Leaderboard from "@/pages/Leaderboard";
 import Locations from "@/pages/Locations";
 import Admin from "@/pages/Admin";
+import Register from "@/pages/Register";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +25,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <Routes>
+          <Route path="/register" element={<Register />} />
           <Route element={<MainLayout />}>
             <Route path="/" element={<Dashboard />} />
             <Route path="/games" element={<Games />} />
