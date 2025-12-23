@@ -1,20 +1,17 @@
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Plus, Users, MapPin, Store, User, Scale, MessageCircle } from 'lucide-react';
+import { Search, Plus, Users, MapPin, Store, User, Scale, MessageCircle, Archive } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { TacticalCard, TacticalCardContent } from '@/components/ui/TacticalCard';
-import { ConversationItem } from '@/components/chat';
+import { ConversationItem, NewChatDialog } from '@/components/chat';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
-import {
-  MOCK_CONVERSATIONS,
-  getTotalUnreadCount,
-  ConversationType,
-} from '@/mocks/chat';
+import { useChatStore } from '@/stores/chatStore';
+import { ConversationType } from '@/mocks/chat';
 
-type FilterType = 'all' | 'private' | 'team' | 'match' | 'field' | 'shop' | 'referee';
+type FilterType = 'all' | 'private' | 'team' | 'match' | 'field' | 'shop' | 'referee' | 'archived';
 
 interface FilterOption {
   id: FilterType;
@@ -31,17 +28,31 @@ const filterOptions: FilterOption[] = [
   { id: 'field', label: 'Campi', icon: MapPin, entityType: 'field' },
   { id: 'shop', label: 'Shop', icon: Store, entityType: 'shop' },
   { id: 'referee', label: 'Arbitri', icon: Scale, entityType: 'referee' },
+  { id: 'archived', label: 'Archiviate', icon: Archive },
 ];
 
 const Chat: React.FC = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState<FilterType>('all');
+  const [newChatOpen, setNewChatOpen] = useState(false);
 
+  const { 
+    getActiveConversations, 
+    getArchivedConversations, 
+    getTotalUnreadCount,
+    archivedConversationIds 
+  } = useChatStore();
+
+  const activeConversations = getActiveConversations();
+  const archivedConversations = getArchivedConversations();
   const totalUnread = getTotalUnreadCount();
 
   const filteredConversations = useMemo(() => {
-    let results = [...MOCK_CONVERSATIONS];
+    // Use archived or active based on filter
+    let results = activeFilter === 'archived' 
+      ? [...archivedConversations] 
+      : [...activeConversations];
 
     // Apply search filter
     if (searchQuery) {
@@ -52,8 +63,8 @@ const Chat: React.FC = () => {
       );
     }
 
-    // Apply type filter
-    if (activeFilter !== 'all') {
+    // Apply type filter (skip if viewing archived)
+    if (activeFilter !== 'all' && activeFilter !== 'archived') {
       if (activeFilter === 'referee') {
         results = results.filter(c => c.entityType === 'referee');
       } else if (activeFilter === 'private') {
@@ -72,19 +83,20 @@ const Chat: React.FC = () => {
       if (!a.isPinned && b.isPinned) return 1;
       return b.lastMessage.timestamp.getTime() - a.lastMessage.timestamp.getTime();
     });
-  }, [searchQuery, activeFilter]);
+  }, [searchQuery, activeFilter, activeConversations, archivedConversations]);
 
   const getFilterCount = (filter: FilterType): number => {
-    if (filter === 'all') return MOCK_CONVERSATIONS.length;
+    if (filter === 'all') return activeConversations.length;
+    if (filter === 'archived') return archivedConversations.length;
     if (filter === 'referee') {
-      return MOCK_CONVERSATIONS.filter(c => c.entityType === 'referee').length;
+      return activeConversations.filter(c => c.entityType === 'referee').length;
     }
     if (filter === 'private') {
-      return MOCK_CONVERSATIONS.filter(c => 
+      return activeConversations.filter(c => 
         c.type === 'private' && (!c.entityType || c.entityType === 'player')
       ).length;
     }
-    return MOCK_CONVERSATIONS.filter(c => c.type === filter).length;
+    return activeConversations.filter(c => c.type === filter).length;
   };
 
   const handleConversationClick = (conversationId: string) => {
@@ -92,6 +104,7 @@ const Chat: React.FC = () => {
   };
 
   return (
+    <>
     <div className="h-[calc(100vh-10rem)] flex flex-col lg:flex-row gap-4 animate-slide-in-up">
       {/* Sidebar - Filters */}
       <div className="lg:w-64 flex-shrink-0">
@@ -141,9 +154,14 @@ const Chat: React.FC = () => {
         <div className="px-4 py-3 border-b border-border">
           <div className="flex items-center justify-between mb-3">
             <h2 className="font-display uppercase text-foreground">
-              Messaggi
+              {activeFilter === 'archived' ? 'Chat Archiviate' : 'Messaggi'}
             </h2>
-            <Button size="sm" variant="ghost" className="gap-2">
+            <Button 
+              size="sm" 
+              variant="ghost" 
+              className="gap-2"
+              onClick={() => setNewChatOpen(true)}
+            >
               <Plus className="h-4 w-4" />
               Nuova Chat
             </Button>
@@ -168,9 +186,11 @@ const Chat: React.FC = () => {
               <div className="text-center py-12">
                 <MessageCircle className="h-12 w-12 text-muted-foreground mx-auto mb-4 opacity-50" />
                 <p className="text-muted-foreground">
-                  {searchQuery 
-                    ? 'Nessuna conversazione trovata' 
-                    : 'Nessuna conversazione'}
+                  {activeFilter === 'archived' 
+                    ? 'Nessuna chat archiviata'
+                    : searchQuery 
+                        ? 'Nessuna conversazione trovata' 
+                        : 'Nessuna conversazione'}
                 </p>
               </div>
             ) : (
@@ -186,6 +206,7 @@ const Chat: React.FC = () => {
                   unreadCount={conversation.unreadCount}
                   isOnline={conversation.isOnline}
                   isPinned={conversation.isPinned}
+                  isArchived={activeFilter === 'archived'}
                   entityType={conversation.entityType}
                   entityId={conversation.entityId}
                   onClick={() => handleConversationClick(conversation.id)}
@@ -196,6 +217,9 @@ const Chat: React.FC = () => {
         </ScrollArea>
       </TacticalCard>
     </div>
+    
+    <NewChatDialog open={newChatOpen} onOpenChange={setNewChatOpen} />
+    </>
   );
 };
 

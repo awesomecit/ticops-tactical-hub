@@ -5,6 +5,7 @@ import { Pin } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ConversationType } from '@/mocks/chat';
 import { EntityAvatar, EntityType } from './EntityAvatar';
+import { ConversationActions } from './ConversationActions';
 
 interface ConversationItemProps {
   id: string;
@@ -17,6 +18,7 @@ interface ConversationItemProps {
   isOnline?: boolean;
   isPinned?: boolean;
   isActive?: boolean;
+  isArchived?: boolean;
   entityType?: EntityType;
   entityId?: string;
   onClick?: () => void;
@@ -31,6 +33,7 @@ const typeBadges: Record<ConversationType, { label: string; color: string }> = {
 };
 
 export const ConversationItem: React.FC<ConversationItemProps> = ({
+  id,
   type,
   name,
   avatar,
@@ -40,6 +43,7 @@ export const ConversationItem: React.FC<ConversationItemProps> = ({
   isOnline,
   isPinned,
   isActive,
+  isArchived,
   entityType,
   onClick,
 }) => {
@@ -50,15 +54,17 @@ export const ConversationItem: React.FC<ConversationItemProps> = ({
     (type === 'field' ? 'field' : type === 'shop' ? 'shop' : undefined);
 
   return (
-    <button
-      onClick={onClick}
-      className={cn(
-        'w-full flex items-center gap-3 p-3 rounded-sm transition-all duration-200 text-left',
-        'hover:bg-muted/50',
-        isActive && 'bg-primary/10 border-l-2 border-primary',
-        !isActive && 'border-l-2 border-transparent'
-      )}
-    >
+    <div className="group relative">
+      <button
+        onClick={onClick}
+        className={cn(
+          'w-full flex items-center gap-3 p-3 pr-10 rounded-sm transition-all duration-200 text-left',
+          'hover:bg-muted/50',
+          isActive && 'bg-primary/10 border-l-2 border-primary',
+          !isActive && 'border-l-2 border-transparent',
+          isArchived && 'opacity-60'
+        )}
+      >
       {/* Avatar with Entity Icon */}
       <EntityAvatar
         entityType={avatarEntityType}
@@ -107,11 +113,22 @@ export const ConversationItem: React.FC<ConversationItemProps> = ({
       </div>
 
       {/* Unread Badge */}
-      {unreadCount > 0 && (
-        <span className="h-5 min-w-5 px-1.5 bg-primary text-primary-foreground text-xs font-bold rounded-full flex items-center justify-center flex-shrink-0">
-          {unreadCount > 99 ? '99+' : unreadCount}
-        </span>
-      )}
-    </button>
+        {unreadCount > 0 && (
+          <span className="h-5 min-w-5 px-1.5 bg-primary text-primary-foreground text-xs font-bold rounded-full flex items-center justify-center flex-shrink-0">
+            {unreadCount > 99 ? '99+' : unreadCount}
+          </span>
+        )}
+      </button>
+      
+      {/* Actions Menu */}
+      <div className="absolute right-2 top-1/2 -translate-y-1/2">
+        <ConversationActions
+          conversationId={id}
+          isPinned={isPinned}
+          isArchived={isArchived}
+          conversationName={name}
+        />
+      </div>
+    </div>
   );
 };

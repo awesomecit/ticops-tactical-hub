@@ -233,13 +233,13 @@ Questo documento traccia tutte le feature da implementare, suddivise in task ato
 
 ## 🐛 Bug Noti da Fixare
 
-| ID | Bug | Priorità | File Coinvolti |
-|----|-----|----------|----------------|
-| BUG-1 | Bottone "Nuova Chat" non gestito | 🔴 Alta | `src/pages/Chat.tsx` |
-| BUG-2 | Chat non si possono archiviare | 🟡 Media | `src/pages/Chat.tsx`, `src/mocks/chat.ts` |
-| BUG-3 | Chat non si possono eliminare | 🟡 Media | `src/pages/Chat.tsx`, `src/mocks/chat.ts` |
-| BUG-4 | Messaggi non si possono eliminare | 🟡 Media | `src/pages/ChatView.tsx` |
-| BUG-5 | Messaggi non si possono editare | 🟡 Media | `src/pages/ChatView.tsx` |
+| ID | Bug | Priorità | Stato | File Coinvolti |
+|----|-----|----------|-------|----------------|
+| BUG-1 | Bottone "Nuova Chat" non gestito | 🔴 Alta | ✅ FIXED | `src/pages/Chat.tsx`, `src/components/chat/NewChatDialog.tsx` |
+| BUG-2 | Chat non si possono archiviare | 🟡 Media | ✅ FIXED | `src/stores/chatStore.ts`, `src/components/chat/ConversationActions.tsx` |
+| BUG-3 | Chat non si possono eliminare | 🟡 Media | ✅ FIXED | `src/stores/chatStore.ts`, `src/components/chat/ConversationActions.tsx` |
+| BUG-4 | Messaggi non si possono eliminare | 🟡 Media | ✅ FIXED | `src/components/chat/MessageActions.tsx` |
+| BUG-5 | Messaggi non si possono editare | 🟡 Media | ✅ FIXED | `src/components/chat/MessageActions.tsx` |
 
 ---
 

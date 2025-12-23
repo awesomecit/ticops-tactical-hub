@@ -4,6 +4,7 @@ import { it } from 'date-fns/locale';
 import { Check, CheckCheck, Trophy } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { MessageType } from '@/mocks/chat';
+import { MessageActions } from './MessageActions';
 
 interface MessageBubbleProps {
   id: string;
@@ -16,9 +17,11 @@ interface MessageBubbleProps {
   isRead: boolean;
   reactions?: { emoji: string; userId: string }[];
   showSender?: boolean;
+  isEdited?: boolean;
 }
 
 export const MessageBubble: React.FC<MessageBubbleProps> = ({
+  id,
   type,
   content,
   senderName,
@@ -28,6 +31,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
   isRead,
   reactions,
   showSender = true,
+  isEdited,
 }) => {
   // System message
   if (type === 'system') {
@@ -58,7 +62,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
   return (
     <div
       className={cn(
-        'flex gap-2 max-w-[85%] sm:max-w-[70%]',
+        'group flex gap-2 max-w-[85%] sm:max-w-[70%]',
         isOwn ? 'ml-auto flex-row-reverse' : 'mr-auto'
       )}
     >
@@ -103,6 +107,17 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
           )}
         >
           <p className="text-sm whitespace-pre-wrap break-words">{content}</p>
+          {isEdited && (
+            <span className="text-[10px] text-muted-foreground ml-1">(modificato)</span>
+          )}
+
+          {/* Message Actions */}
+          <div className={cn(
+            'absolute top-1',
+            isOwn ? 'left-0 -translate-x-full pl-1' : 'right-0 translate-x-full pr-1'
+          )}>
+            <MessageActions messageId={id} content={content} isOwn={isOwn} />
+          </div>
 
           {/* Reactions */}
           {reactions && reactions.length > 0 && (

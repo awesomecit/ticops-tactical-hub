@@ -4,12 +4,8 @@ import { ArrowLeft, MoreVertical, Send, Smile } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { GlowButton } from '@/components/ui/GlowButton';
 import { MessageBubble, QuickReplyBar, TypingIndicator, EntityAvatar, EntityType } from '@/components/chat';
-import {
-  getConversationById,
-  getMessagesByConversation,
-  IMockMessage,
-  ConversationType,
-} from '@/mocks/chat';
+import { useChatStore } from '@/stores/chatStore';
+import { IMockMessage, ConversationType } from '@/mocks/chat';
 import { getCurrentUser } from '@/mocks';
 import { cn } from '@/lib/utils';
 
@@ -27,20 +23,23 @@ const ChatView: React.FC = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const currentUser = getCurrentUser();
 
-  const [messages, setMessages] = useState<IMockMessage[]>([]);
+  const { getConversationById, getMessagesByConversation, addMessage, markAsRead } = useChatStore();
+  
+  const conversation = conversationId ? getConversationById(conversationId) : null;
+  const storeMessages = conversationId ? getMessagesByConversation(conversationId) : [];
+  
+  const [messages, setMessages] = useState<IMockMessage[]>(storeMessages);
   const [inputText, setInputText] = useState('');
-  const [isTyping, setIsTyping] = useState(false);
   const [typingUser, setTypingUser] = useState<string | null>(null);
 
-  const conversation = conversationId ? getConversationById(conversationId) : null;
-
-  // Load messages
+  // Update messages when store changes
   useEffect(() => {
     if (conversationId) {
-      const conversationMessages = getMessagesByConversation(conversationId);
-      setMessages(conversationMessages);
+      const updatedMessages = getMessagesByConversation(conversationId);
+      setMessages(updatedMessages);
+      markAsRead(conversationId);
     }
-  }, [conversationId]);
+  }, [conversationId, getMessagesByConversation, markAsRead]);
 
   // Scroll to bottom when messages change
   useEffect(() => {
@@ -78,6 +77,7 @@ const ChatView: React.FC = () => {
       isRead: false,
     };
 
+    addMessage(newMessage);
     setMessages(prev => [...prev, newMessage]);
     setInputText('');
 
@@ -100,6 +100,7 @@ const ChatView: React.FC = () => {
             isRead: true,
           };
           
+          addMessage(replyMessage);
           setMessages(prev => [...prev, replyMessage]);
         }, 1500 + Math.random() * 1500);
       }, 1000);

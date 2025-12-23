@@ -5,3 +5,6 @@ export { TypingIndicator } from './TypingIndicator';
 export { EntityAvatar } from './EntityAvatar';
 export type { EntityType } from './EntityAvatar';
 export { StartConversationButton } from './StartConversationButton';
+export { NewChatDialog } from './NewChatDialog';
+export { ConversationActions } from './ConversationActions';
+export { MessageActions } from './MessageActions';
