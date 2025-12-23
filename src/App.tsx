@@ -32,6 +32,7 @@ import NotFound from "@/pages/NotFound";
 import Shop from "@/pages/Shop";
 import FieldDetail from "@/pages/FieldDetail";
 import Profile from "@/pages/Profile";
+import Equipment from "@/pages/Equipment";
 
 const queryClient = new QueryClient();
 
@@ -56,7 +57,9 @@ const App = () => (
             <Route path="/locations/:slug" element={<FieldDetail />} />
             <Route path="/shop" element={<Shop />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/equipment" element={<Equipment />} />
             <Route path="/about" element={<About />} />
+            <Route path="/settings" element={<Settings />} />
             <Route path="/settings" element={<Settings />} />
           </Route>
           <Route path="/gameplay/:gameId" element={<GameplayView />} />
