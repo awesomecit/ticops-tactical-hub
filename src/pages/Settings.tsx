@@ -11,7 +11,8 @@ import {
   Eye,
   EyeOff,
   Save,
-  Check
+  Check,
+  BellRing
 } from 'lucide-react';
 import { TacticalCard } from '@/components/ui/TacticalCard';
 import { GlowButton } from '@/components/ui/GlowButton';
@@ -21,14 +22,18 @@ import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuthStore } from '@/stores/authStore';
+import { useAlertStore } from '@/stores/alertStore';
 import { useToast } from '@/hooks/use-toast';
 import { supportedLanguages, changeLanguage } from '@/i18n';
+import { AlertsList } from '@/components/alerts';
 
 const Settings: React.FC = () => {
   const { t, i18n } = useTranslation();
   const { user } = useAuthStore();
+  const { getUnreadNotificationCount, preferences, updatePreferences } = useAlertStore();
   const { toast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
+  const alertUnreadCount = getUnreadNotificationCount();
   
   const [settings, setSettings] = useState({
     emailNotifications: true,
@@ -75,10 +80,19 @@ const Settings: React.FC = () => {
       </div>
 
       <Tabs defaultValue="profile" className="space-y-6">
-        <TabsList className="grid grid-cols-2 md:grid-cols-6 w-full">
+        <TabsList className="grid grid-cols-2 md:grid-cols-7 w-full">
           <TabsTrigger value="profile" className="gap-2">
             <User className="h-4 w-4" />
             <span className="hidden sm:inline">{t('settings.profile')}</span>
+          </TabsTrigger>
+          <TabsTrigger value="alerts" className="gap-2 relative">
+            <BellRing className="h-4 w-4" />
+            <span className="hidden sm:inline">Alert</span>
+            {alertUnreadCount > 0 && (
+              <span className="absolute -top-1 -right-1 h-4 w-4 bg-primary text-primary-foreground text-xs rounded-full flex items-center justify-center">
+                {alertUnreadCount}
+              </span>
+            )}
           </TabsTrigger>
           <TabsTrigger value="notifications" className="gap-2">
             <Bell className="h-4 w-4" />
@@ -101,6 +115,14 @@ const Settings: React.FC = () => {
             <span className="hidden sm:inline">{t('settings.language')}</span>
           </TabsTrigger>
         </TabsList>
+
+        {/* Alerts Tab */}
+        <TabsContent value="alerts">
+          <TacticalCard className="p-6">
+            <h2 className="text-lg font-display font-bold text-foreground mb-4">I Miei Alert</h2>
+            <AlertsList />
+          </TacticalCard>
+        </TabsContent>
 
         {/* Profile Tab */}
         <TabsContent value="profile">

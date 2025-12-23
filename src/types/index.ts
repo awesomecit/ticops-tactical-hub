@@ -248,3 +248,59 @@ export interface Field {
   email?: string;
   website?: string;
 }
+
+// Alert Types
+export type AlertCategory = 'field_availability' | 'shop_discount' | 'shop_new_product' | 'field_event' | 'price_drop';
+
+export type AlertFrequency = 'instant' | 'daily' | 'weekly';
+
+export interface Alert {
+  id: string;
+  userId: string;
+  category: AlertCategory;
+  entityType: 'field' | 'shop' | 'product';
+  entityId: string;
+  entityName: string;
+  conditions: AlertConditions;
+  frequency: AlertFrequency;
+  isActive: boolean;
+  createdAt: Date;
+  lastTriggeredAt?: Date;
+  triggerCount: number;
+}
+
+export interface AlertConditions {
+  // Field availability conditions
+  dayOfWeek?: number[];           // 0-6 (Sun-Sat)
+  timeSlot?: 'morning' | 'afternoon' | 'evening';
+  minPlayers?: number;
+  
+  // Shop/Product conditions
+  maxPrice?: number;
+  discountPercentage?: number;    // Minimum discount %
+  categories?: string[];
+  brands?: string[];
+  keywords?: string[];
+}
+
+export interface AlertPreferences {
+  userId: string;
+  emailNotifications: boolean;
+  pushNotifications: boolean;
+  inAppNotifications: boolean;
+  quietHoursStart?: string;       // e.g., "22:00"
+  quietHoursEnd?: string;         // e.g., "08:00"
+  maxAlertsPerDay: number;
+}
+
+export interface AlertNotification {
+  id: string;
+  alertId: string;
+  title: string;
+  message: string;
+  entityType: 'field' | 'shop' | 'product';
+  entityId: string;
+  isRead: boolean;
+  createdAt: Date;
+  actionUrl?: string;
+}
