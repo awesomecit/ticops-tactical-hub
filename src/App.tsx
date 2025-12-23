@@ -37,6 +37,7 @@ import Profile from "@/pages/Profile";
 import Equipment from "@/pages/Equipment";
 import GameDetail from "@/pages/GameDetail";
 import Marketplace from "@/pages/Marketplace";
+import Organize from "@/pages/Organize";
 
 const queryClient = new QueryClient();
 
@@ -64,6 +65,7 @@ const App = () => (
             <Route path="/profile" element={<Profile />} />
             <Route path="/equipment" element={<Equipment />} />
             <Route path="/marketplace" element={<Marketplace />} />
+            <Route path="/organize" element={<Organize />} />
             <Route path="/about" element={<About />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/settings" element={<Settings />} />
