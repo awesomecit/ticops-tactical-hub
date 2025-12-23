@@ -1,13 +1,33 @@
 import React from 'react';
-import { Menu, Bell, MessageSquare, Settings } from 'lucide-react';
+import { Menu, Bell, MessageSquare, Settings, LogOut } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/stores/authStore';
 import { useUIStore } from '@/stores/uiStore';
 import { RankBadge } from '@/components/ui/RankBadge';
-import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { useToast } from '@/hooks/use-toast';
 
 export const Header: React.FC = () => {
-  const { user } = useAuthStore();
+  const { user, logout } = useAuthStore();
   const { toggleSidebar, notifications } = useUIStore();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const handleLogout = () => {
+    logout();
+    toast({
+      title: "Logout effettuato",
+      description: "A presto! 👋",
+    });
+    navigate("/login");
+  };
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 h-16 bg-background-secondary/95 backdrop-blur-sm border-b border-border">
@@ -54,22 +74,41 @@ export const Header: React.FC = () => {
             <Settings className="h-5 w-5" />
           </button>
 
-          {/* User profile */}
-          {user && (
-            <div className="hidden sm:flex items-center gap-3 ml-2 pl-4 border-l border-border">
-              <div className="text-right">
-                <div className="font-display text-sm font-bold uppercase text-foreground">
-                  {user.callsign}
-                </div>
-                <RankBadge rank={user.rank} size="sm" />
-              </div>
-              
-              <div className="h-10 w-10 bg-card clip-tactical-sm border border-border flex items-center justify-center">
-                <span className="font-display font-bold text-primary">
-                  {user.callsign.charAt(0)}
-                </span>
-              </div>
-            </div>
+          {/* User profile with dropdown */}
+          {user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="hidden sm:flex items-center gap-3 ml-2 pl-4 border-l border-border hover:opacity-80 transition-opacity">
+                  <div className="text-right">
+                    <div className="font-display text-sm font-bold uppercase text-foreground">
+                      {user.callsign}
+                    </div>
+                    <RankBadge rank={user.rank} size="sm" />
+                  </div>
+                  
+                  <div className="h-10 w-10 bg-card clip-tactical-sm border border-border flex items-center justify-center">
+                    <span className="font-display font-bold text-primary">
+                      {user.callsign.charAt(0)}
+                    </span>
+                  </div>
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem onClick={() => navigate("/profile")}>
+                  <Settings className="w-4 h-4 mr-2" />
+                  Profilo
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleLogout} className="text-destructive">
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Logout
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Button variant="outline" size="sm" onClick={() => navigate("/login")}>
+              Accedi
+            </Button>
           )}
         </div>
       </div>
