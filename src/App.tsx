@@ -33,6 +33,7 @@ import Shop from "@/pages/Shop";
 import FieldDetail from "@/pages/FieldDetail";
 import Profile from "@/pages/Profile";
 import Equipment from "@/pages/Equipment";
+import GameDetail from "@/pages/GameDetail";
 
 const queryClient = new QueryClient();
 
@@ -48,6 +49,7 @@ const App = () => (
           <Route element={<MainLayout />}>
             <Route path="/" element={<Dashboard />} />
             <Route path="/games" element={<Games />} />
+            <Route path="/games/:gameId" element={<GameDetail />} />
             <Route path="/team" element={<Team />} />
             <Route path="/team/inbox" element={<TeamInbox />} />
             <Route path="/chat" element={<Chat />} />
