@@ -1,10 +1,13 @@
 // User & Auth Types
+export type UserRole = 'player' | 'team_leader' | 'referee' | 'field_manager' | 'shop_owner' | 'admin';
+
 export interface User {
   id: string;
   username: string;
   callsign: string;
   email: string;
   avatar?: string;
+  role: UserRole;
   rank: Rank;
   team?: Team;
   stats: PlayerStats;
@@ -117,4 +120,56 @@ export interface Notification {
   type: 'info' | 'warning' | 'success' | 'game' | 'team';
   read: boolean;
   createdAt: Date;
+}
+
+// Shop Types
+export interface Shop {
+  id: string;
+  name: string;
+  description: string;
+  logo?: string;
+  coverImage?: string;
+  address: string;
+  city: string;
+  rating: number;
+  reviewCount: number;
+  categories: string[];
+  isVerified: boolean;
+  ownerId: string;
+}
+
+export interface Product {
+  id: string;
+  shopId: string;
+  name: string;
+  description: string;
+  price: number;
+  originalPrice?: number;
+  images: string[];
+  category: ProductCategory;
+  subcategory?: string;
+  brand?: string;
+  inStock: boolean;
+  stockCount: number;
+  rating: number;
+  reviewCount: number;
+  tags: string[];
+}
+
+export type ProductCategory = 
+  | 'repliche' 
+  | 'accessori' 
+  | 'abbigliamento' 
+  | 'protezioni' 
+  | 'ottiche' 
+  | 'munizioni' 
+  | 'upgrade' 
+  | 'altro';
+
+// Tutorial Types
+export interface TutorialProgress {
+  completedSteps: string[];
+  skippedSteps: string[];
+  isCompleted: boolean;
+  lastStepSeen?: string;
 }

@@ -48,6 +48,7 @@ const App = () => (
             <Route path="/chat/:conversationId" element={<ChatView />} />
             <Route path="/leaderboard" element={<Leaderboard />} />
             <Route path="/locations" element={<Locations />} />
+            <Route path="/shop" element={<Shop />} />
             <Route path="/about" element={<About />} />
             <Route path="/settings" element={<Settings />} />
           </Route>
