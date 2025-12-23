@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Calendar, Users, MapPin, Sparkles, Zap, Plus } from 'lucide-react';
+import { Calendar, Users, MapPin, Sparkles, Zap, Plus, Bell } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -12,6 +12,7 @@ import {
 } from '@/components/availability';
 import { useAvailabilityStore } from '@/stores/availabilityStore';
 import { generateMatchSuggestions } from '@/lib/availabilityMatcher';
+import { useMatchNotifications } from '@/hooks/useMatchNotifications';
 import { TimeSlot, FieldSlot } from '@/types/availability';
 import { MOCK_FIELDS, MOCK_AVAILABILITY } from '@/mocks/fields';
 import { format, addDays } from 'date-fns';
@@ -24,6 +25,8 @@ const Organize: React.FC = () => {
 
   const { userAvailabilities, matchRequests, addAvailability, joinMatchRequest } = useAvailabilityStore();
 
+  // Enable match notifications
+  const { triggerMatchNotification } = useMatchNotifications({ enabled: true, autoToast: true });
   // Convert field availability to FieldSlot format
   const fieldSlots: FieldSlot[] = useMemo(() => {
     return MOCK_AVAILABILITY.map((slot) => {
@@ -116,6 +119,10 @@ const Organize: React.FC = () => {
             Trova giocatori e campi compatibili con le tue disponibilità
           </p>
         </div>
+        <Button variant="outline" size="sm" onClick={triggerMatchNotification}>
+          <Bell className="h-4 w-4 mr-2" />
+          Test Notifica
+        </Button>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
