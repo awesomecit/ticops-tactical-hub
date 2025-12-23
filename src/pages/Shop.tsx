@@ -45,6 +45,7 @@ import {
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AlertToggle } from '@/components/alerts';
+import { StartConversationButton } from '@/components/chat';
 
 const Shop = () => {
   const { t } = useTranslation();
@@ -445,8 +446,8 @@ const Shop = () => {
                             {shop.description}
                           </p>
                           
-                          <div className="flex flex-wrap gap-1 pt-1">
-                            {shop.categories.slice(0, 3).map(catId => {
+                          <div className="flex flex-wrap items-center gap-2 pt-2">
+                            {shop.categories.slice(0, 2).map(catId => {
                               const cat = PRODUCT_CATEGORIES.find(c => c.id === catId);
                               return cat ? (
                                 <Badge key={catId} variant="outline" className="text-xs">
@@ -454,6 +455,14 @@ const Shop = () => {
                                 </Badge>
                               ) : null;
                             })}
+                            <div className="flex-1" />
+                            <StartConversationButton
+                              entityType="shop"
+                              entityId={shop.id}
+                              entityName={shop.name}
+                              size="sm"
+                              variant="ghost"
+                            />
                           </div>
                         </div>
                       </div>

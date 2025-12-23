@@ -4,6 +4,7 @@ import { it } from 'date-fns/locale';
 import { Pin } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ConversationType } from '@/mocks/chat';
+import { EntityAvatar, EntityType } from './EntityAvatar';
 
 interface ConversationItemProps {
   id: string;
@@ -16,15 +17,17 @@ interface ConversationItemProps {
   isOnline?: boolean;
   isPinned?: boolean;
   isActive?: boolean;
+  entityType?: EntityType;
+  entityId?: string;
   onClick?: () => void;
 }
 
-const typeBadges: Record<ConversationType, { emoji: string; color: string }> = {
-  private: { emoji: '🔵', color: 'text-blue-400' },
-  team: { emoji: '🟢', color: 'text-secondary' },
-  match: { emoji: '🟠', color: 'text-primary' },
-  field: { emoji: '📍', color: 'text-green-400' },
-  shop: { emoji: '🛒', color: 'text-purple-400' },
+const typeBadges: Record<ConversationType, { label: string; color: string }> = {
+  private: { label: 'Privato', color: 'text-blue-400' },
+  team: { label: 'Team', color: 'text-secondary' },
+  match: { label: 'Partita', color: 'text-primary' },
+  field: { label: 'Campo', color: 'text-green-400' },
+  shop: { label: 'Shop', color: 'text-purple-400' },
 };
 
 export const ConversationItem: React.FC<ConversationItemProps> = ({
@@ -37,9 +40,14 @@ export const ConversationItem: React.FC<ConversationItemProps> = ({
   isOnline,
   isPinned,
   isActive,
+  entityType,
   onClick,
 }) => {
   const badge = typeBadges[type];
+
+  // Determine avatar entity type based on conversation type
+  const avatarEntityType: EntityType | undefined = entityType || 
+    (type === 'field' ? 'field' : type === 'shop' ? 'shop' : undefined);
 
   return (
     <button
@@ -51,35 +59,15 @@ export const ConversationItem: React.FC<ConversationItemProps> = ({
         !isActive && 'border-l-2 border-transparent'
       )}
     >
-      {/* Avatar */}
-      <div className="relative flex-shrink-0">
-        {avatar ? (
-          <img
-            src={avatar}
-            alt={name}
-            className="h-12 w-12 rounded-full border-2 border-border"
-          />
-        ) : (
-          <div className="h-12 w-12 rounded-full bg-card border-2 border-border flex items-center justify-center font-display font-bold text-lg text-primary">
-            {name.charAt(0).toUpperCase()}
-          </div>
-        )}
-        
-        {/* Online indicator */}
-        {type === 'private' && isOnline !== undefined && (
-          <span
-            className={cn(
-              'absolute bottom-0 right-0 h-3.5 w-3.5 rounded-full border-2 border-background',
-              isOnline ? 'bg-secondary' : 'bg-muted'
-            )}
-          />
-        )}
-
-        {/* Type badge */}
-        <span className="absolute -top-1 -left-1 text-sm">
-          {badge.emoji}
-        </span>
-      </div>
+      {/* Avatar with Entity Icon */}
+      <EntityAvatar
+        entityType={avatarEntityType}
+        name={name}
+        avatar={avatar}
+        isOnline={type === 'private' ? isOnline : undefined}
+        size="md"
+        showBadge={!!avatarEntityType}
+      />
 
       {/* Content */}
       <div className="flex-1 min-w-0">
@@ -93,6 +81,16 @@ export const ConversationItem: React.FC<ConversationItemProps> = ({
             </span>
             {isPinned && (
               <Pin className="h-3 w-3 text-muted-foreground flex-shrink-0" />
+            )}
+            {/* Entity type label */}
+            {avatarEntityType && (
+              <span className={cn(
+                'text-[10px] font-medium uppercase px-1.5 py-0.5 rounded-sm',
+                badge.color,
+                'bg-current/10'
+              )}>
+                {badge.label}
+              </span>
             )}
           </div>
           <span className="text-xs text-muted-foreground flex-shrink-0">

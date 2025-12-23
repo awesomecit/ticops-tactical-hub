@@ -77,22 +77,24 @@ Questo documento traccia tutte le feature da implementare, suddivise in task ato
 
 ---
 
-## 4. Messaggistica Diretta
+## 4. Messaggistica Diretta ✅
 
 **Obiettivo**: Permettere messaggi diretti a shop, campi, arbitri e giocatori.
+
+**Stato**: ✅ COMPLETATA
 
 ### Task Atomici
 
 | ID | Task | Stato | File Coinvolti |
 |----|------|-------|----------------|
-| 4.1 | Estendere tipo `Conversation` per supportare entità (shop, field, referee, player) | ⬜ TODO | `src/types/index.ts` |
-| 4.2 | Aggiornare mock conversazioni con tipi entità | ⬜ TODO | `src/mocks/chat.ts` |
-| 4.3 | Creare componente `StartConversationButton` | ⬜ TODO | `src/components/chat/StartConversationButton.tsx` |
-| 4.4 | Creare componente `EntityAvatar` (icona diversa per tipo) | ⬜ TODO | `src/components/chat/EntityAvatar.tsx` |
-| 4.5 | Aggiornare `ConversationItem` per mostrare tipo entità | ⬜ TODO | `src/components/chat/ConversationItem.tsx` |
-| 4.6 | Aggiungere pulsante "Contatta" in FieldCard, ShopCard, PlayerCard | ⬜ TODO | Vari componenti |
-| 4.7 | Creare logica per avviare nuova conversazione | ⬜ TODO | `src/mocks/chat.ts` |
-| 4.8 | Aggiungere filtri conversazioni per tipo (shop, campi, arbitri, giocatori) | ⬜ TODO | `src/pages/Chat.tsx` |
+| 4.1 | Estendere tipo `Conversation` per supportare entità (shop, field, referee, player) | ✅ DONE | `src/mocks/chat.ts` |
+| 4.2 | Aggiornare mock conversazioni con tipi entità | ✅ DONE | `src/mocks/chat.ts` |
+| 4.3 | Creare componente `StartConversationButton` | ✅ DONE | `src/components/chat/StartConversationButton.tsx` |
+| 4.4 | Creare componente `EntityAvatar` (icona diversa per tipo) | ✅ DONE | `src/components/chat/EntityAvatar.tsx` |
+| 4.5 | Aggiornare `ConversationItem` per mostrare tipo entità | ✅ DONE | `src/components/chat/ConversationItem.tsx` |
+| 4.6 | Aggiungere pulsante "Contatta" in FieldCard, ShopCard | ✅ DONE | `src/pages/Shop.tsx`, `src/pages/FieldDetail.tsx` |
+| 4.7 | Creare logica per avviare nuova conversazione | ✅ DONE | `src/mocks/chat.ts` |
+| 4.8 | Aggiungere filtri conversazioni per tipo (shop, campi, arbitri, giocatori) | ✅ DONE | `src/pages/Chat.tsx` |
 
 ---
 
@@ -123,17 +125,17 @@ Questo documento traccia tutte le feature da implementare, suddivise in task ato
 | Ricerca Campi | 10 | 10 | 100% ✅ |
 | Sommario Utente | 7 | 0 | 0% |
 | Sistema Alert | 9 | 9 | 100% ✅ |
-| Messaggistica Diretta | 8 | 0 | 0% |
+| Messaggistica Diretta | 8 | 8 | 100% ✅ |
 | Radio Team | 9 | 0 | 0% |
-| **TOTALE** | **43** | **19** | **44%** |
+| **TOTALE** | **43** | **27** | **63%** |
 
 ---
 
 ## 🚀 Ordine di Implementazione Suggerito
 
 1. ~~**Ricerca Campi**~~ ✅ COMPLETATA
-2. **Sistema Alert** - In corso
-3. **Messaggistica Diretta** - Core communication feature
+2. ~~**Sistema Alert**~~ ✅ COMPLETATA
+3. ~~**Messaggistica Diretta**~~ ✅ COMPLETATA
 4. **Sommario Utente** - Dashboard enhancement
 5. **Radio Team** - Feature avanzata gameplay
 
