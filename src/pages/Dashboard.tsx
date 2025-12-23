@@ -22,6 +22,8 @@ import {
   ActivityItem,
   EloProgressBar,
 } from '@/components/dashboard';
+import { RealtimeDemo } from '@/components/realtime';
+import { OnlineUsersIndicator } from '@/components/realtime';
 import type { ActivityType } from '@/components/dashboard';
 
 const activityIcons = {
@@ -58,6 +60,7 @@ const Dashboard: React.FC = () => {
         </div>
         
         <div className="flex items-center gap-4">
+          <OnlineUsersIndicator compact />
           <RankBadge 
             rank={{
               id: currentUser.tier,
@@ -194,6 +197,9 @@ const Dashboard: React.FC = () => {
             ))}
           </TacticalCardContent>
         </TacticalCard>
+
+        {/* Real-Time Demo */}
+        <RealtimeDemo />
       </div>
     </div>
   );
