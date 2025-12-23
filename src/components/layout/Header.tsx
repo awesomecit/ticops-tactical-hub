@@ -1,6 +1,6 @@
 import React from 'react';
-import { Menu, Bell, MessageSquare, Settings, LogOut } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Menu, MessageSquare, Settings, LogOut } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuthStore } from '@/stores/authStore';
 import { useUIStore } from '@/stores/uiStore';
 import { RankBadge } from '@/components/ui/RankBadge';
@@ -13,10 +13,11 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useToast } from '@/hooks/use-toast';
+import { NotificationsDropdown } from './NotificationsDropdown';
 
 export const Header: React.FC = () => {
   const { user, logout } = useAuthStore();
-  const { toggleSidebar, notifications } = useUIStore();
+  const { toggleSidebar } = useUIStore();
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -41,7 +42,7 @@ export const Header: React.FC = () => {
             <Menu className="h-6 w-6" />
           </button>
           
-          <div className="flex items-center gap-3">
+          <Link to="/about" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
             <div className="relative">
               <span className="font-display text-2xl font-bold tracking-wider text-primary">
                 TIC
@@ -51,26 +52,27 @@ export const Header: React.FC = () => {
               </span>
               <div className="absolute -bottom-1 left-0 right-0 h-[2px] bg-gradient-to-r from-primary via-primary/50 to-transparent" />
             </div>
-          </div>
+          </Link>
         </div>
 
         {/* Right section */}
         <div className="flex items-center gap-2">
-          {/* Notifications */}
-          <button className="relative p-2 text-muted-foreground hover:text-foreground transition-colors">
+          {/* Chat */}
+          <button 
+            onClick={() => navigate('/chat')}
+            className="relative p-2 text-muted-foreground hover:text-foreground transition-colors"
+          >
             <MessageSquare className="h-5 w-5" />
           </button>
           
-          <button className="relative p-2 text-muted-foreground hover:text-foreground transition-colors">
-            <Bell className="h-5 w-5" />
-            {notifications > 0 && (
-              <span className="absolute top-1 right-1 h-4 w-4 bg-primary text-primary-foreground text-xs font-bold rounded-full flex items-center justify-center">
-                {notifications}
-              </span>
-            )}
-          </button>
+          {/* Notifications Dropdown */}
+          <NotificationsDropdown />
           
-          <button className="p-2 text-muted-foreground hover:text-foreground transition-colors">
+          {/* Settings */}
+          <button 
+            onClick={() => navigate('/settings')}
+            className="p-2 text-muted-foreground hover:text-foreground transition-colors"
+          >
             <Settings className="h-5 w-5" />
           </button>
 
@@ -94,9 +96,9 @@ export const Header: React.FC = () => {
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
-                <DropdownMenuItem onClick={() => navigate("/profile")}>
+                <DropdownMenuItem onClick={() => navigate("/settings")}>
                   <Settings className="w-4 h-4 mr-2" />
-                  Profilo
+                  Impostazioni
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleLogout} className="text-destructive">
