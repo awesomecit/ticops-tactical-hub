@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { 
   User, 
   Bell, 
   Shield, 
   Palette, 
   Globe, 
-  Smartphone,
   Lock,
   Mail,
   Eye,
   EyeOff,
-  Save
+  Save,
+  Check
 } from 'lucide-react';
 import { TacticalCard } from '@/components/ui/TacticalCard';
 import { GlowButton } from '@/components/ui/GlowButton';
@@ -21,31 +22,26 @@ import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuthStore } from '@/stores/authStore';
 import { useToast } from '@/hooks/use-toast';
+import { supportedLanguages, changeLanguage } from '@/i18n';
 
 const Settings: React.FC = () => {
+  const { t, i18n } = useTranslation();
   const { user } = useAuthStore();
   const { toast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
   
   const [settings, setSettings] = useState({
-    // Notifications
     emailNotifications: true,
     pushNotifications: true,
     matchReminders: true,
     teamMessages: true,
     killConfirmations: true,
     rankUpdates: true,
-    
-    // Privacy
     showOnlineStatus: true,
     showStats: true,
     allowTeamInvites: true,
-    
-    // Appearance
     darkMode: true,
     compactMode: false,
-    
-    // Profile
     email: user?.callsign ? `${user.callsign.toLowerCase()}@email.com` : '',
     currentPassword: '',
     newPassword: '',
@@ -56,48 +52,60 @@ const Settings: React.FC = () => {
     setSettings(prev => ({ ...prev, [key]: !prev[key] }));
   };
 
+  const handleLanguageChange = (lng: string) => {
+    changeLanguage(lng);
+    toast({
+      title: t('settings.saved'),
+      description: t('settings.language')
+    });
+  };
+
   const handleSave = () => {
     toast({
-      title: "Impostazioni salvate",
-      description: "Le tue preferenze sono state aggiornate."
+      title: t('settings.saved'),
+      description: t('settings.saved')
     });
   };
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-display font-bold text-foreground">Impostazioni</h1>
-        <p className="text-muted-foreground">Gestisci il tuo account e le preferenze</p>
+        <h1 className="text-2xl font-display font-bold text-foreground">{t('settings.title')}</h1>
+        <p className="text-muted-foreground">{t('common.settings')}</p>
       </div>
 
       <Tabs defaultValue="profile" className="space-y-6">
-        <TabsList className="grid grid-cols-2 md:grid-cols-5 w-full">
+        <TabsList className="grid grid-cols-2 md:grid-cols-6 w-full">
           <TabsTrigger value="profile" className="gap-2">
             <User className="h-4 w-4" />
-            <span className="hidden sm:inline">Profilo</span>
+            <span className="hidden sm:inline">{t('settings.profile')}</span>
           </TabsTrigger>
           <TabsTrigger value="notifications" className="gap-2">
             <Bell className="h-4 w-4" />
-            <span className="hidden sm:inline">Notifiche</span>
+            <span className="hidden sm:inline">{t('settings.notifications')}</span>
           </TabsTrigger>
           <TabsTrigger value="privacy" className="gap-2">
             <Shield className="h-4 w-4" />
-            <span className="hidden sm:inline">Privacy</span>
+            <span className="hidden sm:inline">{t('settings.privacy')}</span>
           </TabsTrigger>
           <TabsTrigger value="security" className="gap-2">
             <Lock className="h-4 w-4" />
-            <span className="hidden sm:inline">Sicurezza</span>
+            <span className="hidden sm:inline">{t('settings.account')}</span>
           </TabsTrigger>
           <TabsTrigger value="appearance" className="gap-2">
             <Palette className="h-4 w-4" />
-            <span className="hidden sm:inline">Aspetto</span>
+            <span className="hidden sm:inline">{t('settings.appearance')}</span>
+          </TabsTrigger>
+          <TabsTrigger value="language" className="gap-2">
+            <Globe className="h-4 w-4" />
+            <span className="hidden sm:inline">{t('settings.language')}</span>
           </TabsTrigger>
         </TabsList>
 
         {/* Profile Tab */}
         <TabsContent value="profile">
           <TacticalCard className="p-6">
-            <h2 className="text-lg font-display font-bold text-foreground mb-4">Informazioni Profilo</h2>
+            <h2 className="text-lg font-display font-bold text-foreground mb-4">{t('settings.profile')}</h2>
             
             <div className="space-y-4">
               <div className="flex items-center gap-4">
@@ -107,7 +115,7 @@ const Settings: React.FC = () => {
                   </span>
                 </div>
                 <div>
-                  <GlowButton variant="outline" size="sm">Cambia Avatar</GlowButton>
+                  <GlowButton variant="outline" size="sm">{t('settings.editProfile')}</GlowButton>
                   <p className="text-xs text-muted-foreground mt-1">JPG, PNG max 2MB</p>
                 </div>
               </div>
@@ -116,13 +124,12 @@ const Settings: React.FC = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="callsign">Callsign</Label>
+                  <Label htmlFor="callsign">{t('auth.username')}</Label>
                   <Input id="callsign" value={user?.callsign || ''} disabled />
-                  <p className="text-xs text-muted-foreground">Il callsign non può essere modificato</p>
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email">{t('auth.email')}</Label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input 
@@ -136,12 +143,12 @@ const Settings: React.FC = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="rank">Rank</Label>
+                  <Label htmlFor="rank">{t('common.rank')}</Label>
                   <Input id="rank" value={user?.rank?.name || 'Recruit'} disabled />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="games">Partite Giocate</Label>
+                  <Label htmlFor="games">{t('dashboard.gamesPlayed')}</Label>
                   <Input id="games" value={user?.stats?.gamesPlayed || 0} disabled />
                 </div>
               </div>
@@ -149,7 +156,7 @@ const Settings: React.FC = () => {
               <div className="flex justify-end">
                 <GlowButton onClick={handleSave}>
                   <Save className="h-4 w-4 mr-2" />
-                  Salva Modifiche
+                  {t('settings.save')}
                 </GlowButton>
               </div>
             </div>
@@ -159,13 +166,12 @@ const Settings: React.FC = () => {
         {/* Notifications Tab */}
         <TabsContent value="notifications">
           <TacticalCard className="p-6">
-            <h2 className="text-lg font-display font-bold text-foreground mb-4">Preferenze Notifiche</h2>
+            <h2 className="text-lg font-display font-bold text-foreground mb-4">{t('settings.notifications')}</h2>
             
             <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label>Notifiche Email</Label>
-                  <p className="text-xs text-muted-foreground">Ricevi aggiornamenti via email</p>
+                  <Label>{t('settings.emailNotifications')}</Label>
                 </div>
                 <Switch 
                   checked={settings.emailNotifications}
@@ -175,8 +181,7 @@ const Settings: React.FC = () => {
 
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label>Notifiche Push</Label>
-                  <p className="text-xs text-muted-foreground">Notifiche sul dispositivo</p>
+                  <Label>{t('settings.pushNotifications')}</Label>
                 </div>
                 <Switch 
                   checked={settings.pushNotifications}
@@ -188,8 +193,7 @@ const Settings: React.FC = () => {
 
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label>Promemoria Partite</Label>
-                  <p className="text-xs text-muted-foreground">Notifica prima dell'inizio partita</p>
+                  <Label>{t('settings.matchReminders')}</Label>
                 </div>
                 <Switch 
                   checked={settings.matchReminders}
@@ -199,34 +203,11 @@ const Settings: React.FC = () => {
 
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label>Messaggi Team</Label>
-                  <p className="text-xs text-muted-foreground">Nuovi messaggi dal tuo team</p>
+                  <Label>{t('settings.teamUpdates')}</Label>
                 </div>
                 <Switch 
                   checked={settings.teamMessages}
                   onCheckedChange={() => handleToggle('teamMessages')}
-                />
-              </div>
-
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <Label>Conferme Kill</Label>
-                  <p className="text-xs text-muted-foreground">Quando una kill viene confermata</p>
-                </div>
-                <Switch 
-                  checked={settings.killConfirmations}
-                  onCheckedChange={() => handleToggle('killConfirmations')}
-                />
-              </div>
-
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <Label>Aggiornamenti Rank</Label>
-                  <p className="text-xs text-muted-foreground">Cambi di ELO e tier</p>
-                </div>
-                <Switch 
-                  checked={settings.rankUpdates}
-                  onCheckedChange={() => handleToggle('rankUpdates')}
                 />
               </div>
             </div>
@@ -236,13 +217,12 @@ const Settings: React.FC = () => {
         {/* Privacy Tab */}
         <TabsContent value="privacy">
           <TacticalCard className="p-6">
-            <h2 className="text-lg font-display font-bold text-foreground mb-4">Impostazioni Privacy</h2>
+            <h2 className="text-lg font-display font-bold text-foreground mb-4">{t('settings.privacy')}</h2>
             
             <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label>Mostra Stato Online</Label>
-                  <p className="text-xs text-muted-foreground">Altri possono vedere quando sei online</p>
+                  <Label>{t('settings.showOnlineStatus')}</Label>
                 </div>
                 <Switch 
                   checked={settings.showOnlineStatus}
@@ -252,8 +232,7 @@ const Settings: React.FC = () => {
 
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label>Mostra Statistiche</Label>
-                  <p className="text-xs text-muted-foreground">Le tue stats sono visibili pubblicamente</p>
+                  <Label>{t('settings.showStats')}</Label>
                 </div>
                 <Switch 
                   checked={settings.showStats}
@@ -263,8 +242,7 @@ const Settings: React.FC = () => {
 
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label>Consenti Inviti Team</Label>
-                  <p className="text-xs text-muted-foreground">Ricevi inviti da altri team</p>
+                  <Label>{t('settings.allowTeamInvites')}</Label>
                 </div>
                 <Switch 
                   checked={settings.allowTeamInvites}
@@ -278,11 +256,11 @@ const Settings: React.FC = () => {
         {/* Security Tab */}
         <TabsContent value="security">
           <TacticalCard className="p-6">
-            <h2 className="text-lg font-display font-bold text-foreground mb-4">Sicurezza Account</h2>
+            <h2 className="text-lg font-display font-bold text-foreground mb-4">{t('settings.changePassword')}</h2>
             
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="currentPassword">Password Attuale</Label>
+                <Label htmlFor="currentPassword">{t('auth.password')}</Label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input 
@@ -303,7 +281,7 @@ const Settings: React.FC = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="newPassword">Nuova Password</Label>
+                <Label htmlFor="newPassword">{t('settings.changePassword')}</Label>
                 <Input 
                   id="newPassword" 
                   type="password"
@@ -313,7 +291,7 @@ const Settings: React.FC = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Conferma Password</Label>
+                <Label htmlFor="confirmPassword">{t('auth.confirmPassword')}</Label>
                 <Input 
                   id="confirmPassword" 
                   type="password"
@@ -325,7 +303,7 @@ const Settings: React.FC = () => {
               <div className="flex justify-end">
                 <GlowButton onClick={handleSave}>
                   <Lock className="h-4 w-4 mr-2" />
-                  Aggiorna Password
+                  {t('settings.save')}
                 </GlowButton>
               </div>
             </div>
@@ -335,30 +313,50 @@ const Settings: React.FC = () => {
         {/* Appearance Tab */}
         <TabsContent value="appearance">
           <TacticalCard className="p-6">
-            <h2 className="text-lg font-display font-bold text-foreground mb-4">Personalizzazione</h2>
+            <h2 className="text-lg font-display font-bold text-foreground mb-4">{t('settings.appearance')}</h2>
             
             <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label>Tema Scuro</Label>
-                  <p className="text-xs text-muted-foreground">Usa il tema scuro di default</p>
+                  <Label>{t('settings.darkMode')}</Label>
                 </div>
                 <Switch 
                   checked={settings.darkMode}
                   onCheckedChange={() => handleToggle('darkMode')}
                 />
               </div>
+            </div>
+          </TacticalCard>
+        </TabsContent>
 
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <Label>Modalità Compatta</Label>
-                  <p className="text-xs text-muted-foreground">Riduci spaziature per più contenuto</p>
-                </div>
-                <Switch 
-                  checked={settings.compactMode}
-                  onCheckedChange={() => handleToggle('compactMode')}
-                />
-              </div>
+        {/* Language Tab */}
+        <TabsContent value="language">
+          <TacticalCard className="p-6">
+            <h2 className="text-lg font-display font-bold text-foreground mb-4">{t('settings.language')}</h2>
+            
+            <div className="grid gap-3">
+              {supportedLanguages.map((lang) => (
+                <button
+                  key={lang.code}
+                  onClick={() => handleLanguageChange(lang.code)}
+                  className={`flex items-center justify-between p-4 border rounded-lg transition-all ${
+                    i18n.language === lang.code || (i18n.language.startsWith(lang.code))
+                      ? 'border-primary bg-primary/10'
+                      : 'border-border hover:border-primary/50'
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <Globe className="h-5 w-5 text-primary" />
+                    <div className="text-left">
+                      <p className="font-medium text-foreground">{lang.nativeName}</p>
+                      <p className="text-sm text-muted-foreground">{lang.name}</p>
+                    </div>
+                  </div>
+                  {(i18n.language === lang.code || i18n.language.startsWith(lang.code)) && (
+                    <Check className="h-5 w-5 text-primary" />
+                  )}
+                </button>
+              ))}
             </div>
           </TacticalCard>
         </TabsContent>

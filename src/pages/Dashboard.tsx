@@ -1,18 +1,18 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Crosshair,
   Skull,
   Swords,
   MapPin,
   ChevronRight,
-  Trophy,
+  Award,
   Users,
   TrendingUp,
-  Award,
   UserPlus,
 } from 'lucide-react';
 import { useMockData } from '@/hooks/useMockData';
-import { TacticalCard, TacticalCardHeader, TacticalCardTitle, TacticalCardContent } from '@/components/ui/TacticalCard';
+import { TacticalCard, TacticalCardContent } from '@/components/ui/TacticalCard';
 import { GlowButton } from '@/components/ui/GlowButton';
 import { RankBadge } from '@/components/ui/RankBadge';
 import {
@@ -33,6 +33,7 @@ const activityIcons = {
 };
 
 const Dashboard: React.FC = () => {
+  const { t } = useTranslation();
   const {
     currentUser,
     liveMatches,
@@ -41,7 +42,6 @@ const Dashboard: React.FC = () => {
     currentTierBounds,
   } = useMockData();
 
-  // Calculate km traveled (mock: based on matches played)
   const kmTraveled = (currentUser.stats.matches * 2.3).toFixed(1);
 
   return (
@@ -50,10 +50,10 @@ const Dashboard: React.FC = () => {
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div className="flex-1">
           <h1 className="text-2xl sm:text-3xl font-display uppercase text-glow-primary">
-            Benvenuto, <span className="text-primary">{currentUser.username}</span>
+            {t('dashboard.welcome')}, <span className="text-primary">{currentUser.username}</span>
           </h1>
           <p className="text-muted-foreground mt-1">
-            Pronto per la prossima missione, Operatore?
+            {t('dashboard.title')}
           </p>
         </div>
         
@@ -84,32 +84,32 @@ const Dashboard: React.FC = () => {
         </TacticalCardContent>
       </TacticalCard>
 
-      {/* Stats Grid - 4 Cards */}
+      {/* Stats Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <StatCard
           icon={Crosshair}
-          label="Kills"
+          label={t('common.kills')}
           value={currentUser.stats.kills}
           trend="up"
           trendValue="+12"
         />
         <StatCard
           icon={Skull}
-          label="Deaths"
+          label={t('common.deaths')}
           value={currentUser.stats.deaths}
           trend="down"
           trendValue="-3"
         />
         <StatCard
           icon={Swords}
-          label="K/D Ratio"
+          label={t('dashboard.kdRatio')}
           value={currentUser.stats.kdRatio.toFixed(2)}
           trend="up"
           trendValue="+0.15"
         />
         <StatCard
           icon={MapPin}
-          label="Km Percorsi"
+          label="Km"
           value={kmTraveled}
           trend="neutral"
           trendValue=""
@@ -123,10 +123,10 @@ const Dashboard: React.FC = () => {
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-display uppercase flex items-center gap-2">
               <span className="h-2 w-2 bg-secondary rounded-full animate-pulse" />
-              Partite Live
+              {t('dashboard.liveMatches')}
             </h2>
             <GlowButton variant="ghost" size="sm">
-              Vedi Tutte <ChevronRight className="h-4 w-4 ml-1" />
+              {t('dashboard.viewAll')} <ChevronRight className="h-4 w-4 ml-1" />
             </GlowButton>
           </div>
 
@@ -147,10 +147,10 @@ const Dashboard: React.FC = () => {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-display uppercase">
-              Prossime Partite
+              {t('dashboard.upcomingMatches')}
             </h2>
             <GlowButton variant="ghost" size="sm">
-              Vedi Tutte <ChevronRight className="h-4 w-4 ml-1" />
+              {t('dashboard.viewAll')} <ChevronRight className="h-4 w-4 ml-1" />
             </GlowButton>
           </div>
 
@@ -172,10 +172,10 @@ const Dashboard: React.FC = () => {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-display uppercase">
-            Attività Recenti
+            {t('dashboard.recentActivity')}
           </h2>
           <GlowButton variant="ghost" size="sm">
-            Vedi Tutte <ChevronRight className="h-4 w-4 ml-1" />
+            {t('dashboard.viewAll')} <ChevronRight className="h-4 w-4 ml-1" />
           </GlowButton>
         </div>
 

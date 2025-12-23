@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Menu, MessageSquare, Settings, LogOut } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuthStore } from '@/stores/authStore';
@@ -16,6 +17,7 @@ import { useToast } from '@/hooks/use-toast';
 import { NotificationsDropdown } from './NotificationsDropdown';
 
 export const Header: React.FC = () => {
+  const { t } = useTranslation();
   const { user, logout } = useAuthStore();
   const { toggleSidebar } = useUIStore();
   const navigate = useNavigate();
@@ -24,8 +26,8 @@ export const Header: React.FC = () => {
   const handleLogout = () => {
     logout();
     toast({
-      title: "Logout effettuato",
-      description: "A presto! 👋",
+      title: t('auth.logoutSuccess'),
+      description: "👋",
     });
     navigate("/login");
   };
@@ -98,18 +100,18 @@ export const Header: React.FC = () => {
               <DropdownMenuContent align="end" className="w-48">
                 <DropdownMenuItem onClick={() => navigate("/settings")}>
                   <Settings className="w-4 h-4 mr-2" />
-                  Impostazioni
+                  {t('settings.title')}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleLogout} className="text-destructive">
                   <LogOut className="w-4 h-4 mr-2" />
-                  Logout
+                  {t('auth.logout')}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
             <Button variant="outline" size="sm" onClick={() => navigate("/login")}>
-              Accedi
+              {t('auth.login')}
             </Button>
           )}
         </div>
