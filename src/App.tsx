@@ -8,6 +8,7 @@ import Dashboard from "@/pages/Dashboard";
 import Games from "@/pages/Games";
 import Team from "@/pages/Team";
 import Chat from "@/pages/Chat";
+import ChatView from "@/pages/ChatView";
 import Leaderboard from "@/pages/Leaderboard";
 import Locations from "@/pages/Locations";
 import Admin from "@/pages/Admin";
@@ -27,6 +28,7 @@ const App = () => (
             <Route path="/games" element={<Games />} />
             <Route path="/team" element={<Team />} />
             <Route path="/chat" element={<Chat />} />
+            <Route path="/chat/:conversationId" element={<ChatView />} />
             <Route path="/leaderboard" element={<Leaderboard />} />
             <Route path="/locations" element={<Locations />} />
             <Route path="/admin" element={<Admin />} />
