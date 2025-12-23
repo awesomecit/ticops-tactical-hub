@@ -3,3 +3,7 @@ export { PendingActionItem } from './PendingActionItem';
 export { ActivityLogItem } from './ActivityLogItem';
 export { LiveMatchCard } from './LiveMatchCard';
 export { UsersChart } from './UsersChart';
+export { StatusBadge } from './StatusBadge';
+export { ActionDropdown } from './ActionDropdown';
+export { ConfirmDialog } from './ConfirmDialog';
+export { AdminTable } from './AdminTable';
