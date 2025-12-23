@@ -10,9 +10,12 @@ Questo documento traccia tutte le feature da implementare, suddivise in task ato
 2. [Sommario Utente](#2-sommario-utente) ✅ COMPLETATA
 3. [Sistema Alert](#3-sistema-alert) ✅ COMPLETATA
 4. [Messaggistica Diretta](#4-messaggistica-diretta) ✅ COMPLETATA
-5. [Radio Team](#5-radio-team)
-6. [Integrazione Social Media](#6-integrazione-social-media) 🔄 IN PROGRESS
+5. [Radio Team](#5-radio-team) 🔄 IN PROGRESS
+6. [Integrazione Social Media](#6-integrazione-social-media) ✅ COMPLETATA
 7. [RBAC - Controllo Accessi Basato su Ruoli](#7-rbac---controllo-accessi-basato-su-ruoli) ⬜ CRITICO
+8. [Sistema Real-Time (WebSockets)](#8-sistema-real-time-websockets) ⬜ TODO
+9. [Achievement & Rewards System](#9-achievement--rewards-system) ⬜ TODO
+10. [Radio Avanzata Match Live](#10-radio-avanzata-match-live) ⬜ TODO
 
 ---
 
@@ -124,11 +127,11 @@ Questo documento traccia tutte le feature da implementare, suddivise in task ato
 
 ---
 
-## 6. Integrazione Social Media 🔄
+## 6. Integrazione Social Media ✅
 
 **Obiettivo**: Integrare contatti social (Discord, Instagram, Telegram, WhatsApp) per team, campi e ruoli chiave con possibilità di accesso rapido.
 
-**Stato**: 🔄 IN PROGRESS (82%)
+**Stato**: ✅ COMPLETATA (100%)
 
 ### Task Atomici
 
@@ -185,7 +188,10 @@ Questo documento traccia tutte le feature da implementare, suddivise in task ato
 | Radio Team | 9 | 8 | 89% 🔄 |
 | Integrazione Social | 11 | 11 | 100% ✅ |
 | RBAC Controllo Accessi | 11 | 0 | 0% ⚠️ |
-| **TOTALE** | **65** | **53** | **82%** |
+| Real-Time WebSockets | 7 | 0 | 0% ⬜ |
+| Achievement & Rewards | 10 | 0 | 0% ⬜ |
+| Radio Avanzata Match Live | 10 | 0 | 0% ⬜ |
+| **TOTALE** | **92** | **53** | **58%** |
 
 ---
 
@@ -197,7 +203,11 @@ Questo documento traccia tutte le feature da implementare, suddivise in task ato
 4. ~~**Sommario Utente**~~ ✅ COMPLETATA
 5. ~~**Integrazione Social**~~ ✅ COMPLETATA
 6. **🔴 RBAC Controllo Accessi** - PRIORITÀ CRITICA (sicurezza)
-7. **Radio Team** - Feature avanzata gameplay
+7. **Radio Team** - Completare Equipment page
+8. **🟡 Fix Bug Chat** - Nuova chat, archivia, elimina, edit messaggi
+9. **Sistema Real-Time** - Richiede Lovable Cloud (Supabase)
+10. **Achievement & Rewards** - Sistema badge, bauli, animazioni
+11. **Radio Avanzata Match Live** - Suoni, PTT, scanner frequenze, Ingegnere badge
 
 ---
 
@@ -215,3 +225,84 @@ Questo documento traccia tutte le feature da implementare, suddivise in task ato
 - **2024-12-23**: Aggiunta Feature 6 (Integrazione Social Media) alla roadmap
 - **2024-12-23**: Feature 6 (Integrazione Social) completata al 100%
 - **2024-12-23**: Aggiunta Feature 7 (RBAC) come priorità critica
+- **2024-12-23**: Feature 5 (Radio Team) al 89%
+- **2024-12-23**: Aggiunte Feature 8 (Real-Time WebSockets), Feature 9 (Achievement & Rewards), Feature 10 (Radio Avanzata Match Live)
+- **2024-12-23**: Aggiunti bug da fixare nella sezione Chat
+
+---
+
+## 🐛 Bug Noti da Fixare
+
+| ID | Bug | Priorità | File Coinvolti |
+|----|-----|----------|----------------|
+| BUG-1 | Bottone "Nuova Chat" non gestito | 🔴 Alta | `src/pages/Chat.tsx` |
+| BUG-2 | Chat non si possono archiviare | 🟡 Media | `src/pages/Chat.tsx`, `src/mocks/chat.ts` |
+| BUG-3 | Chat non si possono eliminare | 🟡 Media | `src/pages/Chat.tsx`, `src/mocks/chat.ts` |
+| BUG-4 | Messaggi non si possono eliminare | 🟡 Media | `src/pages/ChatView.tsx` |
+| BUG-5 | Messaggi non si possono editare | 🟡 Media | `src/pages/ChatView.tsx` |
+
+---
+
+## 8. Sistema Real-Time (WebSockets) ⬜
+
+**Obiettivo**: Implementare comunicazione real-time via WebSockets/Supabase Realtime per notifiche, chat, radio e achievement.
+
+**Stato**: ⬜ TODO - **Richiede Backend**
+
+### Task Atomici
+
+| ID | Task | Stato | File Coinvolti |
+|----|------|-------|----------------|
+| 8.1 | Configurare Supabase Realtime per tabella `notifications` | ⬜ TODO | `src/lib/supabase.ts` |
+| 8.2 | Creare hook `useRealtimeNotifications` per notifiche push | ⬜ TODO | `src/hooks/useRealtimeNotifications.ts` |
+| 8.3 | Creare hook `useRealtimeChat` per messaggi live | ⬜ TODO | `src/hooks/useRealtimeChat.ts` |
+| 8.4 | Creare hook `useRealtimeRadio` per comunicazione radio | ⬜ TODO | `src/hooks/useRealtimeRadio.ts` |
+| 8.5 | Creare hook `useRealtimeAchievements` per achievement live | ⬜ TODO | `src/hooks/useRealtimeAchievements.ts` |
+| 8.6 | Implementare gestione presenza utenti online | ⬜ TODO | `src/hooks/usePresence.ts` |
+| 8.7 | Creare sistema di riconnessione automatica | ⬜ TODO | `src/lib/realtimeClient.ts` |
+
+---
+
+## 9. Achievement & Rewards System ⬜
+
+**Obiettivo**: Sistema completo di achievement, badge e ricompense con animazioni per sblocchi live/post-partita.
+
+**Stato**: ⬜ TODO
+
+### Task Atomici
+
+| ID | Task | Stato | File Coinvolti |
+|----|------|-------|----------------|
+| 9.1 | Creare tipi `Achievement`, `Badge`, `Chest`, `Reward` | ⬜ TODO | `src/types/achievements.ts` |
+| 9.2 | Creare store `achievementStore.ts` con Zustand | ⬜ TODO | `src/stores/achievementStore.ts` |
+| 9.3 | Creare mock data achievement e badge | ⬜ TODO | `src/mocks/achievements.ts` |
+| 9.4 | Creare componente `AchievementUnlockAnimation` (animazione sblocco) | ⬜ TODO | `src/components/achievements/AchievementUnlockAnimation.tsx` |
+| 9.5 | Creare componente `ChestOpenAnimation` (animazione apertura baule) | ⬜ TODO | `src/components/achievements/ChestOpenAnimation.tsx` |
+| 9.6 | Creare componente `BadgeDisplay` (mostra badge utente/team) | ⬜ TODO | `src/components/achievements/BadgeDisplay.tsx` |
+| 9.7 | Creare componente `MatchEndCelebration` (animazioni fine partita) | ⬜ TODO | `src/components/achievements/MatchEndCelebration.tsx` |
+| 9.8 | Creare pagina `Achievements.tsx` con lista achievement | ⬜ TODO | `src/pages/Achievements.tsx` |
+| 9.9 | Integrare badge speciali (es. Ingegnere) con abilità | ⬜ TODO | `src/types/badges.ts` |
+| 9.10 | Sistema acquisto/conquista badge | ⬜ TODO | `src/pages/Shop.tsx` |
+
+---
+
+## 10. Radio Avanzata Match Live ⬜
+
+**Obiettivo**: Sistema radio avanzato con suoni ricetrasmittente, comunicazione bidirezionale non simultanea (audio streaming), e abilità speciali badge Ingegnere.
+
+**Stato**: ⬜ TODO
+
+### Task Atomici
+
+| ID | Task | Stato | File Coinvolti |
+|----|------|-------|----------------|
+| 10.1 | Aggiungere suoni ricetrasmittente (beep attivazione, statico, rilascio) | ⬜ TODO | `src/assets/sounds/`, `src/hooks/useRadioSounds.ts` |
+| 10.2 | Implementare PTT (Push-To-Talk) con recording audio | ⬜ TODO | `src/hooks/useAudioRecorder.ts` |
+| 10.3 | Creare sistema invio messaggi audio in streaming | ⬜ TODO | `src/hooks/useAudioStreaming.ts` |
+| 10.4 | Creare componente `RadioTransmitButton` con feedback visivo | ⬜ TODO | `src/components/radio/RadioTransmitButton.tsx` |
+| 10.5 | Creare componente `AudioMessageBubble` per messaggi vocali | ⬜ TODO | `src/components/radio/AudioMessageBubble.tsx` |
+| 10.6 | Implementare abilità badge Ingegnere: scanner frequenze nemiche | ⬜ TODO | `src/components/radio/FrequencyScanner.tsx` |
+| 10.7 | Creare UI scanner per ricerca stazioni avversarie | ⬜ TODO | `src/components/radio/EnemyScannerOverlay.tsx` |
+| 10.8 | Animazione "interferenza" quando si viene scansionati | ⬜ TODO | `src/components/radio/InterferenceEffect.tsx` |
+| 10.9 | Integrare radio avanzata in GameplayView | ⬜ TODO | `src/pages/GameplayView.tsx` |
+| 10.10 | Sistema contromisure radio (jamming, frequenze segrete) | ⬜ TODO | `src/hooks/useRadioCountermeasures.ts` |
