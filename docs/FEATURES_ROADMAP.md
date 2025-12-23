@@ -7,10 +7,12 @@ Questo documento traccia tutte le feature da implementare, suddivise in task ato
 ## 📋 Indice Features
 
 1. [Ricerca Campi Avanzata](#1-ricerca-campi-avanzata) ✅ COMPLETATA
-2. [Sommario Utente](#2-sommario-utente)
-3. [Sistema Alert](#3-sistema-alert)
-4. [Messaggistica Diretta](#4-messaggistica-diretta)
+2. [Sommario Utente](#2-sommario-utente) ✅ COMPLETATA
+3. [Sistema Alert](#3-sistema-alert) ✅ COMPLETATA
+4. [Messaggistica Diretta](#4-messaggistica-diretta) ✅ COMPLETATA
 5. [Radio Team](#5-radio-team)
+6. [Integrazione Social Media](#6-integrazione-social-media) 🔄 IN PROGRESS
+7. [RBAC - Controllo Accessi Basato su Ruoli](#7-rbac---controllo-accessi-basato-su-ruoli) ⬜ CRITICO
 
 ---
 
@@ -104,6 +106,8 @@ Questo documento traccia tutte le feature da implementare, suddivise in task ato
 
 **Obiettivo**: Aggiungere feature radio in sezione equipment con attivazione da parte della squadra.
 
+**Stato**: ⬜ TODO
+
 ### Task Atomici
 
 | ID | Task | Stato | File Coinvolti |
@@ -120,25 +124,53 @@ Questo documento traccia tutte le feature da implementare, suddivise in task ato
 
 ---
 
-## 6. Integrazione Social Media
+## 6. Integrazione Social Media 🔄
 
 **Obiettivo**: Integrare contatti social (Discord, Instagram, Telegram, WhatsApp) per team, campi e ruoli chiave con possibilità di accesso rapido.
+
+**Stato**: 🔄 IN PROGRESS (82%)
 
 ### Task Atomici
 
 | ID | Task | Stato | File Coinvolti |
 |----|------|-------|----------------|
-| 6.1 | Creare tipo `SocialContact` con piattaforme supportate | ⬜ TODO | `src/types/index.ts` |
-| 6.2 | Estendere tipi `Team`, `Field`, `User` con array contatti social | ⬜ TODO | `src/types/index.ts` |
-| 6.3 | Aggiornare mock data con contatti social di esempio | ⬜ TODO | `src/mocks/teams.ts`, `src/mocks/fields.ts`, `src/mocks/users.ts` |
-| 6.4 | Creare componente `SocialLinks` (lista icone cliccabili) | ⬜ TODO | `src/components/social/SocialLinks.tsx` |
-| 6.5 | Creare componente `SocialContactCard` (card contatto singolo) | ⬜ TODO | `src/components/social/SocialContactCard.tsx` |
-| 6.6 | Creare componente `AddSocialModal` per aggiungere contatti | ⬜ TODO | `src/components/social/AddSocialModal.tsx` |
-| 6.7 | Creare componente `QuickContactBar` (barra contatti rapidi) | ⬜ TODO | `src/components/social/QuickContactBar.tsx` |
-| 6.8 | Integrare `SocialLinks` in pagina Team | ⬜ TODO | `src/pages/Team.tsx` |
-| 6.9 | Integrare `SocialLinks` in FieldDetail e FieldCard | ⬜ TODO | `src/pages/FieldDetail.tsx`, `src/components/fields/FieldCard.tsx` |
-| 6.10 | Integrare `QuickContactBar` nella pagina Profile | ⬜ TODO | `src/pages/Profile.tsx` |
-| 6.11 | Aggiungere sezione contatti social in Settings per gestire i propri | ⬜ TODO | `src/pages/Settings.tsx` |
+| 6.1 | Creare tipo `SocialContact` con piattaforme supportate | ✅ DONE | `src/types/social.ts` |
+| 6.2 | Creare mock data con contatti social di esempio | ✅ DONE | `src/mocks/social.ts` |
+| 6.3 | Creare componente `SocialIcon` (icone SVG piattaforme) | ✅ DONE | `src/components/social/SocialIcon.tsx` |
+| 6.4 | Creare componente `SocialLinks` (lista icone cliccabili) | ✅ DONE | `src/components/social/SocialLinks.tsx` |
+| 6.5 | Creare componente `QuickContactBar` (barra contatti rapidi) | ✅ DONE | `src/components/social/QuickContactBar.tsx` |
+| 6.6 | Creare componente `SocialContactsForm` (form modifica contatti) | ✅ DONE | `src/components/social/SocialContactsForm.tsx` |
+| 6.7 | Integrare `SocialLinks` in pagina Team (header) | ✅ DONE | `src/components/team/TeamHeader.tsx`, `src/pages/Team.tsx` |
+| 6.8 | Integrare `QuickContactBar` in FieldDetail | ✅ DONE | `src/pages/FieldDetail.tsx` |
+| 6.9 | Integrare `SocialLinks` e form in Profile | ✅ DONE | `src/pages/Profile.tsx` |
+| 6.10 | Integrare form social in Team Settings | ✅ DONE | `src/pages/Team.tsx` |
+| 6.11 | Aggiungere link Profilo in Header dropdown | ✅ DONE | `src/components/layout/Header.tsx` |
+
+---
+
+## 7. RBAC - Controllo Accessi Basato su Ruoli ⬜ CRITICO
+
+**Obiettivo**: Implementare visibilità menu e protezione rotte basata su ruoli di sistema (`admin`, `player`, `referee`, etc.) e ruoli di dominio (`team_leader`, `field_manager`, `shop_owner`).
+
+**Stato**: ⬜ TODO - **PRIORITÀ ALTA**
+
+**Note**: Attualmente TUTTI gli utenti autenticati possono accedere a TUTTE le rotte, inclusa `/admin`. Non esiste controllo ruoli su menu e navigazione.
+
+### Task Atomici
+
+| ID | Task | Stato | File Coinvolti |
+|----|------|-------|----------------|
+| 7.1 | Creare helper `hasRole()` e `hasAnyRole()` per check ruoli | ⬜ TODO | `src/lib/auth.ts` |
+| 7.2 | Creare componente `ProtectedRoute` per protezione rotte | ⬜ TODO | `src/components/auth/ProtectedRoute.tsx` |
+| 7.3 | Creare componente `RoleGate` per visibilità condizionale UI | ⬜ TODO | `src/components/auth/RoleGate.tsx` |
+| 7.4 | Proteggere rotte `/admin/*` solo per ruolo `admin` | ⬜ TODO | `src/App.tsx` |
+| 7.5 | Proteggere rotte `/referee/*` solo per ruoli `referee`, `admin` | ⬜ TODO | `src/App.tsx` |
+| 7.6 | Filtrare voci menu Sidebar in base a ruolo utente | ⬜ TODO | `src/components/layout/Sidebar.tsx` |
+| 7.7 | Nascondere link Admin da utenti non-admin | ⬜ TODO | `src/components/layout/Sidebar.tsx` |
+| 7.8 | Mostrare sezioni Team Leader solo a `team_leader` in Team page | ⬜ TODO | `src/pages/Team.tsx` |
+| 7.9 | Mostrare sezioni Field Manager solo a `field_manager` in Locations | ⬜ TODO | `src/pages/Locations.tsx` |
+| 7.10 | Creare pagina `AccessDenied.tsx` per accessi non autorizzati | ⬜ TODO | `src/pages/AccessDenied.tsx` |
+| 7.11 | Aggiungere test ruoli con Demo Login per ogni ruolo | ⬜ TODO | `src/components/auth/DemoLoginModal.tsx` |
 
 ---
 
@@ -151,8 +183,9 @@ Questo documento traccia tutte le feature da implementare, suddivise in task ato
 | Sistema Alert | 9 | 9 | 100% ✅ |
 | Messaggistica Diretta | 8 | 8 | 100% ✅ |
 | Radio Team | 9 | 0 | 0% |
-| Integrazione Social | 11 | 0 | 0% |
-| **TOTALE** | **54** | **34** | **63%** |
+| Integrazione Social | 11 | 11 | 100% ✅ |
+| RBAC Controllo Accessi | 11 | 0 | 0% ⚠️ |
+| **TOTALE** | **65** | **45** | **69%** |
 
 ---
 
@@ -162,8 +195,9 @@ Questo documento traccia tutte le feature da implementare, suddivise in task ato
 2. ~~**Sistema Alert**~~ ✅ COMPLETATA
 3. ~~**Messaggistica Diretta**~~ ✅ COMPLETATA
 4. ~~**Sommario Utente**~~ ✅ COMPLETATA
-5. **Radio Team** - Feature avanzata gameplay
-6. **Integrazione Social** - Contatti rapidi Discord, Instagram, Telegram, WhatsApp
+5. ~~**Integrazione Social**~~ ✅ COMPLETATA
+6. **🔴 RBAC Controllo Accessi** - PRIORITÀ CRITICA (sicurezza)
+7. **Radio Team** - Feature avanzata gameplay
 
 ---
 
@@ -179,3 +213,5 @@ Questo documento traccia tutte le feature da implementare, suddivise in task ato
 - **2024-12-23**: Feature 3 (Sistema Alert) completata al 100%
 - **2024-12-23**: Feature 4 (Messaggistica Diretta) completata al 100%
 - **2024-12-23**: Aggiunta Feature 6 (Integrazione Social Media) alla roadmap
+- **2024-12-23**: Feature 6 (Integrazione Social) completata al 100%
+- **2024-12-23**: Aggiunta Feature 7 (RBAC) come priorità critica
