@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
+import { Loader2 } from 'lucide-react';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 import { TabBar } from './TabBar';
@@ -12,7 +13,7 @@ import { cn } from '@/lib/utils';
 
 export const MainLayout: React.FC = () => {
   const { sidebarOpen } = useUIStore();
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated, isHydrated } = useAuthStore();
   const navigate = useNavigate();
   const location = useLocation();
   
@@ -29,10 +30,22 @@ export const MainLayout: React.FC = () => {
   }, [location.pathname, isAuthenticated, updateCurrentPage]);
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (isHydrated && !isAuthenticated) {
       navigate('/login');
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, isHydrated, navigate]);
+
+  // Show loading while hydrating auth state
+  if (!isHydrated) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="h-8 w-8 text-primary animate-spin" />
+          <p className="text-sm text-muted-foreground">Caricamento...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!isAuthenticated) {
     return null;
