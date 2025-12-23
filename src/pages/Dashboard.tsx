@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import {
   Crosshair,
   Skull,
@@ -10,6 +11,8 @@ import {
   Users,
   TrendingUp,
   UserPlus,
+  Radio,
+  Play,
 } from 'lucide-react';
 import { useMockData } from '@/hooks/useMockData';
 import { TacticalCard, TacticalCardContent } from '@/components/ui/TacticalCard';
@@ -36,6 +39,7 @@ const activityIcons = {
 
 const Dashboard: React.FC = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const {
     currentUser,
     liveMatches,
@@ -118,6 +122,32 @@ const Dashboard: React.FC = () => {
           trendValue=""
         />
       </div>
+
+      {/* Quick Access: Gameplay Demo */}
+      <TacticalCard className="border-primary/30 bg-gradient-to-r from-primary/5 to-transparent">
+        <TacticalCardContent className="py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="h-12 w-12 rounded-lg bg-primary/20 flex items-center justify-center">
+                <Radio className="h-6 w-6 text-primary" />
+              </div>
+              <div>
+                <h3 className="font-display text-lg uppercase">Gameplay Demo</h3>
+                <p className="text-sm text-muted-foreground">
+                  Prova la radio avanzata con PTT, scanner frequenze e contromisure
+                </p>
+              </div>
+            </div>
+            <GlowButton 
+              onClick={() => navigate('/gameplay')}
+              className="gap-2"
+            >
+              <Play className="h-4 w-4" />
+              Entra in Partita
+            </GlowButton>
+          </div>
+        </TacticalCardContent>
+      </TacticalCard>
 
       {/* Two Columns: Live Matches & Upcoming Matches */}
       <div className="grid lg:grid-cols-2 gap-6">
