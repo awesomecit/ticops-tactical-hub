@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Skull, Crosshair, MapPin, MessageCircle, ArrowLeft, Heart, Target, Footprints, Radio } from 'lucide-react';
+import { Skull, Crosshair, MapPin, MessageCircle, ArrowLeft, Heart, Target, Footprints, Trophy } from 'lucide-react';
 import { GlowButton } from '@/components/ui/GlowButton';
 import { TacticalMap, KillDeclarationModal } from '@/components/gameplay';
 import { RadioBox } from '@/components/radio';
+import { AchievementUnlockAnimation, MatchEndCelebration } from '@/components/achievements';
 import { useRadioStore } from '@/stores/radioStore';
+import { useAchievementStore } from '@/stores/achievementStore';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { MatchCelebration } from '@/types/achievements';
 import {
   MOCK_GAME_STATE,
   MOCK_PLAYER_STATS,
@@ -20,7 +24,9 @@ const GameplayView: React.FC = () => {
   const [gameState] = useState(MOCK_GAME_STATE);
   const [playerStats, setPlayerStats] = useState(MOCK_PLAYER_STATS);
   const [killModalOpen, setKillModalOpen] = useState(false);
+  const [matchEnded, setMatchEnded] = useState(false);
   const { status: radioStatus, activateRadio, connect, channels } = useRadioStore();
+  const { achievements, updateProgress, setCelebration, pendingCelebration } = useAchievementStore();
 
   // Activate radio for gameplay
   useEffect(() => {
@@ -48,7 +54,13 @@ const GameplayView: React.FC = () => {
 
   const handleDeclareKill = (enemyId: string) => {
     const enemy = MOCK_NEARBY_ENEMIES.find((e) => e.id === enemyId);
-    setPlayerStats((prev) => ({ ...prev, kills: prev.kills + 1 }));
+    const newKills = playerStats.kills + 1;
+    setPlayerStats((prev) => ({ ...prev, kills: newKills }));
+    
+    // Update kill achievements progress
+    updateProgress('ach_100_kills', newKills);
+    updateProgress('ach_5_streak', newKills); // Simplified streak logic
+    
     toast({
       title: '🎯 Kill Dichiarata!',
       description: `Hai eliminato ${enemy?.name}. In attesa di conferma.`,
@@ -71,6 +83,33 @@ const GameplayView: React.FC = () => {
     });
   };
 
+  // End match and show celebration
+  const handleEndMatch = () => {
+    // Get unlocked achievements during this match (demo: pick some)
+    const unlockedDuringMatch = achievements.filter(a => 
+      a.unlockedAt && 
+      new Date(a.unlockedAt).getTime() > Date.now() - 60000 // Last minute
+    );
+
+    const celebration: MatchCelebration = {
+      matchId: 'match_demo_1',
+      playerId: 'user_1',
+      achievements: unlockedDuringMatch.slice(0, 2),
+      xpGained: 450 + playerStats.kills * 50,
+      levelUp: playerStats.kills >= 3 ? { from: 12, to: 13 } : undefined,
+      mvp: playerStats.kills >= 5,
+      highlights: [
+        { type: 'kill', value: playerStats.kills, label: 'Eliminazioni' },
+        { type: 'assist', value: 2, label: 'Assist' },
+        { type: 'objective', value: 1, label: 'Obiettivi' },
+        { type: 'streak', value: playerStats.kills > 2 ? playerStats.kills : 0, label: 'Streak Max' },
+      ],
+    };
+
+    setCelebration(celebration);
+    setMatchEnded(true);
+  };
+
   const scorePercentage = {
     alpha: (gameState.score.alpha / gameState.totalRounds) * 100,
     bravo: (gameState.score.bravo / gameState.totalRounds) * 100,
@@ -78,6 +117,13 @@ const GameplayView: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#0a0a0f] text-white flex flex-col">
+      {/* Achievement animations */}
+      <AchievementUnlockAnimation />
+      
+      {/* Match end celebration */}
+      {pendingCelebration && (
+        <MatchEndCelebration onComplete={() => navigate('/')} />
+      )}
       {/* TOP BAR */}
       <div className="bg-black/80 border-b border-gray-800 p-3 space-y-3">
         {/* Row 1: Live badge, mode, round, timer */}
@@ -105,6 +151,16 @@ const GameplayView: React.FC = () => {
             <span className="font-mono text-lg font-bold text-white">
               {gameState.timeRemaining}
             </span>
+            {/* End Match Button (Demo) */}
+            <Button
+              size="sm"
+              variant="outline"
+              className="h-7 text-xs border-amber-500/50 text-amber-400 hover:bg-amber-500/20"
+              onClick={handleEndMatch}
+            >
+              <Trophy className="h-3 w-3 mr-1" />
+              Fine
+            </Button>
           </div>
         </div>
 
