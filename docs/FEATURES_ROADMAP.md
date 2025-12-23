@@ -16,6 +16,7 @@ Questo documento traccia tutte le feature da implementare, suddivise in task ato
 8. [Sistema Real-Time (WebSockets)](#8-sistema-real-time-websockets) ⬜ TODO
 9. [Achievement & Rewards System](#9-achievement--rewards-system) ⬜ TODO
 10. [Radio Avanzata Match Live](#10-radio-avanzata-match-live) ⬜ TODO
+11. [Mercatino - Compra/Vendi/Scambia](#11-mercatino---compravendiscambia) ⬜ TODO
 
 ---
 
@@ -191,7 +192,8 @@ Questo documento traccia tutte le feature da implementare, suddivise in task ato
 | Real-Time WebSockets | 7 | 0 | 0% ⬜ |
 | Achievement & Rewards | 10 | 0 | 0% ⬜ |
 | Radio Avanzata Match Live | 10 | 0 | 0% ⬜ |
-| **TOTALE** | **92** | **53** | **58%** |
+| Mercatino Compra/Vendi | 14 | 0 | 0% ⬜ |
+| **TOTALE** | **106** | **53** | **50%** |
 
 ---
 
@@ -208,6 +210,7 @@ Questo documento traccia tutte le feature da implementare, suddivise in task ato
 9. **Sistema Real-Time** - Richiede Lovable Cloud (Supabase)
 10. **Achievement & Rewards** - Sistema badge, bauli, animazioni
 11. **Radio Avanzata Match Live** - Suoni, PTT, scanner frequenze, Ingegnere badge
+12. **Mercatino Compra/Vendi** - Annunci, foto, recensioni, sistema scambi
 
 ---
 
@@ -228,6 +231,8 @@ Questo documento traccia tutte le feature da implementare, suddivise in task ato
 - **2024-12-23**: Feature 5 (Radio Team) al 89%
 - **2024-12-23**: Aggiunte Feature 8 (Real-Time WebSockets), Feature 9 (Achievement & Rewards), Feature 10 (Radio Avanzata Match Live)
 - **2024-12-23**: Aggiunti bug da fixare nella sezione Chat
+- **2024-12-23**: Bug Chat fixati (5/5)
+- **2024-12-23**: Aggiunta Feature 11 (Mercatino Compra/Vendi/Scambia)
 
 ---
 
@@ -306,3 +311,44 @@ Questo documento traccia tutte le feature da implementare, suddivise in task ato
 | 10.8 | Animazione "interferenza" quando si viene scansionati | ⬜ TODO | `src/components/radio/InterferenceEffect.tsx` |
 | 10.9 | Integrare radio avanzata in GameplayView | ⬜ TODO | `src/pages/GameplayView.tsx` |
 | 10.10 | Sistema contromisure radio (jamming, frequenze segrete) | ⬜ TODO | `src/hooks/useRadioCountermeasures.ts` |
+
+---
+
+## 11. Mercatino - Compra/Vendi/Scambia ⬜
+
+**Obiettivo**: Marketplace stile Subito per comprare, vendere e scambiare attrezzatura airsoft tra giocatori. Include annunci con foto, sistema recensioni venditore/acquirente, e messaggistica integrata.
+
+**Stato**: ⬜ TODO
+
+### Task Atomici
+
+| ID | Task | Stato | File Coinvolti |
+|----|------|-------|----------------|
+| 11.1 | Creare tipi `MarketListing`, `ListingCategory`, `ListingCondition`, `SellerReview` | ⬜ TODO | `src/types/marketplace.ts` |
+| 11.2 | Creare store `marketplaceStore.ts` con Zustand | ⬜ TODO | `src/stores/marketplaceStore.ts` |
+| 11.3 | Creare mock data annunci e recensioni | ⬜ TODO | `src/mocks/marketplace.ts` |
+| 11.4 | Creare componente `ListingCard` (foto, prezzo, condizione, venditore) | ⬜ TODO | `src/components/marketplace/ListingCard.tsx` |
+| 11.5 | Creare componente `ListingFilters` (categoria, prezzo, condizione, zona) | ⬜ TODO | `src/components/marketplace/ListingFilters.tsx` |
+| 11.6 | Creare componente `ListingGallery` (carousel foto annuncio) | ⬜ TODO | `src/components/marketplace/ListingGallery.tsx` |
+| 11.7 | Creare componente `SellerCard` (rating, recensioni, annunci attivi) | ⬜ TODO | `src/components/marketplace/SellerCard.tsx` |
+| 11.8 | Creare componente `ReviewList` (recensioni venditore/acquirente) | ⬜ TODO | `src/components/marketplace/ReviewList.tsx` |
+| 11.9 | Creare componente `CreateListingForm` (form pubblicazione annuncio) | ⬜ TODO | `src/components/marketplace/CreateListingForm.tsx` |
+| 11.10 | Creare pagina `Marketplace.tsx` (lista annunci + filtri) | ⬜ TODO | `src/pages/Marketplace.tsx` |
+| 11.11 | Creare pagina `ListingDetail.tsx` (dettaglio annuncio) | ⬜ TODO | `src/pages/ListingDetail.tsx` |
+| 11.12 | Creare pagina `SellerProfile.tsx` (profilo venditore) | ⬜ TODO | `src/pages/SellerProfile.tsx` |
+| 11.13 | Integrare chat per contattare venditore | ⬜ TODO | `src/mocks/chat.ts` |
+| 11.14 | Aggiungere link Mercatino in Sidebar/Navigation | ⬜ TODO | `src/components/layout/Sidebar.tsx` |
+
+### Categorie Annunci Previste
+- **Repliche** (fucili, pistole, shotgun, sniper)
+- **Ottiche** (red dot, scope, torce)
+- **Accessori** (caricatori, batterie, hop-up)
+- **Abbigliamento** (mimetiche, gilet tattici, elmetti)
+- **Protezioni** (occhiali, maschere, guanti)
+- **Altro** (radio, borse, attrezzatura varia)
+
+### Sistema Recensioni
+- Rating 1-5 stelle
+- Recensione testuale
+- Ruolo: Acquirente / Venditore
+- Badge "Venditore Verificato" dopo X transazioni positive
