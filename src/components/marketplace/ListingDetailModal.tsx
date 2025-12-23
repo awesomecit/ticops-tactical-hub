@@ -25,6 +25,7 @@ interface ListingDetailModalProps {
   onOpenChange: (open: boolean) => void;
   onFavorite?: (id: string) => void;
   isFavorited?: boolean;
+  onOpenChat?: () => void;
 }
 
 const contactSchema = z.object({
@@ -47,6 +48,7 @@ export function ListingDetailModal({
   onOpenChange,
   onFavorite,
   isFavorited = false,
+  onOpenChat,
 }: ListingDetailModalProps) {
   const { toast } = useToast();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -312,10 +314,18 @@ export function ListingDetailModal({
 
               {/* Contact Form */}
               <div className="space-y-4">
-                <h3 className="flex items-center gap-2 font-semibold text-foreground">
-                  <MessageSquare className="h-5 w-5" />
-                  Contatta il venditore
-                </h3>
+                <div className="flex items-center justify-between">
+                  <h3 className="flex items-center gap-2 font-semibold text-foreground">
+                    <MessageSquare className="h-5 w-5" />
+                    Contatta il venditore
+                  </h3>
+                  {onOpenChat && (
+                    <Button variant="default" size="sm" onClick={onOpenChat} className="gap-2">
+                      <MessageSquare className="h-4 w-4" />
+                      Apri Chat
+                    </Button>
+                  )}
+                </div>
 
                 <div className="space-y-3">
                   <div className="grid gap-3 sm:grid-cols-2">
