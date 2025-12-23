@@ -65,5 +65,19 @@ export {
   getRankChange,
 } from './rankings';
 
+// Chat
+export {
+  type IMockConversation,
+  type IMockMessage,
+  type ConversationType,
+  type MessageType,
+  MOCK_CONVERSATIONS,
+  MOCK_MESSAGES,
+  getConversationsByType,
+  getConversationById,
+  getMessagesByConversation,
+  getTotalUnreadCount,
+} from './chat';
+
 // Legacy exports for backward compatibility
 export { mockRanks, mockUser, mockTeams, mockGames, mockMessages, mockNotifications } from './data';
