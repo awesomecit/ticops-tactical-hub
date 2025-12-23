@@ -34,10 +34,12 @@ import { ListingCard, ListingDetailModal, CreateListingModal } from '@/component
 import { mockListings, categoryLabels, conditionLabels } from '@/mocks/marketplace';
 import { MarketplaceListing, ListingCategory, ListingCondition, MarketplaceFilters } from '@/types/marketplace';
 import { useToast } from '@/hooks/use-toast';
+import { useFavoritesStore } from '@/stores/favoritesStore';
 
 const Marketplace: React.FC = () => {
   const { t } = useTranslation();
   const { toast } = useToast();
+  const { favorites, toggleFavorite } = useFavoritesStore();
   
   const [searchQuery, setSearchQuery] = useState('');
   const [filters, setFilters] = useState<MarketplaceFilters>({});
@@ -107,6 +109,15 @@ const Marketplace: React.FC = () => {
   const handleListingClick = (listing: MarketplaceListing) => {
     setSelectedListing(listing);
     setDetailModalOpen(true);
+  };
+
+  const handleFavoriteToggle = (id: string) => {
+    toggleFavorite(id);
+    const isFav = !favorites.includes(id);
+    toast({
+      title: isFav ? 'Aggiunto ai preferiti' : 'Rimosso dai preferiti',
+      description: isFav ? 'Puoi trovarlo nel tuo profilo.' : 'L\'annuncio è stato rimosso.',
+    });
   };
 
   const handleCreateListing = (listingData: Omit<MarketplaceListing, 'id' | 'sellerId' | 'sellerName' | 'sellerAvatar' | 'sellerRating' | 'status' | 'views' | 'favorites' | 'createdAt' | 'updatedAt'>) => {
@@ -375,6 +386,8 @@ const Marketplace: React.FC = () => {
               key={listing.id}
               listing={listing}
               onClick={() => handleListingClick(listing)}
+              onFavorite={handleFavoriteToggle}
+              isFavorited={favorites.includes(listing.id)}
             />
           ))}
         </div>
