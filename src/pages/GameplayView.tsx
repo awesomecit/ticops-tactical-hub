@@ -54,15 +54,18 @@ const GameplayView: React.FC = () => {
   useEffect(() => {
     if (!radioStatus.isConnected) {
       activateRadio('team_001');
-      // Small delay then connect to main channel
-      setTimeout(() => {
-        const mainChannel = channels.find(c => c.type === 'team');
-        if (mainChannel) {
-          connect(mainChannel.id);
-        }
-      }, 100);
     }
   }, []);
+
+  // Connect to main channel once channels are available
+  useEffect(() => {
+    if (channels.length > 0 && !radioStatus.isConnected) {
+      const mainChannel = channels.find(c => c.type === 'team') || channels[0];
+      if (mainChannel) {
+        connect(mainChannel.id);
+      }
+    }
+  }, [channels, radioStatus.isConnected, connect]);
 
   // Force dark mode
   useEffect(() => {
