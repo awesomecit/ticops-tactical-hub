@@ -37,21 +37,23 @@ Questo documento traccia tutte le feature da implementare, suddivise in task ato
 
 ---
 
-## 2. Sommario Utente
+## 2. Sommario Utente ✅
 
 **Obiettivo**: Mostrare un sommario personalizzato per tipo utente con eventi registrati.
+
+**Stato**: ✅ COMPLETATA
 
 ### Task Atomici
 
 | ID | Task | Stato | File Coinvolti |
 |----|------|-------|----------------|
-| 2.1 | Creare tipo `UserEvent` (partita, torneo, allenamento) | ⬜ TODO | `src/types/index.ts` |
-| 2.2 | Creare mock eventi per utente | ⬜ TODO | `src/mocks/events.ts` |
-| 2.3 | Creare componente `UserSummaryCard` | ⬜ TODO | `src/components/profile/UserSummaryCard.tsx` |
-| 2.4 | Creare componente `EventsList` | ⬜ TODO | `src/components/profile/EventsList.tsx` |
-| 2.5 | Creare componente `RoleSummary` (diverso per ruolo) | ⬜ TODO | `src/components/profile/RoleSummary.tsx` |
-| 2.6 | Aggiungere sezione sommario in Dashboard per ogni ruolo | ⬜ TODO | `src/pages/Dashboard.tsx` |
-| 2.7 | Creare pagina `Profile.tsx` con sommario completo | ⬜ TODO | `src/pages/Profile.tsx` |
+| 2.1 | Creare tipo `UserEvent` (partita, torneo, allenamento) | ✅ DONE | `src/types/index.ts` |
+| 2.2 | Creare mock eventi per utente | ✅ DONE | `src/mocks/events.ts` |
+| 2.3 | Creare componente `UserSummaryCard` | ✅ DONE | `src/components/profile/UserSummaryCard.tsx` |
+| 2.4 | Creare componente `EventsList` | ✅ DONE | `src/components/profile/EventsList.tsx` |
+| 2.5 | Creare componente `RoleSummary` (diverso per ruolo) | ✅ DONE | `src/components/profile/RoleSummary.tsx` |
+| 2.6 | Aggiungere sezione sommario in Dashboard per ogni ruolo | ✅ DONE | `src/pages/Profile.tsx` |
+| 2.7 | Creare pagina `Profile.tsx` con sommario completo | ✅ DONE | `src/pages/Profile.tsx` |
 
 ---
 
@@ -123,11 +125,11 @@ Questo documento traccia tutte le feature da implementare, suddivise in task ato
 | Feature | Task Totali | Completati | Progresso |
 |---------|-------------|------------|-----------|
 | Ricerca Campi | 10 | 10 | 100% ✅ |
-| Sommario Utente | 7 | 0 | 0% |
+| Sommario Utente | 7 | 7 | 100% ✅ |
 | Sistema Alert | 9 | 9 | 100% ✅ |
 | Messaggistica Diretta | 8 | 8 | 100% ✅ |
 | Radio Team | 9 | 0 | 0% |
-| **TOTALE** | **43** | **27** | **63%** |
+| **TOTALE** | **43** | **34** | **79%** |
 
 ---
 
@@ -136,7 +138,7 @@ Questo documento traccia tutte le feature da implementare, suddivise in task ato
 1. ~~**Ricerca Campi**~~ ✅ COMPLETATA
 2. ~~**Sistema Alert**~~ ✅ COMPLETATA
 3. ~~**Messaggistica Diretta**~~ ✅ COMPLETATA
-4. **Sommario Utente** - Dashboard enhancement
+4. ~~**Sommario Utente**~~ ✅ COMPLETATA
 5. **Radio Team** - Feature avanzata gameplay
 
 ---
