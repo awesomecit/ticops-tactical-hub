@@ -18,6 +18,8 @@ import { useUIStore } from '@/stores/uiStore';
 import { useAuthStore } from '@/stores/authStore';
 import { cn } from '@/lib/utils';
 import { useChatStore } from '@/stores/chatStore';
+import { isAdmin, canManageTeam } from '@/lib/auth';
+import { RadioWidget } from '@/components/radio/RadioWidget';
 
 interface NavItem {
   icon: React.ElementType;
@@ -44,9 +46,13 @@ const adminItems: NavItem[] = [
 export const Sidebar: React.FC = () => {
   const { t } = useTranslation();
   const { sidebarOpen, toggleSidebar } = useUIStore();
-  const { logout } = useAuthStore();
+  const { user, logout } = useAuthStore();
   const { getTotalUnreadCount } = useChatStore();
   const navItems = getNavItems(getTotalUnreadCount());
+  
+  const userRole = user?.role;
+  const showAdminSection = isAdmin(userRole);
+  const showRadioWidget = canManageTeam(userRole);
 
   return (
     <>
@@ -131,39 +137,61 @@ export const Sidebar: React.FC = () => {
               </NavLink>
             ))}
 
-            <div className="my-4 border-t border-sidebar-border" />
-
-            {sidebarOpen && (
-              <div className="mb-4">
-                <span className="px-3 text-xs font-display uppercase tracking-wider text-muted-foreground">
-                  Admin
-                </span>
-              </div>
+            {/* Radio Widget for team leaders */}
+            {showRadioWidget && (
+              <>
+                <div className="my-4 border-t border-sidebar-border" />
+                {sidebarOpen && (
+                  <div className="mb-2 px-3">
+                    <RadioWidget collapsed={false} />
+                  </div>
+                )}
+                {!sidebarOpen && (
+                  <div className="lg:flex lg:justify-center">
+                    <RadioWidget collapsed={true} />
+                  </div>
+                )}
+              </>
             )}
 
-            {adminItems.map((item) => (
-              <NavLink
-                key={item.path}
-                to={item.path}
-                onClick={() => {
-                  if (window.innerWidth < 1024) {
-                    toggleSidebar();
-                  }
-                }}
-                className={({ isActive }) =>
-                  cn(
-                    "flex items-center gap-3 rounded-sm font-display uppercase tracking-wider text-sm transition-all duration-200 group no-select",
-                    sidebarOpen ? "px-3 py-3 min-h-[44px]" : "lg:px-2 lg:py-2 lg:justify-center",
-                    isActive
-                      ? "bg-sidebar-primary/10 text-sidebar-primary border-l-2 border-sidebar-primary"
-                      : "text-sidebar-foreground hover:bg-sidebar-accent active:bg-sidebar-accent/80 hover:text-foreground"
-                  )
-                }
-              >
-                <item.icon className="h-5 w-5 transition-transform group-hover:scale-110 flex-shrink-0" />
-                {sidebarOpen && <span className="flex-1">{t(item.labelKey)}</span>}
-              </NavLink>
-            ))}
+            {/* Admin section - only for admins */}
+            {showAdminSection && (
+              <>
+                <div className="my-4 border-t border-sidebar-border" />
+
+                {sidebarOpen && (
+                  <div className="mb-4">
+                    <span className="px-3 text-xs font-display uppercase tracking-wider text-muted-foreground">
+                      Admin
+                    </span>
+                  </div>
+                )}
+
+                {adminItems.map((item) => (
+                  <NavLink
+                    key={item.path}
+                    to={item.path}
+                    onClick={() => {
+                      if (window.innerWidth < 1024) {
+                        toggleSidebar();
+                      }
+                    }}
+                    className={({ isActive }) =>
+                      cn(
+                        "flex items-center gap-3 rounded-sm font-display uppercase tracking-wider text-sm transition-all duration-200 group no-select",
+                        sidebarOpen ? "px-3 py-3 min-h-[44px]" : "lg:px-2 lg:py-2 lg:justify-center",
+                        isActive
+                          ? "bg-sidebar-primary/10 text-sidebar-primary border-l-2 border-sidebar-primary"
+                          : "text-sidebar-foreground hover:bg-sidebar-accent active:bg-sidebar-accent/80 hover:text-foreground"
+                      )
+                    }
+                  >
+                    <item.icon className="h-5 w-5 transition-transform group-hover:scale-110 flex-shrink-0" />
+                    {sidebarOpen && <span className="flex-1">{t(item.labelKey)}</span>}
+                  </NavLink>
+                ))}
+              </>
+            )}
           </nav>
 
           {/* Footer - touch-friendly logout */}
