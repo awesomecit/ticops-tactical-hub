@@ -11,6 +11,7 @@ import {
   Shield,
   LogOut,
   ChevronLeft,
+  User,
 } from 'lucide-react';
 import { useUIStore } from '@/stores/uiStore';
 import { useAuthStore } from '@/stores/authStore';
@@ -31,6 +32,7 @@ const getNavItems = (): NavItem[] => [
   { icon: MessageSquare, labelKey: 'nav.chat', path: '/chat', badge: getTotalUnreadCount() },
   { icon: Trophy, labelKey: 'nav.leaderboard', path: '/leaderboard' },
   { icon: MapPin, labelKey: 'nav.locations', path: '/locations' },
+  { icon: User, labelKey: 'nav.profile', path: '/profile' },
 ];
 
 const adminItems: NavItem[] = [
