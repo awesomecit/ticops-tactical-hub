@@ -127,7 +127,11 @@ export const useEquipmentStore = create<EquipmentState>()(
       })),
       
       addEquipment: (equipment) => set((state) => ({
-        equipment: [...state.equipment, { ...equipment, lastUpdated: new Date().toISOString() }],
+        equipment: [...state.equipment, { 
+          ...equipment, 
+          id: `custom_${Date.now()}`,
+          lastUpdated: new Date().toISOString() 
+        }],
       })),
       
       removeEquipment: (id) => set((state) => ({

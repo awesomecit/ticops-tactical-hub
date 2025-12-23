@@ -25,7 +25,7 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { RadioBox } from '@/components/radio';
-import { EquipmentEditModal, PreferencesModal } from '@/components/equipment';
+import { EquipmentEditModal, PreferencesModal, AddEquipmentModal } from '@/components/equipment';
 import { useRadioStore } from '@/stores/radioStore';
 import { useEquipmentStore, Equipment as EquipmentType } from '@/stores/equipmentStore';
 import { useToast } from '@/hooks/use-toast';
@@ -66,6 +66,7 @@ const Equipment: React.FC = () => {
     toggleEquipmentStatus, 
     updateEquipment,
     removeEquipment,
+    addEquipment,
     setPreferences,
     resetToDefaults 
   } = useEquipmentStore();
@@ -75,6 +76,7 @@ const Equipment: React.FC = () => {
   const [activeTab, setActiveTab] = useState(preferences.defaultTab);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [preferencesModalOpen, setPreferencesModalOpen] = useState(false);
+  const [addModalOpen, setAddModalOpen] = useState(false);
   const [selectedEquipment, setSelectedEquipment] = useState<EquipmentType | null>(null);
 
   // Apply default tab from preferences on mount
@@ -164,6 +166,14 @@ const Equipment: React.FC = () => {
     });
   };
 
+  const handleAddEquipment = (newEquipment: Omit<EquipmentType, 'id' | 'lastUpdated'>) => {
+    addEquipment(newEquipment as EquipmentType);
+    toast({
+      title: 'Aggiunto',
+      description: `${newEquipment.name} aggiunto con successo`,
+    });
+  };
+
   const getEquipmentStats = () => {
     const active = equipment.filter(e => e.status === 'active').length;
     const connected = equipment.filter(e => e.isConnected).length;
@@ -193,6 +203,14 @@ const Equipment: React.FC = () => {
           >
             <Settings className="h-4 w-4 mr-2" />
             Preferenze
+          </Button>
+          <Button 
+            variant="outline"
+            size="sm"
+            onClick={() => setAddModalOpen(true)}
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Nuovo
           </Button>
           <Button 
             size="sm"
@@ -505,6 +523,12 @@ const Equipment: React.FC = () => {
         onClose={() => setPreferencesModalOpen(false)}
         onSave={setPreferences}
         onReset={handleResetPreferences}
+      />
+
+      <AddEquipmentModal
+        open={addModalOpen}
+        onOpenChange={setAddModalOpen}
+        onAdd={handleAddEquipment}
       />
     </div>
   );
