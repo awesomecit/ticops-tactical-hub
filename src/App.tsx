@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { MainLayout } from "@/components/layout/MainLayout";
+import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import Dashboard from "@/pages/Dashboard";
 import Games from "@/pages/Games";
 import Team from "@/pages/Team";
@@ -68,7 +69,11 @@ const App = () => (
           <Route path="/gameplay/:gameId" element={<GameplayView />} />
           <Route path="/spectator/:gameId" element={<SpectatorView />} />
           <Route path="/referee/:gameId" element={<RefereeView />} />
-          <Route path="/admin" element={<AdminLayout />}>
+          <Route path="/admin" element={
+            <ProtectedRoute requireAdmin>
+              <AdminLayout />
+            </ProtectedRoute>
+          }>
             <Route index element={<AdminDashboard />} />
             <Route path="fields" element={<AdminFields />} />
             <Route path="referees" element={<AdminReferees />} />
