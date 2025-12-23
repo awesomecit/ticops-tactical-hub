@@ -86,7 +86,8 @@
     "spectator": "Spettatore",
     "profile": "Profilo",
     "equipment": "Equipaggiamento",
-    "marketplace": "Mercatino"
+    "marketplace": "Mercatino",
+    "achievements": "Achievement"
   },
   "auth": {
     "login": "Accedi",

@@ -39,6 +39,7 @@ import GameDetail from "@/pages/GameDetail";
 import Marketplace from "@/pages/Marketplace";
 import Organize from "@/pages/Organize";
 import AccessDenied from "@/pages/AccessDenied";
+import Achievements from "@/pages/Achievements";
 
 const queryClient = new QueryClient();
 
@@ -67,6 +68,7 @@ const App = () => (
             <Route path="/equipment" element={<Equipment />} />
             <Route path="/marketplace" element={<Marketplace />} />
             <Route path="/organize" element={<Organize />} />
+            <Route path="/achievements" element={<Achievements />} />
             <Route path="/about" element={<About />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/settings" element={<Settings />} />

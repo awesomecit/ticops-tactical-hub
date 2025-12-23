@@ -86,7 +86,8 @@
     "spectator": "Spectator",
     "profile": "Profile",
     "equipment": "Equipment",
-    "marketplace": "Marketplace"
+    "marketplace": "Marketplace",
+    "achievements": "Achievements"
   },
   "auth": {
     "login": "Login",
