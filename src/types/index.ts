@@ -173,3 +173,78 @@ export interface TutorialProgress {
   isCompleted: boolean;
   lastStepSeen?: string;
 }
+
+// Field Types
+export type FieldType = 'outdoor' | 'indoor' | 'mixed';
+
+export interface FieldCharacteristics {
+  hasParking: boolean;
+  hasLockers: boolean;
+  hasRental: boolean;
+  hasShop: boolean;
+  hasBar: boolean;
+  hasWifi: boolean;
+  hasFirstAid: boolean;
+  hasNightLights: boolean;
+  hasSyntheticGrass: boolean;
+  hasBunkers: boolean;
+  hasTrenches: boolean;
+  hasUrbanStructures: boolean;
+  isClimateControlled: boolean;
+}
+
+export interface FieldReview {
+  id: string;
+  fieldId: string;
+  userId: string;
+  userName: string;
+  userAvatar?: string;
+  rating: number;
+  title: string;
+  content: string;
+  pros: string[];
+  cons: string[];
+  visitDate: Date;
+  createdAt: Date;
+  helpfulCount: number;
+  images?: string[];
+}
+
+export interface FieldAvailabilitySlot {
+  id: string;
+  fieldId: string;
+  date: Date;
+  startTime: string;
+  endTime: string;
+  isAvailable: boolean;
+  price: number;
+  bookedBy?: string;
+  eventName?: string;
+  maxPlayers: number;
+  currentPlayers: number;
+}
+
+export interface Field {
+  id: string;
+  name: string;
+  slug: string;
+  description: string;
+  type: FieldType;
+  address: string;
+  city: string;
+  province: string;
+  region: string;
+  coordinates: { lat: number; lng: number };
+  images: string[];
+  rating: number;
+  reviewCount: number;
+  characteristics: FieldCharacteristics;
+  pricePerHour: number;
+  maxPlayers: number;
+  sizeSquareMeters: number;
+  ownerId: string;
+  ownerName: string;
+  phone?: string;
+  email?: string;
+  website?: string;
+}
