@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 import { it, enUS } from 'date-fns/locale';
 import { Calendar, MapPin, Users } from 'lucide-react';
@@ -7,10 +8,13 @@ import { mockGames } from '@/mocks/data';
 import { TacticalCard, TacticalCardContent } from '@/components/ui/TacticalCard';
 import { GlowButton } from '@/components/ui/GlowButton';
 import { cn } from '@/lib/utils';
+import { NewGameDialog } from '@/components/games/NewGameDialog';
 
 const Games: React.FC = () => {
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
   const [filter, setFilter] = React.useState<'all' | 'upcoming' | 'live' | 'completed'>('all');
+  const [newGameOpen, setNewGameOpen] = React.useState(false);
   
   const dateLocale = i18n.language.startsWith('it') ? it : enUS;
   
@@ -42,7 +46,7 @@ const Games: React.FC = () => {
           <h1 className="text-3xl text-glow-primary">{t('games.title')}</h1>
           <p className="text-muted-foreground mt-1">{t('games.subtitle')}</p>
         </div>
-        <GlowButton variant="primary">
+        <GlowButton variant="primary" onClick={() => setNewGameOpen(true)}>
           <Calendar className="h-4 w-4 mr-2" />
           {t('games.newGame')}
         </GlowButton>
@@ -131,16 +135,29 @@ const Games: React.FC = () => {
 
                 <div className="flex flex-col gap-2 lg:items-end">
                   {game.status === 'upcoming' && (
-                    <GlowButton variant="primary" className="w-full lg:w-auto">
+                    <GlowButton 
+                      variant="primary" 
+                      className="w-full lg:w-auto"
+                      onClick={() => navigate(`/games/${game.id}`)}
+                    >
                       {t('games.joinGame')}
                     </GlowButton>
                   )}
                   {game.status === 'live' && (
-                    <GlowButton variant="secondary" className="w-full lg:w-auto">
+                    <GlowButton 
+                      variant="secondary" 
+                      className="w-full lg:w-auto"
+                      onClick={() => navigate(`/spectator/${game.id}`)}
+                    >
                       {t('games.watchLive')}
                     </GlowButton>
                   )}
-                  <GlowButton variant="ghost" size="sm" className="w-full lg:w-auto">
+                  <GlowButton 
+                    variant="ghost" 
+                    size="sm" 
+                    className="w-full lg:w-auto"
+                    onClick={() => navigate(`/games/${game.id}`)}
+                  >
                     {t('games.details')}
                   </GlowButton>
                 </div>
@@ -157,6 +174,8 @@ const Games: React.FC = () => {
           </TacticalCardContent>
         </TacticalCard>
       )}
+
+      <NewGameDialog open={newGameOpen} onOpenChange={setNewGameOpen} />
     </div>
   );
 };
