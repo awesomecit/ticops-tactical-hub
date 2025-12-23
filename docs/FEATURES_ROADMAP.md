@@ -73,7 +73,7 @@ Questo documento traccia tutte le feature da implementare, suddivise in task ato
 | 3.6 | Creare componente `AlertToggle` per shop/campo | ✅ DONE | `src/components/alerts/AlertToggle.tsx` |
 | 3.7 | Creare componente `AlertsList` | ✅ DONE | `src/components/alerts/AlertsList.tsx` |
 | 3.8 | Aggiungere sezione Alert in Settings | ✅ DONE | `src/pages/Settings.tsx` |
-| 3.9 | Aggiungere pulsante "Imposta Alert" in Shop e Locations | ⬜ TODO | `src/pages/Shop.tsx`, `src/pages/Locations.tsx` |
+| 3.9 | Aggiungere pulsante "Imposta Alert" in Shop e Locations | ✅ DONE | `src/pages/Shop.tsx`, `src/components/fields/FieldCard.tsx` |
 
 ---
 
@@ -122,10 +122,10 @@ Questo documento traccia tutte le feature da implementare, suddivise in task ato
 |---------|-------------|------------|-----------|
 | Ricerca Campi | 10 | 10 | 100% ✅ |
 | Sommario Utente | 7 | 0 | 0% |
-| Sistema Alert | 9 | 8 | 89% ✅ |
+| Sistema Alert | 9 | 9 | 100% ✅ |
 | Messaggistica Diretta | 8 | 0 | 0% |
 | Radio Team | 9 | 0 | 0% |
-| **TOTALE** | **43** | **18** | **42%** |
+| **TOTALE** | **43** | **19** | **44%** |
 
 ---
 
