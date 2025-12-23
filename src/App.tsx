@@ -12,8 +12,9 @@ import Chat from "@/pages/Chat";
 import ChatView from "@/pages/ChatView";
 import Leaderboard from "@/pages/Leaderboard";
 import Locations from "@/pages/Locations";
-import Admin from "@/pages/Admin";
 import Register from "@/pages/Register";
+import AdminLayout from "@/pages/admin/AdminLayout";
+import AdminDashboard from "@/pages/admin/AdminDashboard";
 import Login from "@/pages/Login";
 import NotFound from "@/pages/NotFound";
 
@@ -37,7 +38,9 @@ const App = () => (
             <Route path="/chat/:conversationId" element={<ChatView />} />
             <Route path="/leaderboard" element={<Leaderboard />} />
             <Route path="/locations" element={<Locations />} />
-            <Route path="/admin" element={<Admin />} />
+          </Route>
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<AdminDashboard />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
