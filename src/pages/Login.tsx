@@ -7,11 +7,12 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuthStore } from "@/stores/authStore";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Apple, Chrome, Crosshair, Loader2, Mail } from "lucide-react";
+import { Apple, Chrome, Crosshair, Loader2, Mail, Users } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { z } from "zod";
+import DemoLoginModal from "@/components/auth/DemoLoginModal";
 
 const loginSchema = z.object({
   email: z.string().email("Email non valida"),
@@ -36,6 +37,7 @@ const Login = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<"login" | "register">("login");
+  const [demoModalOpen, setDemoModalOpen] = useState(false);
 
   const loginForm = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
@@ -115,16 +117,16 @@ const Login = () => {
               <p className="text-muted-foreground mt-2">Accedi al tuo account</p>
             </div>
 
-            {/* Demo Credentials */}
-            <div className="p-4 rounded-lg bg-primary/10 border border-primary/20">
-              <p className="text-sm font-medium text-primary mb-2">🎮 Credenziali Demo:</p>
-              <p className="text-xs text-muted-foreground">
-                Email: <code className="bg-muted px-1 rounded">ghost@ticops.it</code>
-              </p>
-              <p className="text-xs text-muted-foreground">
-                Password: <code className="bg-muted px-1 rounded">password123</code>
-              </p>
-            </div>
+            {/* Demo Login Button */}
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full border-primary/50 text-primary hover:bg-primary/10"
+              onClick={() => setDemoModalOpen(true)}
+            >
+              <Users className="w-4 h-4 mr-2" />
+              🎮 Accesso Demo Rapido
+            </Button>
 
             <form onSubmit={loginForm.handleSubmit(handleLogin)} className="space-y-4">
               <div className="space-y-2">
@@ -271,6 +273,8 @@ const Login = () => {
           Registrazione avanzata
         </Link>
       </p>
+
+      <DemoLoginModal open={demoModalOpen} onOpenChange={setDemoModalOpen} />
     </div>
   );
 };

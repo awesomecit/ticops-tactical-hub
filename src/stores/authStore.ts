@@ -1,35 +1,21 @@
 import { create } from 'zustand';
-import { User } from '@/types';
+import { User, UserRole } from '@/types';
 import { mockUser, mockRanks } from '@/mocks/data';
+import { DEMO_USERS, DemoUser } from '@/mocks/demoUsers';
 
-// Mock user database for demo
+// Mock user database for demo - includes all demo users
 const MOCK_USERS_DB: { email: string; password: string; user: User }[] = [
   {
     email: 'ghost@ticops.it',
     password: 'password123',
     user: mockUser,
   },
-  {
-    email: 'demo@softwar.it',
-    password: 'demo123',
-    user: {
-      id: '2',
-      username: 'demo_player',
-      callsign: 'DEMO',
-      email: 'demo@softwar.it',
-      avatar: undefined,
-      rank: mockRanks[1],
-      stats: {
-        gamesPlayed: 12,
-        wins: 6,
-        kills: 34,
-        deaths: 28,
-        accuracy: 52.3,
-        xp: 850,
-      },
-      createdAt: new Date('2024-06-01'),
-    },
-  },
+  // Add all demo users
+  ...DEMO_USERS.map(du => ({
+    email: du.email,
+    password: du.password,
+    user: du.user,
+  })),
 ];
 
 interface AuthState {
@@ -40,6 +26,7 @@ interface AuthState {
   logout: () => void;
   setUser: (user: User) => void;
   register: (email: string, password: string, username: string) => Promise<{ success: boolean; error?: string }>;
+  loginAsRole: (role: UserRole) => Promise<{ success: boolean; error?: string }>;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -99,6 +86,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       callsign: username.toUpperCase().substring(0, 6),
       email,
       avatar: undefined,
+      role: 'player',
       rank: mockRanks[0],
       stats: {
         gamesPlayed: 0,
@@ -119,6 +107,23 @@ export const useAuthStore = create<AuthState>((set) => ({
     localStorage.setItem('currentUser', JSON.stringify(newUser));
     
     return { success: true };
+  },
+
+  // Quick login as demo role
+  loginAsRole: async (role: UserRole) => {
+    set({ isLoading: true });
+    await new Promise(resolve => setTimeout(resolve, 400));
+    
+    const demoUser = DEMO_USERS.find(u => u.role === role);
+    if (demoUser) {
+      set({ user: demoUser.user, isAuthenticated: true, isLoading: false });
+      localStorage.setItem('isLoggedIn', 'true');
+      localStorage.setItem('currentUser', JSON.stringify(demoUser.user));
+      return { success: true };
+    }
+    
+    set({ isLoading: false });
+    return { success: false, error: 'Ruolo non trovato' };
   },
 }));
 
