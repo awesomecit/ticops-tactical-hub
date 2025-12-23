@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 import { Header } from './Header';
@@ -16,6 +16,8 @@ export const MainLayout: React.FC = () => {
   const { isAuthenticated, isHydrated } = useAuthStore();
   const navigate = useNavigate();
   const location = useLocation();
+  const [showLoader, setShowLoader] = useState(true);
+  const [loaderFading, setLoaderFading] = useState(false);
   
   // Global real-time features
   useAchievementNotifications();
@@ -35,10 +37,26 @@ export const MainLayout: React.FC = () => {
     }
   }, [isAuthenticated, isHydrated, navigate]);
 
+  // Handle loader fade-out transition
+  useEffect(() => {
+    if (isHydrated && isAuthenticated) {
+      setLoaderFading(true);
+      const timer = setTimeout(() => {
+        setShowLoader(false);
+      }, 300); // Match animation duration
+      return () => clearTimeout(timer);
+    }
+  }, [isHydrated, isAuthenticated]);
+
   // Show loading while hydrating auth state
-  if (!isHydrated) {
+  if (!isHydrated || (showLoader && isAuthenticated)) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div 
+        className={cn(
+          "min-h-screen bg-background flex items-center justify-center transition-opacity duration-300",
+          loaderFading ? "opacity-0" : "opacity-100"
+        )}
+      >
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="h-8 w-8 text-primary animate-spin" />
           <p className="text-sm text-muted-foreground">Caricamento...</p>
