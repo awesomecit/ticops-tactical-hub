@@ -82,7 +82,8 @@
     "about": "Info",
     "admin": "Admin",
     "referee": "Arbitro",
-    "spectator": "Spettatore"
+    "spectator": "Spettatore",
+    "profile": "Profilo"
   },
   "auth": {
     "login": "Accedi",
