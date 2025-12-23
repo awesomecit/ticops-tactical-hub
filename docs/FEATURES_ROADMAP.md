@@ -347,8 +347,40 @@ Questo documento traccia tutte le feature da implementare, suddivise in task ato
 - **Protezioni** (occhiali, maschere, guanti)
 - **Altro** (radio, borse, attrezzatura varia)
 
-### Sistema Recensioni
+### Sistema Recensioni ✅ IMPLEMENTATO
 - Rating 1-5 stelle
 - Recensione testuale
 - Ruolo: Acquirente / Venditore
 - Badge "Venditore Verificato" dopo X transazioni positive
+- Statistiche cumulative venditore/acquirente
+
+---
+
+## 12. Match Organizer - Disponibilità e Incroci ⬜
+
+**Obiettivo**: Sistema per organizzare partite con incroci disponibilità campi, giocatori e attrezzature. Favorisce l'organizzazione di match anche tra sconosciuti.
+
+**Stato**: ⬜ TODO
+
+### Task Atomici
+
+| ID | Task | Stato | File Coinvolti |
+|----|------|-------|----------------|
+| 12.1 | Creare tipi `Availability`, `TimeSlot`, `MatchRequest` | ⬜ TODO | `src/types/availability.ts` |
+| 12.2 | Creare store `availabilityStore.ts` per gestire disponibilità | ⬜ TODO | `src/stores/availabilityStore.ts` |
+| 12.3 | Creare componente `AvailabilityPicker` per selezione slot | ⬜ TODO | `src/components/availability/AvailabilityPicker.tsx` |
+| 12.4 | Creare componente `FieldAvailabilityGrid` per campi | ⬜ TODO | `src/components/availability/FieldAvailabilityGrid.tsx` |
+| 12.5 | Creare componente `PlayerAvailabilityList` per giocatori disponibili | ⬜ TODO | `src/components/availability/PlayerAvailabilityList.tsx` |
+| 12.6 | Creare algoritmo incrocio disponibilità campi/giocatori | ⬜ TODO | `src/lib/availabilityMatcher.ts` |
+| 12.7 | Creare componente `MatchSuggestions` con proposte automatiche | ⬜ TODO | `src/components/availability/MatchSuggestions.tsx` |
+| 12.8 | Creare componente `QuickMatchFinder` per match con sconosciuti | ⬜ TODO | `src/components/availability/QuickMatchFinder.tsx` |
+| 12.9 | Creare pagina `Organize.tsx` con wizard organizzazione | ⬜ TODO | `src/pages/Organize.tsx` |
+| 12.10 | Integrare disponibilità in profilo utente | ⬜ TODO | `src/pages/Profile.tsx` |
+| 12.11 | Notifiche match compatibili trovati | ⬜ TODO | `src/hooks/useMatchNotifications.ts` |
+
+### Funzionalità Principali
+- **Calendario disponibilità**: Giocatori indicano quando sono liberi
+- **Disponibilità campi**: Visualizzazione slot liberi per ogni campo
+- **Matching automatico**: Sistema suggerisce match quando disponibilità coincidono
+- **Quick Match**: Trova partite con giocatori sconosciuti nella tua zona
+- **Notifiche smart**: Avvisi quando si trova un match compatibile
