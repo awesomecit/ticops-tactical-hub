@@ -15,6 +15,7 @@ import {
 import { useUIStore } from '@/stores/uiStore';
 import { useAuthStore } from '@/stores/authStore';
 import { cn } from '@/lib/utils';
+import { getTotalUnreadCount } from '@/mocks/chat';
 
 interface NavItem {
   icon: React.ElementType;
@@ -23,11 +24,11 @@ interface NavItem {
   badge?: number;
 }
 
-const navItems: NavItem[] = [
+const getNavItems = (): NavItem[] => [
   { icon: LayoutDashboard, labelKey: 'nav.dashboard', path: '/' },
   { icon: Crosshair, labelKey: 'nav.games', path: '/games' },
   { icon: Users, labelKey: 'nav.team', path: '/team' },
-  { icon: MessageSquare, labelKey: 'nav.chat', path: '/chat', badge: 3 },
+  { icon: MessageSquare, labelKey: 'nav.chat', path: '/chat', badge: getTotalUnreadCount() },
   { icon: Trophy, labelKey: 'nav.leaderboard', path: '/leaderboard' },
   { icon: MapPin, labelKey: 'nav.locations', path: '/locations' },
 ];
@@ -40,6 +41,7 @@ export const Sidebar: React.FC = () => {
   const { t } = useTranslation();
   const { sidebarOpen, toggleSidebar } = useUIStore();
   const { logout } = useAuthStore();
+  const navItems = getNavItems();
 
   return (
     <>

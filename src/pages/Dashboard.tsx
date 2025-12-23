@@ -125,7 +125,7 @@ const Dashboard: React.FC = () => {
               <span className="h-2 w-2 bg-secondary rounded-full animate-pulse" />
               {t('dashboard.liveMatches')}
             </h2>
-            <GlowButton variant="ghost" size="sm">
+            <GlowButton variant="ghost" size="sm" onClick={() => window.location.href = '/games'}>
               {t('dashboard.viewAll')} <ChevronRight className="h-4 w-4 ml-1" />
             </GlowButton>
           </div>
@@ -149,7 +149,7 @@ const Dashboard: React.FC = () => {
             <h2 className="text-xl font-display uppercase">
               {t('dashboard.upcomingMatches')}
             </h2>
-            <GlowButton variant="ghost" size="sm">
+            <GlowButton variant="ghost" size="sm" onClick={() => window.location.href = '/games'}>
               {t('dashboard.viewAll')} <ChevronRight className="h-4 w-4 ml-1" />
             </GlowButton>
           </div>

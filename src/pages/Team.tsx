@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useToast } from '@/hooks/use-toast';
 import {
   Plus,
   Calendar,
@@ -129,6 +131,8 @@ const activityIcons = {
 };
 
 const Team: React.FC = () => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState('overview');
   const [memberFilter, setMemberFilter] = useState<'all' | 'online' | 'leader' | 'officer'>('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -180,6 +184,8 @@ const Team: React.FC = () => {
       <TeamHeader
         team={team}
         pendingRequestsCount={joinRequests.length}
+        onChatClick={() => navigate('/chat')}
+        onInboxClick={() => navigate('/team/inbox')}
       />
 
       {/* Tabs */}
@@ -294,15 +300,27 @@ const Team: React.FC = () => {
                   <TacticalCardTitle>Quick Actions</TacticalCardTitle>
                 </TacticalCardHeader>
                 <TacticalCardContent className="space-y-2">
-                  <GlowButton variant="outline" className="w-full justify-start">
+                  <GlowButton 
+                    variant="outline" 
+                    className="w-full justify-start"
+                    onClick={() => toast({ title: 'Coming Soon', description: 'Funzionalità in arrivo!' })}
+                  >
                     <Calendar className="h-4 w-4 mr-2" />
                     Crea Evento
                   </GlowButton>
-                  <GlowButton variant="outline" className="w-full justify-start">
+                  <GlowButton 
+                    variant="outline" 
+                    className="w-full justify-start"
+                    onClick={() => toast({ title: 'Coming Soon', description: 'Funzionalità in arrivo!' })}
+                  >
                     <UserPlus className="h-4 w-4 mr-2" />
                     Invita Membro
                   </GlowButton>
-                  <GlowButton variant="outline" className="w-full justify-start">
+                  <GlowButton 
+                    variant="outline" 
+                    className="w-full justify-start"
+                    onClick={() => toast({ title: 'Coming Soon', description: 'Funzionalità in arrivo!' })}
+                  >
                     <Swords className="h-4 w-4 mr-2" />
                     Sfida Team
                   </GlowButton>

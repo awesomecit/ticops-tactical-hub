@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { MapPin, Eye } from 'lucide-react';
 import { TacticalCard, TacticalCardContent } from '@/components/ui/TacticalCard';
 import { GlowButton } from '@/components/ui/GlowButton';
@@ -21,6 +22,7 @@ interface LiveMatchCardProps {
 }
 
 export const LiveMatchCard: React.FC<LiveMatchCardProps> = ({
+  id,
   teamAlpha,
   teamBravo,
   fieldName,
@@ -28,6 +30,8 @@ export const LiveMatchCard: React.FC<LiveMatchCardProps> = ({
   timeElapsed,
   className,
 }) => {
+  const navigate = useNavigate();
+
   return (
     <TacticalCard glow="secondary" className={cn('animate-pulse-glow', className)}>
       <TacticalCardContent className="p-4">
@@ -76,7 +80,12 @@ export const LiveMatchCard: React.FC<LiveMatchCardProps> = ({
             <MapPin className="h-3.5 w-3.5" />
             <span className="text-xs">{fieldName}</span>
           </div>
-          <GlowButton variant="secondary" size="sm" className="gap-1.5">
+          <GlowButton 
+            variant="secondary" 
+            size="sm" 
+            className="gap-1.5"
+            onClick={() => navigate(`/spectator/${id}`)}
+          >
             <Eye className="h-3.5 w-3.5" />
             Spettatore
           </GlowButton>
