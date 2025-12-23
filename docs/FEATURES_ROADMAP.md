@@ -16,7 +16,8 @@ Questo documento traccia tutte le feature da implementare, suddivise in task ato
 8. [Sistema Real-Time (WebSockets)](#8-sistema-real-time-websockets) ⬜ TODO
 9. [Achievement & Rewards System](#9-achievement--rewards-system) ⬜ TODO
 10. [Radio Avanzata Match Live](#10-radio-avanzata-match-live) ⬜ TODO
-11. [Mercatino - Compra/Vendi/Scambia](#11-mercatino---compravendiscambia) ⬜ TODO
+11. [Mercatino - Compra/Vendi/Scambia](#11-mercatino---compravendiscambia) ✅ COMPLETATA
+12. [Match Organizer](#12-match-organizer) ✅ COMPLETATA
 
 ---
 
@@ -192,8 +193,9 @@ Questo documento traccia tutte le feature da implementare, suddivise in task ato
 | Real-Time WebSockets | 7 | 0 | 0% ⬜ |
 | Achievement & Rewards | 10 | 0 | 0% ⬜ |
 | Radio Avanzata Match Live | 10 | 0 | 0% ⬜ |
-| Mercatino Compra/Vendi | 14 | 0 | 0% ⬜ |
-| **TOTALE** | **106** | **54** | **51%** |
+| Mercatino Compra/Vendi | 14 | 14 | 100% ✅ |
+| Match Organizer | 11 | 11 | 100% ✅ |
+| **TOTALE** | **117** | **79** | **68%** |
 
 ---
 
@@ -233,6 +235,8 @@ Questo documento traccia tutte le feature da implementare, suddivise in task ato
 - **2024-12-23**: Aggiunti bug da fixare nella sezione Chat
 - **2024-12-23**: Bug Chat fixati (5/5)
 - **2024-12-23**: Aggiunta Feature 11 (Mercatino Compra/Vendi/Scambia)
+- **2024-12-23**: Feature 11 (Mercatino) completata al 100% - Sistema transazioni e recensioni
+- **2024-12-23**: Feature 12 (Match Organizer) completata al 100% - Calendario disponibilità, matching automatico, notifiche
 
 ---
 
@@ -356,31 +360,32 @@ Questo documento traccia tutte le feature da implementare, suddivise in task ato
 
 ---
 
-## 12. Match Organizer - Disponibilità e Incroci ⬜
+## 12. Match Organizer - Disponibilità e Incroci ✅
 
 **Obiettivo**: Sistema per organizzare partite con incroci disponibilità campi, giocatori e attrezzature. Favorisce l'organizzazione di match anche tra sconosciuti.
 
-**Stato**: ⬜ TODO
+**Stato**: ✅ COMPLETATA
 
 ### Task Atomici
 
 | ID | Task | Stato | File Coinvolti |
 |----|------|-------|----------------|
-| 12.1 | Creare tipi `Availability`, `TimeSlot`, `MatchRequest` | ⬜ TODO | `src/types/availability.ts` |
-| 12.2 | Creare store `availabilityStore.ts` per gestire disponibilità | ⬜ TODO | `src/stores/availabilityStore.ts` |
-| 12.3 | Creare componente `AvailabilityPicker` per selezione slot | ⬜ TODO | `src/components/availability/AvailabilityPicker.tsx` |
-| 12.4 | Creare componente `FieldAvailabilityGrid` per campi | ⬜ TODO | `src/components/availability/FieldAvailabilityGrid.tsx` |
-| 12.5 | Creare componente `PlayerAvailabilityList` per giocatori disponibili | ⬜ TODO | `src/components/availability/PlayerAvailabilityList.tsx` |
-| 12.6 | Creare algoritmo incrocio disponibilità campi/giocatori | ⬜ TODO | `src/lib/availabilityMatcher.ts` |
-| 12.7 | Creare componente `MatchSuggestions` con proposte automatiche | ⬜ TODO | `src/components/availability/MatchSuggestions.tsx` |
-| 12.8 | Creare componente `QuickMatchFinder` per match con sconosciuti | ⬜ TODO | `src/components/availability/QuickMatchFinder.tsx` |
-| 12.9 | Creare pagina `Organize.tsx` con wizard organizzazione | ⬜ TODO | `src/pages/Organize.tsx` |
-| 12.10 | Integrare disponibilità in profilo utente | ⬜ TODO | `src/pages/Profile.tsx` |
-| 12.11 | Notifiche match compatibili trovati | ⬜ TODO | `src/hooks/useMatchNotifications.ts` |
+| 12.1 | Creare tipi `Availability`, `TimeSlot`, `MatchRequest` | ✅ DONE | `src/types/availability.ts` |
+| 12.2 | Creare store `availabilityStore.ts` per gestire disponibilità | ✅ DONE | `src/stores/availabilityStore.ts` |
+| 12.3 | Creare componente `AvailabilityPicker` per selezione slot | ✅ DONE | `src/components/availability/AvailabilityPicker.tsx` |
+| 12.4 | Creare componente `FieldAvailabilityGrid` per campi | ✅ DONE | `src/components/availability/FieldAvailabilityGrid.tsx` |
+| 12.5 | Creare componente `PlayerAvailabilityList` per giocatori disponibili | ✅ DONE | `src/components/availability/PlayerAvailabilityList.tsx` |
+| 12.6 | Creare algoritmo incrocio disponibilità campi/giocatori | ✅ DONE | `src/lib/availabilityMatcher.ts` |
+| 12.7 | Creare componente `MatchSuggestions` con proposte automatiche | ✅ DONE | `src/components/availability/MatchSuggestions.tsx` |
+| 12.8 | Creare componente `QuickMatchFinder` per match con sconosciuti | ✅ DONE | `src/components/availability/QuickMatchFinder.tsx` |
+| 12.9 | Creare pagina `Organize.tsx` con wizard organizzazione | ✅ DONE | `src/pages/Organize.tsx` |
+| 12.10 | Notifiche match compatibili trovati | ✅ DONE | `src/hooks/useMatchNotifications.ts` |
+| 12.11 | Aggiungere link "Organizza Partita" nella sidebar | ✅ DONE | `src/components/layout/Sidebar.tsx` |
 
 ### Funzionalità Principali
 - **Calendario disponibilità**: Giocatori indicano quando sono liberi
 - **Disponibilità campi**: Visualizzazione slot liberi per ogni campo
 - **Matching automatico**: Sistema suggerisce match quando disponibilità coincidono
 - **Quick Match**: Trova partite con giocatori sconosciuti nella tua zona
+- **Notifiche automatiche**: Avvisa quando viene trovato un match compatibile
 - **Notifiche smart**: Avvisi quando si trova un match compatibile
