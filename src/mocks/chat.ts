@@ -1,4 +1,4 @@
-export type ConversationType = 'private' | 'team' | 'match';
+export type ConversationType = 'private' | 'team' | 'match' | 'field' | 'shop';
 export type MessageType = 'text' | 'system' | 'achievement';
 
 export interface IMockConversation {
@@ -15,6 +15,9 @@ export interface IMockConversation {
   unreadCount: number;
   isOnline?: boolean;
   isPinned?: boolean;
+  // Entity reference for field/shop conversations
+  entityId?: string;
+  entityType?: 'field' | 'shop' | 'player' | 'referee';
 }
 
 export interface IMockMessage {
@@ -233,4 +236,48 @@ export const getMessagesByConversation = (conversationId: string): IMockMessage[
 
 export const getTotalUnreadCount = (): number => {
   return MOCK_CONVERSATIONS.reduce((sum, c) => sum + c.unreadCount, 0);
+};
+
+// Find or create conversation for an entity
+export const findOrCreateEntityConversation = (
+  entityType: 'field' | 'shop' | 'player' | 'referee',
+  entityId: string,
+  entityName: string
+): IMockConversation => {
+  // Check if conversation already exists
+  const existing = MOCK_CONVERSATIONS.find(
+    c => c.entityType === entityType && c.entityId === entityId
+  );
+  
+  if (existing) {
+    return existing;
+  }
+  
+  // Create new conversation
+  const newConversation: IMockConversation = {
+    id: `conv_${entityType}_${entityId}`,
+    type: entityType === 'field' ? 'field' : entityType === 'shop' ? 'shop' : 'private',
+    name: entityName,
+    participants: ['current_user', `${entityType}_${entityId}`],
+    lastMessage: {
+      text: 'Inizia una conversazione...',
+      senderId: 'system',
+      timestamp: new Date(),
+    },
+    unreadCount: 0,
+    entityId,
+    entityType,
+  };
+  
+  // Add to mock conversations
+  MOCK_CONVERSATIONS.unshift(newConversation);
+  
+  return newConversation;
+};
+
+// Get conversations by entity type
+export const getConversationsByEntityType = (
+  entityType: 'field' | 'shop' | 'player' | 'referee'
+): IMockConversation[] => {
+  return MOCK_CONVERSATIONS.filter(c => c.entityType === entityType);
 };

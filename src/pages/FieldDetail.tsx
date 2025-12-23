@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { 
   ArrowLeft, MapPin, Star, Users, Euro, Phone, Mail, Globe, 
@@ -10,7 +10,9 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { FieldReviewList, AvailabilityCalendar } from '@/components/fields';
+import { AlertToggle, AlertSettingsModal } from '@/components/alerts';
 import { getFieldBySlug, getFieldReviews, getFieldAvailability, getAverageRating } from '@/mocks/fields';
+import { findOrCreateEntityConversation } from '@/mocks/chat';
 import { cn } from '@/lib/utils';
 import { toast } from '@/hooks/use-toast';
 
@@ -45,6 +47,7 @@ const characteristicLabels: Record<string, { label: string; icon: string }> = {
 const FieldDetail: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
+  const [showAlertModal, setShowAlertModal] = useState(false);
 
   const field = getFieldBySlug(slug || '');
 
@@ -70,17 +73,16 @@ const FieldDetail: React.FC = () => {
     .map(([key]) => ({ key, ...characteristicLabels[key] }));
 
   const handleContact = () => {
+    const conversation = findOrCreateEntityConversation('field', field.id, field.name);
+    navigate(`/chat/${conversation.id}`);
     toast({
-      title: 'Contatta Campo',
-      description: 'Funzionalità in arrivo! Potrai inviare messaggi diretti.',
+      title: 'Chat Avviata',
+      description: `Conversazione con ${field.name}`,
     });
   };
 
   const handleSetAlert = () => {
-    toast({
-      title: 'Alert Impostato',
-      description: 'Riceverai notifiche quando ci sono nuove disponibilità.',
-    });
+    setShowAlertModal(true);
   };
 
   const handleShare = () => {
@@ -299,6 +301,14 @@ const FieldDetail: React.FC = () => {
           />
         </TabsContent>
       </Tabs>
+
+      <AlertSettingsModal
+        isOpen={showAlertModal}
+        onClose={() => setShowAlertModal(false)}
+        entityType="field"
+        entityId={field.id}
+        entityName={field.name}
+      />
     </div>
   );
 };

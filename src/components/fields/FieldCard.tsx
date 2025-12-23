@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MapPin, Star, Users, Euro, MessageCircle } from 'lucide-react';
+import { MapPin, Star, Users, Euro, MessageCircle, Navigation } from 'lucide-react';
 import { Field } from '@/types';
 import { TacticalCard, TacticalCardContent } from '@/components/ui/TacticalCard';
 import { GlowButton } from '@/components/ui/GlowButton';
 import { Badge } from '@/components/ui/badge';
+import { AlertToggle, AlertSettingsModal } from '@/components/alerts';
+import { findOrCreateEntityConversation } from '@/mocks/chat';
+import { toast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 
 interface FieldCardProps {
@@ -12,6 +15,7 @@ interface FieldCardProps {
   compact?: boolean;
   className?: string;
   style?: React.CSSProperties;
+  distance?: string | null;
 }
 
 const typeLabels: Record<string, string> = {
@@ -26,11 +30,27 @@ const typeColors: Record<string, string> = {
   mixed: 'bg-purple-500/20 text-purple-400 border-purple-500/30',
 };
 
-export const FieldCard: React.FC<FieldCardProps> = ({ field, compact = false, className, style }) => {
+export const FieldCard: React.FC<FieldCardProps> = ({ 
+  field, 
+  compact = false, 
+  className, 
+  style,
+  distance 
+}) => {
   const navigate = useNavigate();
+  const [showAlertModal, setShowAlertModal] = useState(false);
 
   const handleViewDetails = () => {
     navigate(`/locations/${field.slug}`);
+  };
+
+  const handleContact = () => {
+    const conversation = findOrCreateEntityConversation('field', field.id, field.name);
+    navigate(`/chat/${conversation.id}`);
+    toast({
+      title: 'Chat Avviata',
+      description: `Conversazione con ${field.name}`,
+    });
   };
 
   const characteristics = Object.entries(field.characteristics)
@@ -86,8 +106,21 @@ export const FieldCard: React.FC<FieldCardProps> = ({ field, compact = false, cl
                   <Euro className="h-3 w-3" />
                   {field.pricePerHour}/h
                 </span>
+                {distance && (
+                  <span className="flex items-center gap-1 text-xs text-primary">
+                    <Navigation className="h-3 w-3" />
+                    {distance}
+                  </span>
+                )}
               </div>
             </div>
+            <AlertToggle
+              entityType="field"
+              entityId={field.id}
+              entityName={field.name}
+              variant="icon"
+              size="sm"
+            />
           </div>
         </TacticalCardContent>
       </TacticalCard>
@@ -95,88 +128,111 @@ export const FieldCard: React.FC<FieldCardProps> = ({ field, compact = false, cl
   }
 
   return (
-    <TacticalCard
-      variant="large"
-      glow="primary"
-      interactive
-      className={cn('animate-slide-in-up', className)}
-      style={style}
-    >
-      <TacticalCardContent>
-        <div className="flex flex-col lg:flex-row gap-6">
-          {/* Image */}
-          <div className="lg:w-64 h-40 lg:h-auto flex-shrink-0 bg-muted clip-tactical flex items-center justify-center border border-border overflow-hidden">
-            {field.images[0] ? (
-              <img src={field.images[0]} alt={field.name} className="w-full h-full object-cover" />
-            ) : (
-              <MapPin className="h-12 w-12 text-muted-foreground" />
-            )}
-          </div>
+    <>
+      <TacticalCard
+        variant="large"
+        glow="primary"
+        interactive
+        className={cn('animate-slide-in-up', className)}
+        style={style}
+      >
+        <TacticalCardContent>
+          <div className="flex flex-col lg:flex-row gap-6">
+            {/* Image */}
+            <div className="lg:w-64 h-40 lg:h-auto flex-shrink-0 bg-muted clip-tactical flex items-center justify-center border border-border overflow-hidden">
+              {field.images[0] ? (
+                <img src={field.images[0]} alt={field.name} className="w-full h-full object-cover" />
+              ) : (
+                <MapPin className="h-12 w-12 text-muted-foreground" />
+              )}
+            </div>
 
-          {/* Info */}
-          <div className="flex-1 space-y-4">
-            <div>
-              <div className="flex flex-wrap items-center gap-3">
-                <h3 className="font-display text-xl uppercase text-foreground">{field.name}</h3>
-                <Badge variant="outline" className={cn(typeColors[field.type])}>
-                  {typeLabels[field.type]}
-                </Badge>
-                <div className="flex items-center gap-1 text-accent">
-                  <Star className="h-4 w-4 fill-current" />
-                  <span className="font-mono text-sm">{field.rating.toFixed(1)}</span>
-                  <span className="text-xs text-muted-foreground">({field.reviewCount} recensioni)</span>
+            {/* Info */}
+            <div className="flex-1 space-y-4">
+              <div>
+                <div className="flex flex-wrap items-center gap-3">
+                  <h3 className="font-display text-xl uppercase text-foreground">{field.name}</h3>
+                  <Badge variant="outline" className={cn(typeColors[field.type])}>
+                    {typeLabels[field.type]}
+                  </Badge>
+                  <div className="flex items-center gap-1 text-accent">
+                    <Star className="h-4 w-4 fill-current" />
+                    <span className="font-mono text-sm">{field.rating.toFixed(1)}</span>
+                    <span className="text-xs text-muted-foreground">({field.reviewCount} recensioni)</span>
+                  </div>
+                  {distance && (
+                    <Badge variant="secondary" className="gap-1">
+                      <Navigation className="h-3 w-3" />
+                      {distance}
+                    </Badge>
+                  )}
                 </div>
+                
+                <p className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
+                  <MapPin className="h-4 w-4" />
+                  {field.address}, {field.city} ({field.province})
+                </p>
               </div>
-              
-              <p className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
-                <MapPin className="h-4 w-4" />
-                {field.address}, {field.city} ({field.province})
-              </p>
-            </div>
 
-            <p className="text-muted-foreground line-clamp-2">{field.description}</p>
+              <p className="text-muted-foreground line-clamp-2">{field.description}</p>
 
-            {/* Characteristics */}
-            <div className="flex flex-wrap gap-2">
-              {characteristics.map((char, i) => (
-                <span
-                  key={i}
-                  className="px-3 py-1 bg-primary/10 text-primary text-xs font-display uppercase border border-primary/30 clip-tactical-sm"
-                >
-                  {char}
+              {/* Characteristics */}
+              <div className="flex flex-wrap gap-2">
+                {characteristics.map((char, i) => (
+                  <span
+                    key={i}
+                    className="px-3 py-1 bg-primary/10 text-primary text-xs font-display uppercase border border-primary/30 clip-tactical-sm"
+                  >
+                    {char}
+                  </span>
+                ))}
+              </div>
+
+              {/* Stats */}
+              <div className="flex items-center gap-6 text-sm">
+                <span className="flex items-center gap-2 text-muted-foreground">
+                  <Users className="h-4 w-4 text-primary" />
+                  Max {field.maxPlayers} giocatori
                 </span>
-              ))}
+                <span className="flex items-center gap-2 text-muted-foreground">
+                  <Euro className="h-4 w-4 text-accent" />
+                  €{field.pricePerHour}/ora
+                </span>
+                <span className="text-muted-foreground">
+                  {field.sizeSquareMeters.toLocaleString()} m²
+                </span>
+              </div>
             </div>
 
-            {/* Stats */}
-            <div className="flex items-center gap-6 text-sm">
-              <span className="flex items-center gap-2 text-muted-foreground">
-                <Users className="h-4 w-4 text-primary" />
-                Max {field.maxPlayers} giocatori
-              </span>
-              <span className="flex items-center gap-2 text-muted-foreground">
-                <Euro className="h-4 w-4 text-accent" />
-                €{field.pricePerHour}/ora
-              </span>
-              <span className="text-muted-foreground">
-                {field.sizeSquareMeters.toLocaleString()} m²
-              </span>
+            {/* Actions */}
+            <div className="flex flex-col gap-2 lg:items-end justify-center">
+              <GlowButton variant="primary" onClick={handleViewDetails}>
+                Vedi Dettagli
+              </GlowButton>
+              <GlowButton variant="ghost" size="sm" onClick={handleContact}>
+                <MessageCircle className="h-4 w-4 mr-2" />
+                Contatta
+              </GlowButton>
+              <AlertToggle
+                entityType="field"
+                entityId={field.id}
+                entityName={field.name}
+                variant="button"
+                size="sm"
+              />
             </div>
           </div>
+        </TacticalCardContent>
+      </TacticalCard>
 
-          {/* Actions */}
-          <div className="flex flex-col gap-2 lg:items-end justify-center">
-            <GlowButton variant="primary" onClick={handleViewDetails}>
-              Vedi Dettagli
-            </GlowButton>
-            <GlowButton variant="ghost" size="sm">
-              <MessageCircle className="h-4 w-4 mr-2" />
-              Contatta
-            </GlowButton>
-          </div>
-        </div>
-      </TacticalCardContent>
-    </TacticalCard>
+      <AlertSettingsModal
+        isOpen={showAlertModal}
+        onClose={() => setShowAlertModal(false)}
+        entityType="field"
+        entityId={field.id}
+        entityName={field.name}
+      />
+    </>
   );
 };
 
