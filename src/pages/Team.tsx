@@ -15,6 +15,7 @@ import {
   Settings,
   Award,
   Shield,
+  Edit2,
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { it } from 'date-fns/locale';
@@ -37,6 +38,8 @@ import {
 } from '@/components/team';
 import { ActivityItem, ActivityType } from '@/components/dashboard';
 import { TierType } from '@/components/ranking';
+import { SocialContactsForm } from '@/components/social';
+import { SocialContact } from '@/types/social';
 import {
   getCurrentUser,
   getTeamById,
@@ -142,7 +145,9 @@ const Team: React.FC = () => {
   const team = getTeamById(currentUser.teamId || 'team_001');
   const teamMembers = getTeamMembers(currentUser.teamId || 'team_001');
   const joinRequests = getTeamJoinRequests(currentUser.teamId || 'team_001');
-  const teamSocials = team ? getSocialContactsByEntity(team.id, 'team') : [];
+  const [teamSocials, setTeamSocials] = useState<SocialContact[]>(
+    team ? getSocialContactsByEntity(team.id, 'team') : []
+  );
 
   if (!team) {
     return (
@@ -466,14 +471,69 @@ const Team: React.FC = () => {
         </TabsContent>
 
         {/* TAB: Settings */}
-        <TabsContent value="settings" className="mt-6">
-          <TacticalCard>
-            <TacticalCardContent className="p-8 text-center">
-              <Settings className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-display uppercase mb-2">Impostazioni Team</h3>
-              <p className="text-muted-foreground text-sm">
-                Coming Soon - Gestisci le impostazioni del team
+        <TabsContent value="settings" className="mt-6 space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Social Contacts Form */}
+            <SocialContactsForm
+              contacts={teamSocials}
+              onSave={(contacts) => setTeamSocials(contacts)}
+              entityType="team"
+            />
+
+            {/* Team Info Settings */}
+            <TacticalCard>
+              <TacticalCardHeader>
+                <TacticalCardTitle className="flex items-center gap-2">
+                  <Edit2 className="h-4 w-4" />
+                  Informazioni Team
+                </TacticalCardTitle>
+              </TacticalCardHeader>
+              <TacticalCardContent className="space-y-4">
+                <div className="space-y-2">
+                  <p className="text-sm text-muted-foreground">Nome Team</p>
+                  <p className="font-medium">{team.name}</p>
+                </div>
+                <div className="space-y-2">
+                  <p className="text-sm text-muted-foreground">Tag</p>
+                  <p className="font-mono">[{team.tag}]</p>
+                </div>
+                <div className="space-y-2">
+                  <p className="text-sm text-muted-foreground">Membri</p>
+                  <p className="font-medium">{team.memberCount}/{team.maxMembers}</p>
+                </div>
+                <GlowButton variant="outline" className="w-full mt-4">
+                  <Edit2 className="h-4 w-4 mr-2" />
+                  Modifica Info Team
+                </GlowButton>
+              </TacticalCardContent>
+            </TacticalCard>
+          </div>
+
+          {/* Danger Zone */}
+          <TacticalCard className="border-destructive/30">
+            <TacticalCardHeader>
+              <TacticalCardTitle className="text-destructive">Zona Pericolosa</TacticalCardTitle>
+            </TacticalCardHeader>
+            <TacticalCardContent className="space-y-3">
+              <p className="text-sm text-muted-foreground">
+                Queste azioni sono irreversibili. Procedi con cautela.
               </p>
+              <div className="flex flex-wrap gap-2">
+                <GlowButton 
+                  variant="outline" 
+                  className="border-destructive/50 text-destructive hover:bg-destructive/10"
+                  onClick={() => toast({ title: 'Coming Soon', description: 'Funzionalità in arrivo!' })}
+                >
+                  Abbandona Team
+                </GlowButton>
+                <GlowButton 
+                  variant="outline" 
+                  className="border-destructive/50 text-destructive hover:bg-destructive/10"
+                  onClick={() => toast({ title: 'Coming Soon', description: 'Funzionalità in arrivo!' })}
+                >
+                  Scioglie Team
+                </GlowButton>
+              </div>
             </TacticalCardContent>
           </TacticalCard>
         </TabsContent>

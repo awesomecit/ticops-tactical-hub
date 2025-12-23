@@ -10,7 +10,8 @@ import {
   Activity,
   Award,
   ChevronRight,
-  LogOut
+  LogOut,
+  UserCog
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -21,8 +22,11 @@ import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { UserSummaryCard, EventsList, RoleSummary } from '@/components/profile';
 import { TacticalCard, TacticalCardContent } from '@/components/ui/TacticalCard';
+import { SocialContactsForm, SocialLinks } from '@/components/social';
 import { getCurrentUser } from '@/mocks/users';
 import { getUserEvents, getUserSummary, MOCK_USER_ACTIVITY } from '@/mocks/events';
+import { getSocialContactsByEntity } from '@/mocks/social';
+import { SocialContact } from '@/types/social';
 import { formatDistanceToNow } from 'date-fns';
 import { it } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
@@ -43,6 +47,9 @@ const Profile: React.FC = () => {
   const upcomingEvents = getUserEvents(user.id, 'upcoming');
   const completedEvents = getUserEvents(user.id, 'completed');
   const [activeTab, setActiveTab] = useState('overview');
+  const [userSocials, setUserSocials] = useState<SocialContact[]>(
+    getSocialContactsByEntity(user.id, 'user')
+  );
 
   return (
     <div className="space-y-6 pb-20 animate-slide-in-up">
@@ -76,6 +83,10 @@ const Profile: React.FC = () => {
                     </Badge>
                   )}
                 </div>
+                {/* Social Links */}
+                {userSocials.length > 0 && (
+                  <SocialLinks contacts={userSocials} size="sm" className="mt-2" />
+                )}
               </div>
             </div>
 
@@ -139,15 +150,19 @@ const Profile: React.FC = () => {
         <TabsList className="w-full md:w-auto">
           <TabsTrigger value="overview" className="flex-1 md:flex-none gap-2">
             <Activity className="h-4 w-4" />
-            Panoramica
+            <span className="hidden sm:inline">Panoramica</span>
           </TabsTrigger>
           <TabsTrigger value="events" className="flex-1 md:flex-none gap-2">
             <Calendar className="h-4 w-4" />
-            Eventi
+            <span className="hidden sm:inline">Eventi</span>
           </TabsTrigger>
           <TabsTrigger value="achievements" className="flex-1 md:flex-none gap-2">
             <Award className="h-4 w-4" />
-            Achievement
+            <span className="hidden sm:inline">Achievement</span>
+          </TabsTrigger>
+          <TabsTrigger value="settings" className="flex-1 md:flex-none gap-2">
+            <UserCog className="h-4 w-4" />
+            <span className="hidden sm:inline">Impostazioni</span>
           </TabsTrigger>
         </TabsList>
 
@@ -257,6 +272,39 @@ const Profile: React.FC = () => {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="settings" className="mt-6 space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Social Contacts Form */}
+            <SocialContactsForm
+              contacts={userSocials}
+              onSave={(contacts) => setUserSocials(contacts)}
+              entityType="user"
+            />
+
+            {/* Other Settings Placeholder */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Settings className="h-5 w-5 text-primary" />
+                  Altre Impostazioni
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="text-center py-8">
+                <p className="text-muted-foreground">
+                  Altre impostazioni del profilo saranno disponibili presto.
+                </p>
+                <Button 
+                  variant="outline" 
+                  className="mt-4"
+                  onClick={() => navigate('/settings')}
+                >
+                  Vai alle Impostazioni Complete
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
       </Tabs>
     </div>
