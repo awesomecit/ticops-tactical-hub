@@ -304,3 +304,69 @@ export interface AlertNotification {
   createdAt: Date;
   actionUrl?: string;
 }
+
+// User Event Types
+export type UserEventType = 'match' | 'tournament' | 'training' | 'meeting' | 'social';
+export type UserEventStatus = 'upcoming' | 'ongoing' | 'completed' | 'cancelled';
+
+export interface UserEvent {
+  id: string;
+  userId: string;
+  type: UserEventType;
+  title: string;
+  description?: string;
+  date: Date;
+  endDate?: Date;
+  location?: {
+    name: string;
+    address?: string;
+  };
+  status: UserEventStatus;
+  teamId?: string;
+  teamName?: string;
+  result?: {
+    won: boolean;
+    score?: string;
+    kills?: number;
+    deaths?: number;
+  };
+  participants?: number;
+  isOrganizer?: boolean;
+}
+
+// User Summary Types  
+export interface UserSummary {
+  userId: string;
+  role: UserRole;
+  totalEvents: number;
+  upcomingEvents: number;
+  completedEvents: number;
+  winRate: number;
+  avgKD: number;
+  totalKills: number;
+  totalDeaths: number;
+  hoursPlayed: number;
+  favoriteLocation?: string;
+  currentStreak: number;
+  longestStreak: number;
+  achievements: UserAchievement[];
+  recentActivity: UserActivityItem[];
+}
+
+export interface UserAchievement {
+  id: string;
+  name: string;
+  description: string;
+  icon: string;
+  unlockedAt: Date;
+  rarity: 'common' | 'rare' | 'epic' | 'legendary';
+}
+
+export interface UserActivityItem {
+  id: string;
+  type: 'match' | 'achievement' | 'rank_up' | 'team_join' | 'event';
+  title: string;
+  description: string;
+  timestamp: Date;
+  icon?: string;
+}

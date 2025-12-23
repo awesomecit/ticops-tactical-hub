@@ -29,6 +29,7 @@ import RefereeView from "@/pages/RefereeView";
 import NotFound from "@/pages/NotFound";
 import Shop from "@/pages/Shop";
 import FieldDetail from "@/pages/FieldDetail";
+import Profile from "@/pages/Profile";
 
 const queryClient = new QueryClient();
 
@@ -52,6 +53,7 @@ const App = () => (
             <Route path="/locations" element={<Locations />} />
             <Route path="/locations/:slug" element={<FieldDetail />} />
             <Route path="/shop" element={<Shop />} />
+            <Route path="/profile" element={<Profile />} />
             <Route path="/about" element={<About />} />
             <Route path="/settings" element={<Settings />} />
           </Route>
