@@ -23,6 +23,8 @@ const typeBadges: Record<ConversationType, { emoji: string; color: string }> = {
   private: { emoji: '🔵', color: 'text-blue-400' },
   team: { emoji: '🟢', color: 'text-secondary' },
   match: { emoji: '🟠', color: 'text-primary' },
+  field: { emoji: '📍', color: 'text-green-400' },
+  shop: { emoji: '🛒', color: 'text-purple-400' },
 };
 
 export const ConversationItem: React.FC<ConversationItemProps> = ({

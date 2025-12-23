@@ -17,6 +17,8 @@ const typeBadges: Record<ConversationType, { emoji: string; label: string }> = {
   private: { emoji: '🔵', label: 'Privato' },
   team: { emoji: '🟢', label: 'Team' },
   match: { emoji: '🟠', label: 'Partita' },
+  field: { emoji: '📍', label: 'Campo' },
+  shop: { emoji: '🛒', label: 'Shop' },
 };
 
 const ChatView: React.FC = () => {
