@@ -22,6 +22,8 @@ import AdminReferees from "@/pages/admin/AdminReferees";
 import AdminUsers from "@/pages/admin/AdminUsers";
 import AdminMatches from "@/pages/admin/AdminMatches";
 import AdminMatchDetails from "@/pages/admin/AdminMatchDetails";
+import AdminReports from "@/pages/admin/AdminReports";
+import AdminAnalytics from "@/pages/admin/AdminAnalytics";
 import Login from "@/pages/Login";
 import GameplayView from "@/pages/GameplayView";
 import SpectatorView from "@/pages/SpectatorView";
@@ -67,6 +69,8 @@ const App = () => (
             <Route path="users" element={<AdminUsers />} />
             <Route path="matches" element={<AdminMatches />} />
             <Route path="matches/:matchId" element={<AdminMatchDetails />} />
+            <Route path="reports" element={<AdminReports />} />
+            <Route path="analytics" element={<AdminAnalytics />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
