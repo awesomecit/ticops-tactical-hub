@@ -11,7 +11,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { FieldReviewList, AvailabilityCalendar } from '@/components/fields';
 import { AlertToggle, AlertSettingsModal } from '@/components/alerts';
+import { QuickContactBar } from '@/components/social';
 import { getFieldBySlug, getFieldReviews, getFieldAvailability, getAverageRating } from '@/mocks/fields';
+import { getSocialContactsByEntity } from '@/mocks/social';
 import { findOrCreateEntityConversation } from '@/mocks/chat';
 import { cn } from '@/lib/utils';
 import { toast } from '@/hooks/use-toast';
@@ -67,6 +69,7 @@ const FieldDetail: React.FC = () => {
   const reviews = getFieldReviews(field.id);
   const availability = getFieldAvailability(field.id);
   const averageRating = getAverageRating(field.id);
+  const fieldSocials = getSocialContactsByEntity(field.id, 'field');
 
   const activeCharacteristics = Object.entries(field.characteristics)
     .filter(([_, value]) => value === true)
@@ -247,35 +250,48 @@ const FieldDetail: React.FC = () => {
             <CardHeader>
               <CardTitle>Contatti</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-3">
-              {field.phone && (
-                <a
-                  href={`tel:${field.phone}`}
-                  className="flex items-center gap-3 text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  <Phone className="h-4 w-4" />
-                  {field.phone}
-                </a>
-              )}
-              {field.email && (
-                <a
-                  href={`mailto:${field.email}`}
-                  className="flex items-center gap-3 text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  <Mail className="h-4 w-4" />
-                  {field.email}
-                </a>
-              )}
-              {field.website && (
-                <a
-                  href={field.website}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-3 text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  <Globe className="h-4 w-4" />
-                  {field.website}
-                </a>
+            <CardContent className="space-y-4">
+              <div className="space-y-3">
+                {field.phone && (
+                  <a
+                    href={`tel:${field.phone}`}
+                    className="flex items-center gap-3 text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    <Phone className="h-4 w-4" />
+                    {field.phone}
+                  </a>
+                )}
+                {field.email && (
+                  <a
+                    href={`mailto:${field.email}`}
+                    className="flex items-center gap-3 text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    <Mail className="h-4 w-4" />
+                    {field.email}
+                  </a>
+                )}
+                {field.website && (
+                  <a
+                    href={field.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-3 text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    <Globe className="h-4 w-4" />
+                    {field.website}
+                  </a>
+                )}
+              </div>
+              
+              {/* Social Contacts */}
+              {fieldSocials.length > 0 && (
+                <div className="pt-4 border-t border-border">
+                  <QuickContactBar 
+                    contacts={fieldSocials} 
+                    entityName={field.name}
+                    variant="compact"
+                  />
+                </div>
               )}
             </CardContent>
           </Card>

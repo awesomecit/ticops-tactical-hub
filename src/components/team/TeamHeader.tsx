@@ -2,10 +2,13 @@ import React from 'react';
 import { Users, MessageSquare, Inbox, Trophy, TrendingUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { IMockTeam } from '@/mocks/teams';
+import { SocialLinks } from '@/components/social';
+import { SocialContact } from '@/types/social';
 
 interface TeamHeaderProps {
   team: IMockTeam;
   pendingRequestsCount: number;
+  socialContacts?: SocialContact[];
   onChatClick?: () => void;
   onInboxClick?: () => void;
 }
@@ -13,6 +16,7 @@ interface TeamHeaderProps {
 export const TeamHeader: React.FC<TeamHeaderProps> = ({
   team,
   pendingRequestsCount,
+  socialContacts = [],
   onChatClick,
   onInboxClick,
 }) => {
@@ -68,6 +72,11 @@ export const TeamHeader: React.FC<TeamHeaderProps> = ({
               {team.stats.winRate.toFixed(1)}%
             </span>
           </div>
+          
+          {/* Social Links */}
+          {socialContacts.length > 0 && (
+            <SocialLinks contacts={socialContacts} size="sm" className="mt-2" />
+          )}
         </div>
       </div>
 

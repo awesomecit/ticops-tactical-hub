@@ -44,6 +44,7 @@ import {
   getTeamJoinRequests,
   MOCK_USERS,
 } from '@/mocks';
+import { getSocialContactsByEntity } from '@/mocks/social';
 import { cn } from '@/lib/utils';
 
 // Mock team matches
@@ -141,6 +142,7 @@ const Team: React.FC = () => {
   const team = getTeamById(currentUser.teamId || 'team_001');
   const teamMembers = getTeamMembers(currentUser.teamId || 'team_001');
   const joinRequests = getTeamJoinRequests(currentUser.teamId || 'team_001');
+  const teamSocials = team ? getSocialContactsByEntity(team.id, 'team') : [];
 
   if (!team) {
     return (
@@ -184,6 +186,7 @@ const Team: React.FC = () => {
       <TeamHeader
         team={team}
         pendingRequestsCount={joinRequests.length}
+        socialContacts={teamSocials}
         onChatClick={() => navigate('/chat')}
         onInboxClick={() => navigate('/team/inbox')}
       />

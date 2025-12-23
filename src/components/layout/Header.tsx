@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Menu, MessageSquare, Settings, LogOut } from 'lucide-react';
+import { Menu, MessageSquare, Settings, LogOut, User } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuthStore } from '@/stores/authStore';
 import { useUIStore } from '@/stores/uiStore';
@@ -106,6 +106,10 @@ export const Header: React.FC = () => {
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem onClick={() => navigate("/profile")} className="min-h-[44px] md:min-h-0">
+                  <User className="w-4 h-4 mr-2" />
+                  {t('nav.profile')}
+                </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => navigate("/settings")} className="min-h-[44px] md:min-h-0">
                   <Settings className="w-4 h-4 mr-2" />
                   {t('settings.title')}
