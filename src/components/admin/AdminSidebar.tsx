@@ -8,7 +8,7 @@ import {
   Crosshair, 
   Flag, 
   BarChart3,
-  ChevronLeft
+  Radio
 } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import {
@@ -32,6 +32,7 @@ const adminNavItems = [
   { title: 'Campi', url: '/admin/fields', icon: MapPin },
   { title: 'Arbitri', url: '/admin/referees', icon: Shield },
   { title: 'Partite', url: '/admin/matches', icon: Crosshair },
+  { title: 'Radio', url: '/admin/radio', icon: Radio },
   { title: 'Report', url: '/admin/reports', icon: Flag },
   { title: 'Analytics', url: '/admin/analytics', icon: BarChart3 },
 ];
