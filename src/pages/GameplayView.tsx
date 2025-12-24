@@ -2,7 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Skull, Crosshair, MapPin, MessageCircle, ArrowLeft, Heart, Target, Footprints, Trophy, Radio, Scan } from 'lucide-react';
 import { GlowButton } from '@/components/ui/GlowButton';
-import { TacticalMap, KillDeclarationModal } from '@/components/gameplay';
+import { 
+  TacticalMap, 
+  KillDeclarationModal, 
+  LiveIndicator, 
+  DistanceRings, 
+  CompassIndicator, 
+  MiniRadar 
+} from '@/components/gameplay';
 import { RadioBox, RadioTransmitButton, FrequencyScanner, InterferenceEffect } from '@/components/radio';
 import { AchievementUnlockAnimation, MatchEndCelebration } from '@/components/achievements';
 import { useRadioStore } from '@/stores/radioStore';
@@ -168,10 +175,8 @@ const GameplayView: React.FC = () => {
               <ArrowLeft className="h-4 w-4" />
             </button>
             
-            <div className="flex items-center gap-1.5 bg-red-500/20 px-2 py-1 rounded-sm border border-red-500/50">
-              <span className="h-2 w-2 bg-red-500 rounded-full animate-pulse" />
-              <span className="text-xs font-bold text-red-400">LIVE</span>
-            </div>
+            {/* Live Indicator Component */}
+            <LiveIndicator size="md" pulse />
 
             <span className="text-sm font-medium text-primary">{gameState.mode}</span>
           </div>
@@ -228,12 +233,43 @@ const GameplayView: React.FC = () => {
       </div>
 
       {/* TACTICAL MAP */}
-      <div className="flex-1 p-2 min-h-0" style={{ height: '50vh' }}>
-        <TacticalMap
-          players={MOCK_GAME_PLAYERS}
-          gameState={gameState}
-          className="h-full rounded-sm border border-gray-800"
-        />
+      <div className="flex-1 p-2 min-h-0 relative" style={{ height: '50vh' }}>
+        <div className="relative h-full">
+          <TacticalMap
+            players={MOCK_GAME_PLAYERS}
+            gameState={gameState}
+            className="h-full rounded-sm border border-gray-800"
+          />
+          
+          {/* Overlay Components */}
+          
+          {/* Distance Rings - show range awareness */}
+          <DistanceRings 
+            intervals={[50, 100, 150]} 
+            showLabels 
+            color="primary"
+            className="absolute inset-0 rounded-sm pointer-events-none"
+          />
+          
+          {/* Compass Indicator - top left */}
+          <CompassIndicator 
+            heading={45} 
+            size="md" 
+            showCardinals 
+            className="absolute top-4 left-4 z-20"
+          />
+          
+          {/* Mini Radar - bottom right corner (COD-style) */}
+          <MiniRadar
+            players={MOCK_GAME_PLAYERS}
+            playerPosition={MOCK_GAME_PLAYERS.find(p => p.isUser)?.position}
+            range={30}
+            size={140}
+            showObjective
+            objectivePosition={gameState.objective.position}
+            className="absolute bottom-4 right-4 z-20"
+          />
+        </div>
       </div>
 
       {/* STATUS BAR + RADIO */}
