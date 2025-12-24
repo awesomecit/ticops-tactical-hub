@@ -21,29 +21,35 @@ import { useUIStore } from '@/stores/uiStore';
 import { useAuthStore } from '@/stores/authStore';
 import { cn } from '@/lib/utils';
 import { useChatStore } from '@/stores/chatStore';
-import { isAdmin, canManageTeam } from '@/lib/auth';
+import { isAdmin, canManageTeam, canManageField, canManageShop, isReferee } from '@/lib/auth';
 import { RadioWidget } from '@/components/radio/RadioWidget';
+import { UserRole } from '@/types';
 
 interface NavItem {
   icon: React.ElementType;
   labelKey: string;
   path: string;
   badge?: number;
+  roles?: UserRole[]; // Ruoli che possono vedere questa voce
 }
 
-const getNavItems = (unreadCount: number): NavItem[] => [
-  { icon: LayoutDashboard, labelKey: 'nav.dashboard', path: '/' },
-  { icon: Crosshair, labelKey: 'nav.games', path: '/games' },
-  { icon: CalendarClock, labelKey: 'nav.organize', path: '/organize' },
-  { icon: Users, labelKey: 'nav.team', path: '/team' },
-  { icon: MessageSquare, labelKey: 'nav.chat', path: '/chat', badge: unreadCount },
-  { icon: Trophy, labelKey: 'nav.leaderboard', path: '/leaderboard' },
-  { icon: Award, labelKey: 'nav.achievements', path: '/achievements' },
-  { icon: MapPin, labelKey: 'nav.locations', path: '/locations' },
-  { icon: Backpack, labelKey: 'nav.equipment', path: '/equipment' },
-  { icon: ShoppingBag, labelKey: 'nav.marketplace', path: '/marketplace' },
-  { icon: User, labelKey: 'nav.profile', path: '/profile' },
-];
+const getNavItems = (unreadCount: number, userRole: UserRole | undefined): NavItem[] => {
+  const baseItems: NavItem[] = [
+    { icon: LayoutDashboard, labelKey: 'nav.dashboard', path: '/' },
+    { icon: Crosshair, labelKey: 'nav.games', path: '/games' },
+    { icon: CalendarClock, labelKey: 'nav.organize', path: '/organize' },
+    { icon: Users, labelKey: 'nav.team', path: '/team' },
+    { icon: MessageSquare, labelKey: 'nav.chat', path: '/chat', badge: unreadCount },
+    { icon: Trophy, labelKey: 'nav.leaderboard', path: '/leaderboard' },
+    { icon: Award, labelKey: 'nav.achievements', path: '/achievements' },
+    { icon: MapPin, labelKey: 'nav.locations', path: '/locations' },
+    { icon: Backpack, labelKey: 'nav.equipment', path: '/equipment' },
+    { icon: ShoppingBag, labelKey: 'nav.marketplace', path: '/marketplace' },
+    { icon: User, labelKey: 'nav.profile', path: '/profile' },
+  ];
+
+  return baseItems;
+};
 
 const adminItems: NavItem[] = [
   { icon: Shield, labelKey: 'nav.admin', path: '/admin' },
@@ -54,11 +60,14 @@ export const Sidebar: React.FC = () => {
   const { sidebarOpen, toggleSidebar } = useUIStore();
   const { user, logout } = useAuthStore();
   const { getTotalUnreadCount } = useChatStore();
-  const navItems = getNavItems(getTotalUnreadCount());
+  const navItems = getNavItems(getTotalUnreadCount(), user?.role);
   
   const userRole = user?.role;
   const showAdminSection = isAdmin(userRole);
   const showRadioWidget = canManageTeam(userRole);
+  const showFieldManager = canManageField(userRole);
+  const showShopOwner = canManageShop(userRole);
+  const showReferee = isReferee(userRole);
 
   return (
     <>
@@ -157,6 +166,108 @@ export const Sidebar: React.FC = () => {
                     <RadioWidget collapsed={true} />
                   </div>
                 )}
+              </>
+            )}
+
+            {/* Field Manager section */}
+            {showFieldManager && (
+              <>
+                <div className="my-4 border-t border-sidebar-border" />
+                {sidebarOpen && (
+                  <div className="mb-2">
+                    <span className="px-3 text-xs font-display uppercase tracking-wider text-muted-foreground">
+                      Gestione Campo
+                    </span>
+                  </div>
+                )}
+                <NavLink
+                  to="/field-manager/fields"
+                  onClick={() => {
+                    if (window.innerWidth < 1024) {
+                      toggleSidebar();
+                    }
+                  }}
+                  className={({ isActive }) =>
+                    cn(
+                      "flex items-center gap-3 rounded-sm font-display uppercase tracking-wider text-sm transition-all duration-200 group no-select",
+                      sidebarOpen ? "px-3 py-3 min-h-[44px]" : "lg:px-2 lg:py-2 lg:justify-center",
+                      isActive
+                        ? "bg-sidebar-primary/10 text-sidebar-primary border-l-2 border-sidebar-primary"
+                        : "text-sidebar-foreground hover:bg-sidebar-accent active:bg-sidebar-accent/80 hover:text-foreground"
+                    )
+                  }
+                >
+                  <MapPin className="h-5 w-5 transition-transform group-hover:scale-110 flex-shrink-0" />
+                  {sidebarOpen && <span className="flex-1">I Miei Campi</span>}
+                </NavLink>
+              </>
+            )}
+
+            {/* Shop Owner section */}
+            {showShopOwner && (
+              <>
+                <div className="my-4 border-t border-sidebar-border" />
+                {sidebarOpen && (
+                  <div className="mb-2">
+                    <span className="px-3 text-xs font-display uppercase tracking-wider text-muted-foreground">
+                      Gestione Negozio
+                    </span>
+                  </div>
+                )}
+                <NavLink
+                  to="/shop-manager/dashboard"
+                  onClick={() => {
+                    if (window.innerWidth < 1024) {
+                      toggleSidebar();
+                    }
+                  }}
+                  className={({ isActive }) =>
+                    cn(
+                      "flex items-center gap-3 rounded-sm font-display uppercase tracking-wider text-sm transition-all duration-200 group no-select",
+                      sidebarOpen ? "px-3 py-3 min-h-[44px]" : "lg:px-2 lg:py-2 lg:justify-center",
+                      isActive
+                        ? "bg-sidebar-primary/10 text-sidebar-primary border-l-2 border-sidebar-primary"
+                        : "text-sidebar-foreground hover:bg-sidebar-accent active:bg-sidebar-accent/80 hover:text-foreground"
+                    )
+                  }
+                >
+                  <ShoppingBag className="h-5 w-5 transition-transform group-hover:scale-110 flex-shrink-0" />
+                  {sidebarOpen && <span className="flex-1">Il Mio Negozio</span>}
+                </NavLink>
+              </>
+            )}
+
+            {/* Referee section */}
+            {showReferee && (
+              <>
+                <div className="my-4 border-t border-sidebar-border" />
+                {sidebarOpen && (
+                  <div className="mb-2">
+                    <span className="px-3 text-xs font-display uppercase tracking-wider text-muted-foreground">
+                      Arbitraggio
+                    </span>
+                  </div>
+                )}
+                <NavLink
+                  to="/profile/referee-assignments"
+                  onClick={() => {
+                    if (window.innerWidth < 1024) {
+                      toggleSidebar();
+                    }
+                  }}
+                  className={({ isActive }) =>
+                    cn(
+                      "flex items-center gap-3 rounded-sm font-display uppercase tracking-wider text-sm transition-all duration-200 group no-select",
+                      sidebarOpen ? "px-3 py-3 min-h-[44px]" : "lg:px-2 lg:py-2 lg:justify-center",
+                      isActive
+                        ? "bg-sidebar-primary/10 text-sidebar-primary border-l-2 border-sidebar-primary"
+                        : "text-sidebar-foreground hover:bg-sidebar-accent active:bg-sidebar-accent/80 hover:text-foreground"
+                    )
+                  }
+                >
+                  <Shield className="h-5 w-5 transition-transform group-hover:scale-110 flex-shrink-0" />
+                  {sidebarOpen && <span className="flex-1">I Miei Incarichi</span>}
+                </NavLink>
               </>
             )}
 

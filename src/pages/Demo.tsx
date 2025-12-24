@@ -41,15 +41,18 @@ const Demo: React.FC = () => {
   const navigate = useNavigate();
   const { isAuthenticated, login } = useAuthStore();
 
-  // Auto-login con utente demo se non autenticato
+  // Auto-login con utente demo se non autenticato e redirect ad About
   useEffect(() => {
     if (!isAuthenticated) {
       const autoDemoLogin = async () => {
-        await login('demo@softwar.it', 'demo123');
+        const result = await login('player@demo.it', 'demo123');
+        if (result.success) {
+          navigate('/about');
+        }
       };
       autoDemoLogin();
     }
-  }, [isAuthenticated, login]);
+  }, [isAuthenticated, login, navigate]);
 
   const handleLoginRedirect = () => {
     navigate('/login');

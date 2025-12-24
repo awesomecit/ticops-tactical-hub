@@ -57,7 +57,7 @@ const Login = () => {
         title: "Benvenuto! 👋",
         description: "Login effettuato con successo",
       });
-      navigate("/");
+      navigate("/about");
     } else {
       toast({
         title: "Errore",
@@ -75,7 +75,7 @@ const Login = () => {
         title: "Account creato! 🎉",
         description: "Benvenuto nella community!",
       });
-      navigate("/");
+      navigate("/about");
     } else {
       toast({
         title: "Errore",
