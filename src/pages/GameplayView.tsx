@@ -8,7 +8,10 @@ import {
   LiveIndicator, 
   DistanceRings, 
   CompassIndicator, 
-  MiniRadar 
+  MiniRadar,
+  BombIndicator,
+  PlayerVisionCone,
+  BombBlastZone
 } from '@/components/gameplay';
 import { RadioBox, RadioTransmitButton, FrequencyScanner, InterferenceEffect } from '@/components/radio';
 import { AchievementUnlockAnimation, MatchEndCelebration } from '@/components/achievements';
@@ -32,6 +35,7 @@ import {
   MOCK_PLAYER_STATS,
   MOCK_GAME_PLAYERS,
   MOCK_NEARBY_ENEMIES,
+  MOCK_BOMB_STATE,
 } from '@/mocks/gameplay';
 
 const GameplayView: React.FC = () => {
@@ -42,6 +46,9 @@ const GameplayView: React.FC = () => {
   const [killModalOpen, setKillModalOpen] = useState(false);
   const [matchEnded, setMatchEnded] = useState(false);
   const [scannerOpen, setScannerOpen] = useState(false);
+  const [bombState, setBombState] = useState(MOCK_BOMB_STATE);
+  const [showVisionCones, setShowVisionCones] = useState(true);
+  const [showBombZone, setShowBombZone] = useState(true);
   const { status: radioStatus, activateRadio, connect, channels } = useRadioStore();
   const { achievements, updateProgress, setCelebration, pendingCelebration } = useAchievementStore();
   
@@ -240,6 +247,8 @@ const GameplayView: React.FC = () => {
             <TacticalMap
               players={MOCK_GAME_PLAYERS}
               gameState={gameState}
+              interactive={true}
+              showMapElements={true}
               className="h-full rounded-sm border border-gray-800"
             />
             
@@ -250,6 +259,47 @@ const GameplayView: React.FC = () => {
               color="primary"
               className="absolute inset-0 rounded-sm pointer-events-none"
             />
+            
+            {/* Bomb Indicator and Blast Zone */}
+            {showBombZone && bombState && (
+              <>
+                <BombIndicator
+                  position={bombState.position}
+                  state={bombState.state}
+                  timeRemaining={bombState.timeRemaining}
+                  defusingPlayer={bombState.defusingPlayer}
+                  blastRadius={12}
+                  defuseRadius={4}
+                  showDangerZone
+                  className="z-20"
+                />
+                
+                <BombBlastZone
+                  bombPosition={bombState.position}
+                  players={MOCK_GAME_PLAYERS}
+                  blastRadius={12}
+                  highlightDanger
+                  className="z-15"
+                />
+              </>
+            )}
+            
+            {/* Player Vision Cones */}
+            {showVisionCones && MOCK_GAME_PLAYERS.map((player) => (
+              player.isAlive && (
+                <PlayerVisionCone
+                  key={player.id}
+                  position={player.position}
+                  heading={player.id === 'p-1' ? 45 : player.id === 'p-2' ? 180 : 90}
+                  range={12}
+                  fovAngle={90}
+                  color={player.team === 'alpha' ? 'blue' : 'red'}
+                  opacity={0.15}
+                  showPlayer={false}
+                  className="z-10"
+                />
+              )
+            ))}
             
             {/* Compass Indicator - top left, smaller and safe margins */}
             <CompassIndicator 
@@ -275,9 +325,9 @@ const GameplayView: React.FC = () => {
             </div>
             
             {/* Map Legend */}
-            <div className="flex-1 bg-black/60 border border-gray-700 rounded-sm p-2 backdrop-blur-sm">
+            <div className="flex-1 bg-black/60 border border-gray-700 rounded-sm p-2 backdrop-blur-sm overflow-y-auto">
               <p className="text-[10px] font-display uppercase text-gray-400 mb-2">Legenda</p>
-              <div className="space-y-1.5">
+              <div className="space-y-1.5 mb-3">
                 <div className="flex items-center gap-2">
                   <div className="h-2.5 w-2.5 rounded-full bg-blue-500 border border-blue-300" />
                   <span className="text-[10px] text-gray-300">Te</span>
@@ -294,6 +344,31 @@ const GameplayView: React.FC = () => {
                   <div className="h-2 w-2 rounded-full bg-yellow-500 border border-yellow-300" />
                   <span className="text-[10px] text-gray-300">Obiettivo</span>
                 </div>
+              </div>
+              
+              {/* Toggle Controls */}
+              <div className="pt-2 border-t border-gray-700 space-y-1.5">
+                <button
+                  onClick={() => setShowVisionCones(!showVisionCones)}
+                  className={cn(
+                    "w-full flex items-center justify-between px-2 py-1 rounded text-[10px] transition-colors",
+                    showVisionCones ? "bg-primary/20 text-primary" : "bg-gray-800/50 text-gray-400"
+                  )}
+                >
+                  <span>Coni Vista</span>
+                  <div className={cn("h-2 w-2 rounded-full", showVisionCones ? "bg-primary" : "bg-gray-600")} />
+                </button>
+                
+                <button
+                  onClick={() => setShowBombZone(!showBombZone)}
+                  className={cn(
+                    "w-full flex items-center justify-between px-2 py-1 rounded text-[10px] transition-colors",
+                    showBombZone ? "bg-red-500/20 text-red-400" : "bg-gray-800/50 text-gray-400"
+                  )}
+                >
+                  <span>Zona Bomba</span>
+                  <div className={cn("h-2 w-2 rounded-full", showBombZone ? "bg-red-500" : "bg-gray-600")} />
+                </button>
               </div>
             </div>
           </div>

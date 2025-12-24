@@ -128,3 +128,21 @@ export const MOCK_NEARBY_ENEMIES = [
   { id: 'p-5', name: 'VIPER_X', avatar: '/placeholder.svg', distance: 28 },
   { id: 'p-7', name: 'RED_STORM', avatar: '/placeholder.svg', distance: 45 },
 ];
+
+// Bomb state for Demolition/S&D modes
+export interface BombState {
+  position: { x: number; y: number };
+  state: 'planted' | 'defusing' | 'armed' | 'detonated';
+  timeRemaining: number;
+  defusingPlayer?: string;
+  plantedBy?: string;
+  siteLabel: string;
+}
+
+export const MOCK_BOMB_STATE: BombState = {
+  position: { x: 70, y: 30 },
+  state: 'planted',
+  timeRemaining: 42,
+  plantedBy: 'VIPER_X',
+  siteLabel: 'Sito A',
+};
