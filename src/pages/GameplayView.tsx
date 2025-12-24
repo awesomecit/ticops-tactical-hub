@@ -234,41 +234,69 @@ const GameplayView: React.FC = () => {
 
       {/* TACTICAL MAP */}
       <div className="flex-1 p-2 min-h-0 relative" style={{ height: '50vh' }}>
-        <div className="relative h-full">
-          <TacticalMap
-            players={MOCK_GAME_PLAYERS}
-            gameState={gameState}
-            className="h-full rounded-sm border border-gray-800"
-          />
+        <div className="relative h-full flex gap-2">
+          {/* Main Map Container */}
+          <div className="flex-1 relative">
+            <TacticalMap
+              players={MOCK_GAME_PLAYERS}
+              gameState={gameState}
+              className="h-full rounded-sm border border-gray-800"
+            />
+            
+            {/* Distance Rings - overlay only on map */}
+            <DistanceRings 
+              intervals={[50, 100, 150]} 
+              showLabels 
+              color="primary"
+              className="absolute inset-0 rounded-sm pointer-events-none"
+            />
+            
+            {/* Compass Indicator - top left, smaller and safe margins */}
+            <CompassIndicator 
+              heading={45} 
+              size="sm" 
+              showCardinals 
+              className="absolute top-3 left-3 z-20"
+            />
+          </div>
           
-          {/* Overlay Components */}
-          
-          {/* Distance Rings - show range awareness */}
-          <DistanceRings 
-            intervals={[50, 100, 150]} 
-            showLabels 
-            color="primary"
-            className="absolute inset-0 rounded-sm pointer-events-none"
-          />
-          
-          {/* Compass Indicator - top left */}
-          <CompassIndicator 
-            heading={45} 
-            size="md" 
-            showCardinals 
-            className="absolute top-4 left-4 z-20"
-          />
-          
-          {/* Mini Radar - bottom right corner (COD-style) */}
-          <MiniRadar
-            players={MOCK_GAME_PLAYERS}
-            playerPosition={MOCK_GAME_PLAYERS.find(p => p.isUser)?.position}
-            range={30}
-            size={140}
-            showObjective
-            objectivePosition={gameState.objective.position}
-            className="absolute bottom-4 right-4 z-20"
-          />
+          {/* Right Side HUD - Radar + Legend */}
+          <div className="w-[160px] flex flex-col gap-2">
+            {/* Mini Radar - dedicated space */}
+            <div className="flex-shrink-0">
+              <MiniRadar
+                players={MOCK_GAME_PLAYERS}
+                playerPosition={MOCK_GAME_PLAYERS.find(p => p.isUser)?.position}
+                range={30}
+                size={140}
+                showObjective
+                objectivePosition={gameState.objective.position}
+              />
+            </div>
+            
+            {/* Map Legend */}
+            <div className="flex-1 bg-black/60 border border-gray-700 rounded-sm p-2 backdrop-blur-sm">
+              <p className="text-[10px] font-display uppercase text-gray-400 mb-2">Legenda</p>
+              <div className="space-y-1.5">
+                <div className="flex items-center gap-2">
+                  <div className="h-2.5 w-2.5 rounded-full bg-blue-500 border border-blue-300" />
+                  <span className="text-[10px] text-gray-300">Te</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="h-2 w-2 rounded-full bg-blue-400 border border-blue-300" />
+                  <span className="text-[10px] text-gray-300">Alleati</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="h-2 w-2 rounded-full bg-red-500 border border-red-300" />
+                  <span className="text-[10px] text-gray-300">Nemici</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="h-2 w-2 rounded-full bg-yellow-500 border border-yellow-300" />
+                  <span className="text-[10px] text-gray-300">Obiettivo</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
