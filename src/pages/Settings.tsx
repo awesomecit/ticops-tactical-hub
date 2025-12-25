@@ -12,7 +12,13 @@ import {
   EyeOff,
   Save,
   Check,
-  BellRing
+  BellRing,
+  Crown,
+  Target,
+  Gavel,
+  Building2,
+  Store as StoreIcon,
+  UserCog
 } from 'lucide-react';
 import { TacticalCard } from '@/components/ui/TacticalCard';
 import { GlowButton } from '@/components/ui/GlowButton';
@@ -21,11 +27,15 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Badge } from '@/components/ui/badge';
+import { UserRole } from '@/types';
+import { cn } from '@/lib/utils';
 import { useAuthStore } from '@/stores/authStore';
 import { useAlertStore } from '@/stores/alertStore';
 import { useToast } from '@/hooks/use-toast';
 import { supportedLanguages, changeLanguage } from '@/i18n';
 import { AlertsList } from '@/components/alerts';
+import { UserRoleManager } from '@/components/profile/UserRoleManager';
 
 const Settings: React.FC = () => {
   const { t, i18n } = useTranslation();
@@ -34,6 +44,42 @@ const Settings: React.FC = () => {
   const { toast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
   const alertUnreadCount = getUnreadNotificationCount();
+
+  const getRoleIcon = (role: UserRole) => {
+    const icons = {
+      player: Target,
+      team_leader: Crown,
+      referee: Gavel,
+      field_manager: Building2,
+      shop_owner: StoreIcon,
+      admin: UserCog,
+    };
+    return icons[role];
+  };
+
+  const getRoleLabel = (role: UserRole) => {
+    const labels = {
+      player: 'Giocatore',
+      team_leader: 'Team Leader',
+      referee: 'Arbitro',
+      field_manager: 'Gestore Campo',
+      shop_owner: 'Negoziante',
+      admin: 'Admin',
+    };
+    return labels[role];
+  };
+
+  const getRoleColor = (role: UserRole) => {
+    const colors = {
+      player: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
+      team_leader: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
+      referee: 'bg-purple-500/20 text-purple-400 border-purple-500/30',
+      field_manager: 'bg-green-500/20 text-green-400 border-green-500/30',
+      shop_owner: 'bg-orange-500/20 text-orange-400 border-orange-500/30',
+      admin: 'bg-red-500/20 text-red-400 border-red-500/30',
+    };
+    return colors[role];
+  };
   
   const [settings, setSettings] = useState({
     emailNotifications: true,
@@ -80,10 +126,14 @@ const Settings: React.FC = () => {
       </div>
 
       <Tabs defaultValue="profile" className="space-y-6">
-        <TabsList className="grid grid-cols-2 md:grid-cols-7 w-full">
+        <TabsList className="grid grid-cols-2 md:grid-cols-8 w-full">
           <TabsTrigger value="profile" className="gap-2">
             <User className="h-4 w-4" />
             <span className="hidden sm:inline">{t('settings.profile')}</span>
+          </TabsTrigger>
+          <TabsTrigger value="roles" className="gap-2">
+            <Shield className="h-4 w-4" />
+            <span className="hidden sm:inline">Ruoli</span>
           </TabsTrigger>
           <TabsTrigger value="alerts" className="gap-2 relative">
             <BellRing className="h-4 w-4" />
@@ -99,7 +149,7 @@ const Settings: React.FC = () => {
             <span className="hidden sm:inline">{t('settings.notifications')}</span>
           </TabsTrigger>
           <TabsTrigger value="privacy" className="gap-2">
-            <Shield className="h-4 w-4" />
+            <Eye className="h-4 w-4" />
             <span className="hidden sm:inline">{t('settings.privacy')}</span>
           </TabsTrigger>
           <TabsTrigger value="security" className="gap-2">
@@ -116,6 +166,20 @@ const Settings: React.FC = () => {
           </TabsTrigger>
         </TabsList>
 
+        {/* Roles Tab - NEW */}
+        <TabsContent value="roles">
+          <UserRoleManager
+            userRoles={user?.roles || (user?.role ? [user.role] : [])}
+            primaryRole={user?.primaryRole || user?.role || 'player'}
+            onPrimaryRoleChange={(role) => {
+              toast({
+                title: 'Ruolo Primario Aggiornato',
+                description: `Hai impostato "${role}" come ruolo principale`
+              });
+            }}
+          />
+        </TabsContent>
+
         {/* Alerts Tab */}
         <TabsContent value="alerts">
           <TacticalCard className="p-6">
@@ -130,15 +194,42 @@ const Settings: React.FC = () => {
             <h2 className="text-lg font-display font-bold text-foreground mb-4">{t('settings.profile')}</h2>
             
             <div className="space-y-4">
-              <div className="flex items-center gap-4">
-                <div className="h-20 w-20 bg-card clip-tactical border border-border flex items-center justify-center">
+              <div className="flex items-start gap-4">
+                <div className="h-20 w-20 bg-card clip-tactical border border-border flex items-center justify-center flex-shrink-0">
                   <span className="font-display font-bold text-3xl text-primary">
                     {user?.callsign?.charAt(0) || 'U'}
                   </span>
                 </div>
-                <div>
-                  <GlowButton variant="outline" size="sm">{t('settings.editProfile')}</GlowButton>
-                  <p className="text-xs text-muted-foreground mt-1">JPG, PNG max 2MB</p>
+                <div className="flex-1">
+                  <div className="mb-2">
+                    <h3 className="font-display font-bold text-lg">{user?.username || user?.callsign}</h3>
+                    <p className="text-sm text-muted-foreground">{user?.email}</p>
+                  </div>
+                  {user?.roles && user.roles.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      {/* Ordine fisso: player, team_leader, referee, field_manager, shop_owner, admin */}
+                      {['player', 'team_leader', 'referee', 'field_manager', 'shop_owner', 'admin']
+                        .filter(r => user.roles?.includes(r as typeof user.roles[number]))
+                        .map((role) => {
+                          const Icon = getRoleIcon(role as typeof user.roles[number]);
+                          const isPrimary = role === user.primaryRole || role === user.role;
+                          return (
+                            <Badge
+                              key={role}
+                              variant="outline"
+                              className={cn(
+                                'gap-1.5 border',
+                                getRoleColor(role as typeof user.roles[number]),
+                                isPrimary && 'ring-2 ring-primary/50'
+                              )}
+                            >
+                              <Icon className="h-3 w-3" />
+                              {getRoleLabel(role as typeof user.roles[number])}
+                            </Badge>
+                          );
+                        })}
+                    </div>
+                  )}
                 </div>
               </div>
 

@@ -7,7 +7,9 @@ export interface User {
   callsign: string;
   email: string;
   avatar?: string;
-  role: UserRole;
+  role: UserRole; // Primary role (for backward compatibility)
+  roles?: UserRole[]; // All active roles (optional for multi-role support)
+  primaryRole?: UserRole; // Explicitly set primary role
   rank: Rank;
   team?: Team;
   stats: PlayerStats;

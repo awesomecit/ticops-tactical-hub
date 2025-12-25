@@ -12,7 +12,6 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { z } from "zod";
-import DemoLoginModal from "@/components/auth/DemoLoginModal";
 
 const loginSchema = z.object({
   email: z.string().email("Email non valida"),
@@ -33,11 +32,10 @@ type LoginFormData = z.infer<typeof loginSchema>;
 type RegisterFormData = z.infer<typeof registerSchema>;
 
 const Login = () => {
-  const { login, register: registerUser, isLoading } = useAuthStore();
+  const { login, register: registerUser, loginDemo, isLoading } = useAuthStore();
   const { toast } = useToast();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<"login" | "register">("login");
-  const [demoModalOpen, setDemoModalOpen] = useState(false);
 
   const loginForm = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
@@ -90,6 +88,17 @@ const Login = () => {
       title: "Social Login",
       description: `Login con ${provider} non disponibile in demo`,
     });
+  };
+
+  const handleDemoLogin = async () => {
+    const result = await loginDemo();
+    if (result.success) {
+      toast({
+        title: "Demo Attiva! 🎮",
+        description: "Accesso come GhostSniper92 con tutti i ruoli",
+      });
+      navigate("/");
+    }
   };
 
   return (
@@ -273,8 +282,6 @@ const Login = () => {
           Registrazione avanzata
         </Link>
       </p>
-
-      <DemoLoginModal open={demoModalOpen} onOpenChange={setDemoModalOpen} />
     </div>
   );
 };

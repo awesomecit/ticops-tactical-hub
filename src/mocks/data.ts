@@ -15,7 +15,9 @@ export const mockUser: User = {
   callsign: 'GHOST',
   email: 'ghost@ticops.it',
   avatar: undefined,
-  role: 'player',
+  role: 'team_leader',
+  roles: ['player', 'team_leader', 'referee', 'field_manager', 'shop_owner', 'admin'],
+  primaryRole: 'team_leader',
   rank: mockRanks[3],
   stats: {
     gamesPlayed: 47,

@@ -41,6 +41,18 @@ const roleLabels: Record<string, string> = {
   admin: 'Amministratore',
 };
 
+const getRoleColor = (role: string) => {
+  const colors: Record<string, string> = {
+    player: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
+    team_leader: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
+    referee: 'bg-purple-500/20 text-purple-400 border-purple-500/30',
+    field_manager: 'bg-green-500/20 text-green-400 border-green-500/30',
+    shop_owner: 'bg-orange-500/20 text-orange-400 border-orange-500/30',
+    admin: 'bg-red-500/20 text-red-400 border-red-500/30',
+  };
+  return colors[role] || 'bg-gray-500/20 text-gray-400 border-gray-500/30';
+};
+
 const Profile: React.FC = () => {
   const navigate = useNavigate();
   const user = getCurrentUser();
@@ -75,8 +87,35 @@ const Profile: React.FC = () => {
               <div className="space-y-1">
                 <h1 className="text-2xl font-display font-bold uppercase">{user.username}</h1>
                 <p className="text-muted-foreground">@{user.username.toLowerCase()}</p>
-                <div className="flex items-center gap-2 mt-2">
-                  <Badge variant="secondary">{roleLabels[user.role]}</Badge>
+                <div className="flex flex-wrap items-center gap-2 mt-2">
+                  {user.roles && user.roles.length > 0 ? (
+                    /* Ordine fisso: player, team_leader, referee, field_manager, shop_owner, admin */
+                    ['player', 'team_leader', 'referee', 'field_manager', 'shop_owner', 'admin']
+                      .filter(r => user.roles?.includes(r as typeof user.roles[number]))
+                      .map((role) => {
+                        const isPrimary = role === user.primaryRole || role === user.role;
+                        return (
+                          <Badge 
+                            key={role} 
+                            variant="outline"
+                            className={cn(
+                              'border',
+                              getRoleColor(role),
+                              isPrimary && 'ring-2 ring-primary/50'
+                            )}
+                          >
+                            {roleLabels[role] || role}
+                          </Badge>
+                        );
+                      })
+                  ) : (
+                    <Badge 
+                      variant="outline"
+                      className={cn('border', getRoleColor(user.role))}
+                    >
+                      {roleLabels[user.role]}
+                    </Badge>
+                  )}
                   {user.teamId && (
                     <Badge variant="outline" className="gap-1">
                       <Users className="h-3 w-3" />

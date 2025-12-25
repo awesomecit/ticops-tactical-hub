@@ -1,11 +1,14 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Menu, MessageSquare, Settings, LogOut, User } from 'lucide-react';
+import { Menu, MessageSquare, Settings, LogOut, User, Eye, EyeOff } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuthStore } from '@/stores/authStore';
 import { useUIStore } from '@/stores/uiStore';
 import { RankBadge } from '@/components/ui/RankBadge';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { getRoleVisibility } from '@/lib/roleConfig';
+import { cn } from '@/lib/utils';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -46,10 +49,10 @@ export const Header: React.FC = () => {
             <Menu className="h-6 w-6" />
           </button>
           
-          {/* Logo - touch-friendly */}
+          {/* Logo - link to About */}
           <Link 
             to="/about" 
-            className="flex items-center gap-2 hover:opacity-80 active:opacity-60 transition-opacity min-h-[44px]"
+            className="flex items-center gap-2 min-h-[44px] hover:opacity-80 active:opacity-60 transition-opacity"
           >
             <div className="relative">
               <span className="font-display text-xl sm:text-2xl font-bold tracking-wider text-primary">
@@ -105,7 +108,64 @@ export const Header: React.FC = () => {
                   </div>
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuContent align="end" className="w-64">
+                {/* User Info with Role Badges */}
+                <div className="px-2 py-3 border-b border-border">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="h-10 w-10 bg-primary/20 rounded-full flex items-center justify-center flex-shrink-0">
+                      <span className="font-display font-bold text-primary text-sm">
+                        {user?.callsign?.charAt(0) || 'U'}
+                      </span>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-display font-semibold text-sm text-foreground truncate">
+                        {user?.username || user?.callsign}
+                      </p>
+                      <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
+                    </div>
+                  </div>
+                  
+                  {/* Role Badges */}
+                  {user?.roles && user.roles.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5">
+                      {/* Ordine fisso: player, team_leader, referee, field_manager, shop_owner, admin */}
+                      {['player', 'team_leader', 'referee', 'field_manager', 'shop_owner', 'admin']
+                        .filter(r => user.roles?.includes(r as typeof user.roles[number]))
+                        .map((role) => {
+                          const isVisible = getRoleVisibility(role as typeof user.roles[number]);
+                          const isPrimary = role === user.primaryRole || role === user.role;
+                          const roleColors: Record<string, string> = {
+                            player: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
+                            team_leader: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
+                            referee: 'bg-purple-500/20 text-purple-400 border-purple-500/30',
+                            field_manager: 'bg-green-500/20 text-green-400 border-green-500/30',
+                            shop_owner: 'bg-orange-500/20 text-orange-400 border-orange-500/30',
+                            admin: 'bg-red-500/20 text-red-400 border-red-500/30',
+                          };
+                          return (
+                            <Badge
+                              key={role}
+                              variant="outline"
+                              className={cn(
+                                'text-[10px] px-1.5 py-0.5 h-5 gap-1 border',
+                                roleColors[role],
+                                isPrimary && 'ring-1 ring-primary/50',
+                                !isVisible && 'opacity-50'
+                              )}
+                            >
+                              {isVisible ? (
+                                <Eye className="h-2.5 w-2.5" />
+                              ) : (
+                                <EyeOff className="h-2.5 w-2.5" />
+                              )}
+                              {role.replace('_', ' ')}
+                            </Badge>
+                          );
+                        })}
+                    </div>
+                  )}
+                </div>
+                
                 <DropdownMenuItem onClick={() => navigate("/profile")} className="min-h-[44px] md:min-h-0">
                   <User className="w-4 h-4 mr-2" />
                   {t('nav.profile')}

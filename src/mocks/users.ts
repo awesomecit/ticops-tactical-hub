@@ -9,6 +9,7 @@ export interface IMockUser {
   email: string;
   avatar?: string;
   role: UserRole;
+  roles?: UserRole[]; // Multi-role support
   tier: UserTier;
   tierLevel: 1 | 2 | 3 | 4 | 5;
   elo: number;
@@ -86,6 +87,7 @@ export const MOCK_USERS: IMockUser[] = [
     email: 'ghostsniper92@email.com',
     avatar: undefined,
     role: 'team_leader',
+    roles: ['player', 'team_leader', 'referee', 'field_manager', 'shop_owner', 'admin'],
     tier: 'gold',
     tierLevel: 4,
     elo: 1680,

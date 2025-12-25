@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { 
   Target, 
   Users, 
@@ -14,68 +14,441 @@ import {
   Instagram,
   Facebook,
   Store,
-  Calendar
+  Calendar,
+  Search,
+  Activity,
+  Bell,
+  Radio,
+  Share2,
+  Lock,
+  Clock,
+  Sparkles,
+  ShoppingBag,
+  ArrowRight,
+  ChevronRight,
+  Check,
+  Settings
 } from 'lucide-react';
 import { TacticalCard } from '@/components/ui/TacticalCard';
 import { GlowButton } from '@/components/ui/GlowButton';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { cn } from '@/lib/utils';
 
-const features = [
+interface Feature {
+  id: string;
+  icon: React.ElementType;
+  title: string;
+  description: string;
+  badge?: string;
+  category: 'gameplay' | 'management' | 'commerce' | 'social';
+  longDescription: string;
+  capabilities: string[];
+  releaseDate: string;
+  status: 'completed' | 'in-progress' | 'planned';
+}
+
+const features: Feature[] = [
   {
+    id: 'field-search',
+    icon: Search,
+    title: 'Ricerca Campi Avanzata',
+    description: 'Trova campi softair certificati con filtri per caratteristiche, recensioni e disponibilità.',
+    category: 'management',
+    badge: 'v1.0',
+    longDescription: 'Sistema completo di ricerca campi con filtri avanzati per illuminazione, tipo terreno, amenities (parcheggio, bar, spogliatoi), recensioni utenti e disponibilità in tempo reale.',
+    capabilities: [
+      'Filtri multipli (terreno, illuminazione, servizi)',
+      'Sistema recensioni 5 stelle',
+      'Calendario disponibilità',
+      'Galleria foto',
+      'Mappa interattiva',
+      'Contatto diretto gestore'
+    ],
+    releaseDate: '2024-10',
+    status: 'completed'
+  },
+  {
+    id: 'tactical-gameplay',
     icon: Target,
-    title: 'Gameplay Tattico',
-    description: 'Partecipa a partite CTF e TDM con tracking in tempo reale, kill declaration e sistema ELO competitivo.'
+    title: 'Gameplay Tattico Live',
+    description: 'Partecipa a partite CTF e TDM con tracking in tempo reale, kill declaration e sistema ELO.',
+    category: 'gameplay',
+    badge: 'Core',
+    longDescription: 'Sistema di gameplay avanzato con mappa tattica interattiva, dichiarazione kill in tempo reale, sistema di conferma opponent, gestione conflitti con arbitro. Include tracking ELO competitivo con tier Bronze → Diamond.',
+    capabilities: [
+      'Mappa tattica con coni visione',
+      'Dichiarazione kill con conferma',
+      'Sistema ELO competitivo',
+      'Statistiche dettagliate (K/D, accuracy)',
+      'Elementi mappa (spawn, edifici, alberi)',
+      'Obiettivi live (CTF, zone controllo)',
+      'Feed attività real-time',
+      'Sistema anti-cheat'
+    ],
+    releaseDate: '2024-11',
+    status: 'completed'
   },
   {
+    id: 'team-management',
     icon: Users,
-    title: 'Sistema Team',
-    description: 'Crea o unisciti a team, gestisci roster, strategie e scala le classifiche insieme ai tuoi compagni.'
+    title: 'Gestione Team Completa',
+    description: 'Crea o unisciti a team, gestisci roster, strategie, radio e scala le classifiche.',
+    category: 'management',
+    badge: 'Team',
+    longDescription: 'Sistema completo di team management con gestione roster, radio team dedicata, strategia pre-match, statistiche aggregate e integrazione social media per coordinamento.',
+    capabilities: [
+      'Creazione team con tag e logo',
+      'Gestione roster e ruoli',
+      'Radio team criptata',
+      'Strategia pre-match',
+      'Statistiche aggregate',
+      'Classifiche team',
+      'Integrazione social',
+      'Team inbox'
+    ],
+    releaseDate: '2024-10',
+    status: 'completed'
   },
   {
-    icon: MapPin,
-    title: 'Campi Verificati',
-    description: 'Trova campi softair certificati vicino a te con mappe, regolamenti e prenotazioni integrate.'
-  },
-  {
+    id: 'ranking-leaderboard',
     icon: Trophy,
-    title: 'Classifiche & Tier',
-    description: 'Sistema di ranking con tier Bronze → Diamond, leaderboard globali e statistiche dettagliate.'
+    title: 'Classifiche & Tier System',
+    description: 'Sistema di ranking con tier Bronze → Diamond, leaderboard globali e statistiche.',
+    category: 'gameplay',
+    badge: 'Competitive',
+    longDescription: 'Sistema di ranking competitivo basato su ELO con 5 tier. Leaderboard globali con filtri per tier, regione, periodo. Statistiche dettagliate e confronto giocatori.',
+    capabilities: [
+      'Sistema ELO con 5 tier',
+      'Leaderboard filtrabili',
+      'Statistiche individuali',
+      'Confronto giocatori',
+      'Tier progression visuale',
+      'Badge tier animati',
+      'History match',
+      'Promozione automatica'
+    ],
+    releaseDate: '2024-11',
+    status: 'completed'
   },
   {
+    id: 'referee-system',
     icon: Shield,
-    title: 'Arbitri Certificati',
-    description: 'Arbitri formati e valutati dalla community garantiscono partite fair e professionali.'
+    title: 'Sistema Arbitri Certificati',
+    description: 'Arbitri formati garantiscono fair play con strumenti professionali.',
+    category: 'management',
+    badge: 'Fair Play',
+    longDescription: 'Sistema completo per arbitri con vista dedicata live match, gestione conflitti kill, replay video, statistiche arbitraggio e rating da giocatori/campi.',
+    capabilities: [
+      'Vista arbitro con eventi live',
+      'Gestione conflitti kill',
+      'Replay video integrato',
+      'Note su decisioni',
+      'Statistiche arbitraggio',
+      'Rating arbitro',
+      'Notifiche conflitti',
+      'Report post-partita'
+    ],
+    releaseDate: '2024-11',
+    status: 'completed'
   },
   {
+    id: 'spectator-mode',
     icon: Zap,
-    title: 'Live Tracking',
-    description: 'Segui le partite in tempo reale come spettatore o arbitro con mappa tattica e feed eventi.'
+    title: 'Live Tracking & Spectator',
+    description: 'Segui partite in tempo reale come spettatore con mappa tattica e feed eventi.',
+    category: 'gameplay',
+    badge: 'Live',
+    longDescription: 'Modalità spettatore per seguire partite live con mappa tattica, posizioni giocatori, score in tempo reale, feed kill e statistiche. Supporta streaming pubblico o privato.',
+    capabilities: [
+      'Mappa tattica con posizioni',
+      'Score live',
+      'Feed eventi real-time',
+      'Statistiche live',
+      'Cambio camera giocatori',
+      'Modalità pubblico/privato',
+      'Delay anti-ghosting',
+      'Recording per replay'
+    ],
+    releaseDate: '2024-12',
+    status: 'completed'
   },
   {
+    id: 'chat-messaging',
     icon: MessageSquare,
-    title: 'Chat & Radio Team',
-    description: 'Comunicazione integrata con canali team, chat private, radio PTT e scanner frequenze.'
+    title: 'Chat & Messaggistica',
+    description: 'Comunicazione integrata con chat diretta, canali team e messaggi a shop/campi.',
+    category: 'social',
+    badge: 'Social',
+    longDescription: 'Sistema messaggistica completo con chat 1-to-1, canali team, messaggi diretti a shop/campi/arbitri, typing indicators, presenza online, notifiche push e messaggi vocali.',
+    capabilities: [
+      'Chat privata 1-to-1',
+      'Canali team',
+      'Contatto shop/campi',
+      'Typing indicators',
+      'Presenza online',
+      'Notifiche push',
+      'Allegati foto',
+      'Emoji reactions',
+      'Messaggi vocali',
+      'Ricerca full-text'
+    ],
+    releaseDate: '2024-10',
+    status: 'completed'
   },
   {
+    id: 'achievements',
     icon: Award,
-    title: 'Achievement System',
-    description: 'Sblocca achievement, medaglie e ricompense per le tue imprese sul campo.'
+    title: 'Achievement & Rewards',
+    description: 'Sblocca achievement, medaglie e ricompense per le tue imprese sul campo.',
+    category: 'gameplay',
+    badge: 'Progression',
+    longDescription: 'Sistema completo con 50+ achievement, badge con abilità speciali, chest post-match con reward, animazioni sblocco live, progression path e integrazione XP.',
+    capabilities: [
+      '50+ achievement',
+      'Badge con abilità speciali',
+      'Chest reward post-match',
+      'Animazioni in-game',
+      'Progression tracking',
+      'Showcase profilo',
+      'Achievement segreti',
+      'Seasonal achievement',
+      'Bonus XP/ELO'
+    ],
+    releaseDate: '2024-11',
+    status: 'completed'
   },
   {
+    id: 'radio-advanced',
+    icon: Radio,
+    title: 'Radio Avanzata Match Live',
+    description: 'Sistema radio con PTT, streaming audio, scanner frequenze e contromisure.',
+    category: 'gameplay',
+    badge: 'Tactical',
+    longDescription: 'Radio avanzata con Push-To-Talk, streaming audio bidirezionale, suoni ricetrasmittente realistici, scanner frequenze nemiche (badge Ingegnere), jamming e encryption.',
+    capabilities: [
+      'PTT con feedback visivo',
+      'Streaming audio real-time',
+      'Suoni realistici',
+      'Scanner frequenze',
+      'Sistema jamming',
+      'Frequenze criptate',
+      'Canali multipli',
+      'Volume regolabile',
+      'Animazione interferenza'
+    ],
+    releaseDate: '2024-11',
+    status: 'completed'
+  },
+  {
+    id: 'marketplace',
     icon: Store,
-    title: 'Mercatino',
-    description: 'Compra, vendi e scambia attrezzatura con altri giocatori. Recensioni e chat integrate.'
+    title: 'Mercatino P2P',
+    description: 'Compra, vendi e scambia attrezzatura airsoft tra giocatori.',
+    category: 'commerce',
+    badge: 'Commerce',
+    longDescription: 'Marketplace peer-to-peer per attrezzatura. Annunci con foto, condizioni prodotto, recensioni acquirente/venditore, badge verificato, chat integrata e storico transazioni.',
+    capabilities: [
+      'Annunci con foto multiple',
+      'Categorie prodotti',
+      'Condizioni (nuovo/usato)',
+      'Sistema recensioni',
+      'Badge Verificato',
+      'Chat trattative',
+      'Preferiti e alert',
+      'Storico transazioni',
+      'Report fraudolenti'
+    ],
+    releaseDate: '2024-12',
+    status: 'completed'
   },
   {
+    id: 'match-organizer',
     icon: Calendar,
     title: 'Match Organizer',
-    description: 'Organizza partite incrociando disponibilità giocatori e campi. Quick match con sconosciuti.'
+    description: 'Organizza partite incrociando disponibilità. Quick match con sconosciuti.',
+    category: 'management',
+    badge: 'Organizer',
+    longDescription: 'Sistema per organizzazione match con calendario disponibilità, slot liberi campi, algoritmo matching automatico, Quick Match per trovare partite e notifiche.',
+    capabilities: [
+      'Calendario disponibilità',
+      'Slot liberi campi',
+      'Matching automatico',
+      'Quick Match casuali',
+      'Filtri geografici',
+      'Notifiche match',
+      'Wizard creazione',
+      'Tracking RSVP',
+      'Reminder automatici'
+    ],
+    releaseDate: '2024-12',
+    status: 'completed'
+  },
+  {
+    id: 'social-integration',
+    icon: Share2,
+    title: 'Integrazione Social',
+    description: 'Connetti Discord, Telegram, WhatsApp, Instagram per coordinamento team.',
+    category: 'social',
+    badge: 'Community',
+    longDescription: 'Integrazione con piattaforme social. Team/campo/shop possono pubblicare link social per coordinamento out-of-game, eventi community e supporto immediato.',
+    capabilities: [
+      'Link Discord server',
+      'Gruppi Telegram',
+      'WhatsApp rapido',
+      'Instagram foto',
+      'Facebook eventi',
+      'Quick contact bar',
+      'Auto-invite bot',
+      'Notifiche cross-platform'
+    ],
+    releaseDate: '2024-10',
+    status: 'completed'
+  },
+  {
+    id: 'rbac',
+    icon: Lock,
+    title: 'RBAC & Permessi',
+    description: 'Sistema ruoli con visibilità menu e protezione rotte.',
+    category: 'management',
+    badge: 'Security',
+    longDescription: 'Role-Based Access Control con 6 ruoli (player, team_leader, referee, field_manager, shop_owner, admin). Capabilities specifiche, rotte protette, menu filtrati.',
+    capabilities: [
+      '6 ruoli predefiniti',
+      'Capabilities granulari',
+      'Protezione rotte',
+      'Filtro menu dinamico',
+      'Helper hasRole()',
+      'Access Denied page',
+      'Demo login test',
+      'Audit log admin'
+    ],
+    releaseDate: '2024-10',
+    status: 'completed'
+  },
+  {
+    id: 'realtime',
+    icon: Activity,
+    title: 'Real-Time System',
+    description: 'Comunicazione real-time via WebSocket per notifiche, chat e radio live.',
+    category: 'gameplay',
+    badge: 'Real-Time',
+    longDescription: 'Sistema real-time con mock client (pronto per Supabase). Gestisce notifiche push, chat, radio live, presenza online, typing e sync stato match.',
+    capabilities: [
+      'Mock Realtime Client',
+      'Notifiche push',
+      'Chat istantanea',
+      'Radio live',
+      'Presenza online',
+      'Typing indicators',
+      'Sync match state',
+      'Pronto per Supabase'
+    ],
+    releaseDate: '2024-11',
+    status: 'completed'
+  },
+  {
+    id: 'alert-system',
+    icon: Bell,
+    title: 'Sistema Alert',
+    description: 'Imposta alert su shop (nuovi prodotti, sconti) e disponibilità campi.',
+    category: 'management',
+    badge: 'Notifications',
+    longDescription: 'Sistema alert personalizzabile per notifiche shop, disponibilità campi, inviti team. Preferenze granulari con canali multipli (email, push, in-app).',
+    capabilities: [
+      'Alert shop',
+      'Alert campi',
+      'Alert team',
+      'Preferenze per tipo',
+      'Canali multipli',
+      'Frequency control',
+      'Mute temporaneo',
+      'History alert'
+    ],
+    releaseDate: '2024-10',
+    status: 'completed'
+  },
+  {
+    id: 'multi-org',
+    icon: ShoppingBag,
+    title: 'Multi-Organizzazione',
+    description: 'Gestione federazioni, organizzazioni e divisioni con visibilità RLS.',
+    category: 'management',
+    badge: 'In Development',
+    longDescription: 'Sistema multi-organizzazione con gerarchia Federation → Organization → Division. 5 access level. Row Level Security per filtrare dati. Admin UI pulito.',
+    capabilities: [
+      'Hierarchy Fed/Org/Div',
+      '5 access levels',
+      'RLS filters automatici',
+      'Division switcher',
+      'Admin CRUD pages',
+      'Migration script',
+      'Clean admin theme',
+      'Navigation guard'
+    ],
+    releaseDate: '2025-01 (Sprint 1-2)',
+    status: 'in-progress'
+  },
+  {
+    id: 'admin-entities',
+    icon: Settings,
+    title: 'Gestione Anagrafiche Admin',
+    description: 'Pannello admin unificato per CRUD su tutte le entità.',
+    category: 'management',
+    badge: 'Planned',
+    longDescription: 'Admin panel completo con anagrafiche unificate. DataTable generico, EntityFilters, form CRUD per Fields, Users, Teams, Matches, Referees, Shops. Theme pulito, pagination server-side.',
+    capabilities: [
+      'Clean AdminLayout',
+      'DataTable riusabile',
+      'EntityFilters',
+      '6 entity pages',
+      'Form modali CRUD',
+      'Pagination server-side',
+      'Breadcrumb navigation',
+      'Bulk actions',
+      'Export CSV/Excel'
+    ],
+    releaseDate: '2025-02 (Sprint 3-4)',
+    status: 'planned'
   }
 ];
 
 const About: React.FC = () => {
+  const navigate = useNavigate();
+  const [selectedFeature, setSelectedFeature] = useState<Feature | null>(null);
+  const [categoryFilter, setCategoryFilter] = useState<string>('all');
+
+  const categories = [
+    { id: 'all', label: 'Tutte', color: 'bg-primary/20 text-primary' },
+    { id: 'gameplay', label: 'Gameplay', color: 'bg-blue-500/20 text-blue-400' },
+    { id: 'management', label: 'Gestione', color: 'bg-yellow-500/20 text-yellow-400' },
+    { id: 'commerce', label: 'Commercio', color: 'bg-green-500/20 text-green-400' },
+    { id: 'social', label: 'Social', color: 'bg-purple-500/20 text-purple-400' }
+  ];
+
+  const filteredFeatures = categoryFilter === 'all' 
+    ? features 
+    : features.filter(f => f.category === categoryFilter);
+
+  const getStatusBadge = (status: Feature['status']) => {
+    const badges = {
+      completed: { label: 'Completata', variant: 'default' as const, color: 'bg-green-500/20 text-green-400' },
+      'in-progress': { label: 'In Sviluppo', variant: 'secondary' as const, color: 'bg-yellow-500/20 text-yellow-400' },
+      planned: { label: 'Pianificata', variant: 'outline' as const, color: 'bg-gray-500/20 text-gray-400' }
+    };
+    return badges[status];
+  };
+
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 pb-16">
       {/* Hero Section */}
       <div className="relative overflow-hidden rounded-lg bg-gradient-to-br from-primary/20 via-background to-accent/10 p-8 border border-border">
         <div className="relative z-10">
@@ -86,26 +459,121 @@ const About: React.FC = () => {
           <h1 className="text-2xl font-display font-bold text-foreground mb-4">
             La Piattaforma Definitiva per il Softair Competitivo
           </h1>
-          <p className="text-muted-foreground max-w-2xl">
+          <p className="text-muted-foreground max-w-2xl mb-6">
             TicOps rivoluziona il mondo del softair con tracking in tempo reale, 
             sistema di ranking competitivo e gestione completa di team e partite. 
             Unisciti alla community e porta il tuo gioco al livello successivo.
           </p>
+          
+          <div className="flex flex-wrap gap-3">
+            <GlowButton 
+              onClick={() => navigate('/register')}
+              className="gap-2"
+            >
+              Inizia Ora <ArrowRight className="w-4 h-4" />
+            </GlowButton>
+            <Button variant="outline" onClick={() => navigate('/games')}>
+              Esplora Partite
+            </Button>
+          </div>
         </div>
         <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl" />
       </div>
 
+      {/* Stats Cards */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <TacticalCard className="p-4">
+          <div className="text-3xl font-bold text-primary">17+</div>
+          <div className="text-sm text-muted-foreground">Feature Complete</div>
+        </TacticalCard>
+        <TacticalCard className="p-4">
+          <div className="text-3xl font-bold text-secondary">15</div>
+          <div className="text-sm text-muted-foreground">Completate</div>
+        </TacticalCard>
+        <TacticalCard className="p-4">
+          <div className="text-3xl font-bold text-accent">2</div>
+          <div className="text-sm text-muted-foreground">In Sviluppo</div>
+        </TacticalCard>
+        <TacticalCard className="p-4">
+          <div className="text-3xl font-bold text-foreground">85%</div>
+          <div className="text-sm text-muted-foreground">Progetto</div>
+        </TacticalCard>
+      </div>
+
+      {/* Category Filters */}
+      <div className="flex flex-wrap gap-2">
+        {categories.map(cat => (
+          <Button
+            key={cat.id}
+            variant={categoryFilter === cat.id ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setCategoryFilter(cat.id)}
+            className={cn(
+              'gap-2 transition-all',
+              categoryFilter === cat.id && cat.color
+            )}
+          >
+            {cat.label}
+            <Badge variant="secondary" className="text-xs">
+              {cat.id === 'all' 
+                ? features.length 
+                : features.filter(f => f.category === cat.id).length
+              }
+            </Badge>
+          </Button>
+        ))}
+      </div>
+
+      <Separator />
+
       {/* Features Grid */}
       <div>
-        <h2 className="text-xl font-display font-bold text-foreground mb-4">Funzionalità</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {features.map((feature, index) => (
-            <TacticalCard key={index} className="p-4">
-              <feature.icon className="h-8 w-8 text-primary mb-3" />
-              <h3 className="font-display font-bold text-foreground mb-2">{feature.title}</h3>
-              <p className="text-sm text-muted-foreground">{feature.description}</p>
-            </TacticalCard>
-          ))}
+        <h2 className="text-xl font-display font-bold text-foreground mb-6">
+          Funzionalità della Piattaforma
+        </h2>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filteredFeatures.map((feature) => {
+            const Icon = feature.icon;
+            const statusBadge = getStatusBadge(feature.status);
+            
+            return (
+              <TacticalCard
+                key={feature.id}
+                className="p-6 cursor-pointer hover:border-primary/50 transition-all group"
+                onClick={() => setSelectedFeature(feature)}
+              >
+                <div className="flex items-start justify-between mb-4">
+                  <div className="p-3 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                    <Icon className="w-6 h-6 text-primary" />
+                  </div>
+                  {feature.badge && (
+                    <Badge variant="secondary" className="text-xs">
+                      {feature.badge}
+                    </Badge>
+                  )}
+                </div>
+
+                <h3 className="text-base font-display font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
+                  {feature.title}
+                </h3>
+                
+                <p className="text-sm text-muted-foreground mb-4">
+                  {feature.description}
+                </p>
+
+                <div className="flex items-center justify-between">
+                  <Badge 
+                    variant={statusBadge.variant}
+                    className={cn('text-xs', statusBadge.color)}
+                  >
+                    {statusBadge.label}
+                  </Badge>
+                  
+                  <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
+                </div>
+              </TacticalCard>
+            );
+          })}
         </div>
       </div>
 
@@ -403,6 +871,115 @@ const About: React.FC = () => {
         <p>© 2024 TicOps S.r.l. - Tutti i diritti riservati</p>
         <p className="mt-1">P.IVA: 00000000000 | REA: XX-000000</p>
       </div>
+
+      {/* Feature Detail Modal */}
+      <Dialog open={!!selectedFeature} onOpenChange={() => setSelectedFeature(null)}>
+        <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+          {selectedFeature && (
+            <>
+              <DialogHeader>
+                <div className="flex items-start gap-4 mb-4">
+                  <div className="p-4 rounded-lg bg-primary/10">
+                    {React.createElement(selectedFeature.icon, { 
+                      className: 'w-8 h-8 text-primary' 
+                    })}
+                  </div>
+                  <div className="flex-1">
+                    <DialogTitle className="text-2xl font-display font-bold">
+                      {selectedFeature.title}
+                    </DialogTitle>
+                    <DialogDescription className="text-base mt-2">
+                      {selectedFeature.longDescription}
+                    </DialogDescription>
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap gap-2 mt-4">
+                  {selectedFeature.badge && (
+                    <Badge variant="secondary">{selectedFeature.badge}</Badge>
+                  )}
+                  <Badge 
+                    variant={getStatusBadge(selectedFeature.status).variant}
+                    className={getStatusBadge(selectedFeature.status).color}
+                  >
+                    {getStatusBadge(selectedFeature.status).label}
+                  </Badge>
+                  <Badge variant="outline">
+                    {selectedFeature.releaseDate}
+                  </Badge>
+                </div>
+              </DialogHeader>
+
+              <Separator className="my-6" />
+
+              <div className="space-y-6">
+                <div>
+                  <h4 className="text-lg font-display font-bold text-foreground mb-4">
+                    Capabilities
+                  </h4>
+                  <div className="space-y-2">
+                    {selectedFeature.capabilities.map((cap, index) => (
+                      <div
+                        key={index}
+                        className="flex items-start gap-3 p-3 rounded-lg bg-muted/20 border border-border/50"
+                      >
+                        <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                        <span className="text-sm text-foreground">{cap}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {selectedFeature.status === 'completed' && (
+                  <div className="flex gap-3">
+                    <GlowButton className="flex-1" onClick={() => {
+                      setSelectedFeature(null);
+                      navigate('/dashboard');
+                    }}>
+                      Prova Ora
+                    </GlowButton>
+                    <Button variant="outline" onClick={() => navigate('/settings')}>
+                      Vai a Impostazioni
+                    </Button>
+                  </div>
+                )}
+
+                {selectedFeature.status === 'in-progress' && (
+                  <div className="p-4 rounded-lg bg-yellow-500/10 border border-yellow-500/20">
+                    <div className="flex items-start gap-3">
+                      <Clock className="w-5 h-5 text-yellow-500 mt-0.5" />
+                      <div>
+                        <h5 className="text-sm font-semibold text-foreground mb-1">
+                          In Sviluppo
+                        </h5>
+                        <p className="text-xs text-muted-foreground">
+                          Questa feature è attualmente in sviluppo. Release prevista: {selectedFeature.releaseDate}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {selectedFeature.status === 'planned' && (
+                  <div className="p-4 rounded-lg bg-gray-500/10 border border-gray-500/20">
+                    <div className="flex items-start gap-3">
+                      <Sparkles className="w-5 h-5 text-gray-400 mt-0.5" />
+                      <div>
+                        <h5 className="text-sm font-semibold text-foreground mb-1">
+                          Pianificata
+                        </h5>
+                        <p className="text-xs text-muted-foreground">
+                          Questa feature è in roadmap. Release prevista: {selectedFeature.releaseDate}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

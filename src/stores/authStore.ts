@@ -28,6 +28,7 @@ interface AuthState {
   setUser: (user: User) => void;
   register: (email: string, password: string, username: string) => Promise<{ success: boolean; error?: string }>;
   loginAsRole: (role: UserRole) => Promise<{ success: boolean; error?: string }>;
+  loginDemo: () => Promise<{ success: boolean; error?: string }>;
 }
 
 // Initialize from localStorage immediately
@@ -145,5 +146,18 @@ export const useAuthStore = create<AuthState>((set) => ({
     
     set({ isLoading: false });
     return { success: false, error: 'Ruolo non trovato' };
+  },
+
+  // Direct demo login with multi-role user
+  loginDemo: async () => {
+    set({ isLoading: true });
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    // Always use the first demo user (they all share the same multi-role user)
+    const demoUser = DEMO_USERS[0];
+    set({ user: demoUser.user, isAuthenticated: true, isLoading: false });
+    localStorage.setItem('isLoggedIn', 'true');
+    localStorage.setItem('currentUser', JSON.stringify(demoUser.user));
+    return { success: true };
   },
 }));

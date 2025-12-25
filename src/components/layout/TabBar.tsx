@@ -7,6 +7,7 @@ import {
   Users,
   MessageSquare,
   Trophy,
+  Info,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -23,6 +24,7 @@ const tabItems: TabItem[] = [
   { icon: Users, labelKey: 'nav.team', path: '/team' },
   { icon: MessageSquare, labelKey: 'nav.chat', path: '/chat', badge: 3 },
   { icon: Trophy, labelKey: 'nav.leaderboard', path: '/leaderboard' },
+  { icon: Info, labelKey: 'nav.about', path: '/about' },
 ];
 
 export const TabBar: React.FC = () => {
