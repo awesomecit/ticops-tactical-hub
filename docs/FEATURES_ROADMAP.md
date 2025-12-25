@@ -18,12 +18,17 @@ Questo documento traccia tutte le feature da implementare, suddivise in task ato
 10. [Radio Avanzata Match Live](#10-radio-avanzata-match-live) ✅ COMPLETATA
 11. [Mercatino - Compra/Vendi/Scambia](#11-mercatino---compravendiscambia) ✅ COMPLETATA
 12. [Match Organizer](#12-match-organizer) ✅ COMPLETATA
+13. [Sistema Multi-Organizzazione e Federazioni](#13-sistema-multi-organizzazione-e-federazioni) 🚧 IN CORSO
+14. [Gestione Anagrafiche Admin](#14-gestione-anagrafiche-admin) 📋 PIANIFICATA
+15. [SpectatorView Fix](#15-spectatorview-fix) 🐛 BUG
 
 ---
 
-## 🎉 PROGETTO COMPLETATO AL 100%
+## 🎯 STATO PROGETTO: 85% Completato
 
-Tutte le 12 feature principali sono state implementate con successo!
+- ✅ **12 feature completate**
+- 🚧 **2 feature in corso**
+- 🐛 **1 bug fix necessario**
 
 ---
 
@@ -350,6 +355,85 @@ Tutte le 12 feature principali sono state implementate con successo!
 | BUG-3 | Chat non si possono eliminare | 🟡 Media | ✅ FIXED |
 | BUG-4 | Messaggi non si possono eliminare | 🟡 Media | ✅ FIXED |
 | BUG-5 | Messaggi non si possono editare | 🟡 Media | ✅ FIXED |
+| BUG-6 | SpectatorView Not Found | 🔴 Alta | 🐛 OPEN |
+
+---
+
+## 13. Sistema Multi-Organizzazione e Federazioni 🚧
+
+**Obiettivo**: Implementare architettura gerarchica Federazione > Organizzazione > Divisione per gestire franchising in province diverse con visibilità controllata sulle entità.
+
+**Stato**: 🚧 IN CORSO (0%)
+
+**Riferimenti**: `docs/MULTI_ORG_ARCHITECTURE.md`
+
+### Task Atomici
+
+| ID | Task | Stato | File Coinvolti |
+|----|------|-------|----------------|
+| 13.1 | Creare tipi TypeScript (Federation, Organization, Division) | ✅ DONE | `src/types/index.ts` |
+| 13.2 | Estendere tipi esistenti con gerarchia org (User, Field, Team, Match) | ✅ DONE | `src/types/index.ts` |
+| 13.3 | Creare mock data per federazioni, organizzazioni, divisioni | ⏳ TODO | `src/mocks/organizations.ts` |
+| 13.4 | Creare context `OrgContext` per gestire org/division attiva | ⏳ TODO | `src/contexts/OrgContext.tsx` |
+| 13.5 | Creare hook `useOrgContext` per accesso gerarchia | ⏳ TODO | `src/hooks/useOrgContext.ts` |
+| 13.6 | Implementare filtri RLS (Row Level Security) per query | ⏳ TODO | `src/lib/rls.ts` |
+| 13.7 | Migrare dati esistenti a struttura gerarchica (divisione default) | ⏳ TODO | Migration script |
+| 13.8 | Creare sezione Admin Federazioni `/admin/federations` | ⏳ TODO | `src/pages/admin/AdminFederations.tsx` |
+| 13.9 | Creare sezione Admin Organizzazioni `/admin/organizations` | ⏳ TODO | `src/pages/admin/AdminOrganizations.tsx` |
+| 13.10 | Creare sezione Admin Divisioni `/admin/divisions` | ⏳ TODO | `src/pages/admin/AdminDivisions.tsx` |
+| 13.11 | Implementare CRUD Federazioni con form modali | ⏳ TODO | `src/components/admin/FederationForm.tsx` |
+| 13.12 | Implementare CRUD Organizzazioni con form modali | ⏳ TODO | `src/components/admin/OrganizationForm.tsx` |
+| 13.13 | Implementare CRUD Divisioni con form modali | ⏳ TODO | `src/components/admin/DivisionForm.tsx` |
+| 13.14 | Aggiungere switch divisione in Header per multi-division admin | ⏳ TODO | `src/components/layout/DivisionSwitcher.tsx` |
+| 13.15 | Applicare filtri divisione a tutte le query entità | ⏳ TODO | `src/api/services/*.ts` |
+
+---
+
+## 14. Gestione Anagrafiche Admin 📋
+
+**Obiettivo**: Creare sezione admin unificata per CRUD di tutte le anagrafiche (campi, utenti, team, partite, referee, shop) con UI pulita da gestionale, senza lucine tactical.
+
+**Stato**: 📋 PIANIFICATA (0%)
+
+### Task Atomici
+
+| ID | Task | Stato | File Coinvolti |
+|----|------|-------|----------------|
+| 14.1 | Creare layout admin pulito (no tactical theme) | ⏳ TODO | `src/pages/admin/AdminLayout.tsx` |
+| 14.2 | Creare componente `DataTable` generico con sorting/filtering | ⏳ TODO | `src/components/admin/DataTable.tsx` |
+| 14.3 | Creare componente `EntityFilters` generico | ⏳ TODO | `src/components/admin/EntityFilters.tsx` |
+| 14.4 | Creare sezione `/admin/entities/fields` - CRUD Campi | ⏳ TODO | `src/pages/admin/entities/AdminFieldsEntity.tsx` |
+| 14.5 | Creare sezione `/admin/entities/users` - CRUD Utenti | ⏳ TODO | `src/pages/admin/entities/AdminUsersEntity.tsx` |
+| 14.6 | Creare sezione `/admin/entities/teams` - CRUD Team | ⏳ TODO | `src/pages/admin/entities/AdminTeamsEntity.tsx` |
+| 14.7 | Creare sezione `/admin/entities/matches` - CRUD Partite | ⏳ TODO | `src/pages/admin/entities/AdminMatchesEntity.tsx` |
+| 14.8 | Creare sezione `/admin/entities/referees` - CRUD Arbitri | ⏳ TODO | `src/pages/admin/entities/AdminRefereesEntity.tsx` |
+| 14.9 | Creare sezione `/admin/entities/shops` - CRUD Negozi | ⏳ TODO | `src/pages/admin/entities/AdminShopsEntity.tsx` |
+| 14.10 | Aggiungere breadcrumb navigation in tutte le pagine admin | ⏳ TODO | `src/components/admin/AdminBreadcrumb.tsx` |
+| 14.11 | Implementare guard di navigazione: uscita da admin sempre via overview | ⏳ TODO | `src/components/admin/AdminNavigationGuard.tsx` |
+| 14.12 | Creare sidebar admin con sezioni categorie anagrafiche | ⏳ TODO | `src/components/admin/AdminEntitiesSidebar.tsx` |
+| 14.13 | Applicare theme pulito: palette grigio/blu, no animazioni tactical | ⏳ TODO | `tailwind.config.ts`, CSS admin |
+| 14.14 | Creare modal form generico per CRUD entità | ⏳ TODO | `src/components/admin/EntityFormModal.tsx` |
+| 14.15 | Implementare paginazione server-side per liste entità | ⏳ TODO | `src/components/admin/Pagination.tsx` |
+
+---
+
+## 15. SpectatorView Fix 🐛
+
+**Obiettivo**: Risolvere errore "Not Found" su route `/spectator` e `/spectator/:gameId`.
+
+**Stato**: 🐛 BUG OPEN
+
+**Priorità**: 🔴 ALTA
+
+### Task Atomici
+
+| ID | Task | Stato | File Coinvolti |
+|----|------|-------|----------------|
+| 15.1 | Verificare esistenza file `SpectatorView.tsx` | ⏳ TODO | `src/pages/SpectatorView.tsx` |
+| 15.2 | Verificare import corretto in `App.tsx` | ⏳ TODO | `src/App.tsx` |
+| 15.3 | Verificare route definition in `App.tsx` | ⏳ TODO | `src/App.tsx` |
+| 15.4 | Testare navigazione diretta a `/spectator` | ⏳ TODO | Browser test |
+| 15.5 | Verificare che SpectatorView sia public (non protetto) | ⏳ TODO | `src/App.tsx` |
 
 ---
 
@@ -367,12 +451,26 @@ Tutte le 12 feature principali sono state implementate con successo!
 - **2024-12-23**: Feature 10 (Radio Avanzata) completata al 100%
 - **2024-12-23**: Feature 11 (Mercatino) completata al 100%
 - **2024-12-23**: Feature 12 (Match Organizer) completata al 100%
-- **2024-12-23**: 🎉 **PROGETTO COMPLETATO AL 100%**
+- **2024-12-23**: 🎉 **PROGETTO MVP COMPLETATO**
+- **2024-12-25**: Iniziata feature 13 (Multi-Org) - Tipi TypeScript creati
+- **2024-12-25**: Pianificata feature 14 (Gestione Anagrafiche Admin)
+- **2024-12-25**: Identificato BUG-6 (SpectatorView Not Found)
 
 ---
 
 ## 🚀 Prossimi Sviluppi (Post-MVP)
 
+### Sprint 1-2: Multi-Organization Foundation
+- [ ] Completare Feature 13 (Sistema Multi-Organizzazione)
+- [ ] Fix BUG-6 (SpectatorView)
+- [ ] Migration data esistenti a struttura gerarchica
+
+### Sprint 3-4: Admin Anagrafiche
+- [ ] Completare Feature 14 (Gestione Anagrafiche Admin)
+- [ ] Implementare Row Level Security
+- [ ] Testing permessi multi-livello
+
+### Sprint 5+: Database Integration
 1. **Integrazione Supabase**: Migrazione da mock a database reale
 2. **Push Notifications**: Notifiche native mobile/desktop
 3. **Pagamenti integrati**: Stripe per transazioni marketplace

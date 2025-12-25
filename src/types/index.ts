@@ -370,3 +370,93 @@ export interface UserActivityItem {
   timestamp: Date;
   icon?: string;
 }
+
+// Multi-Organization Types
+export interface Federation {
+  id: string;
+  name: string;
+  code: string; // e.g., "FITAG"
+  country: string;
+  logo?: string;
+  website?: string;
+  email: string;
+  phone?: string;
+  regulations?: string; // URL to regulations document
+  isActive: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  settings: FederationSettings;
+}
+
+export interface FederationSettings {
+  allowInterDivisionMatches: boolean;
+  rankingSystem: 'elo' | 'points' | 'hybrid';
+  defaultMatchDuration: number; // minutes
+  maxPlayersPerTeam: number;
+  minPlayersPerTeam: number;
+}
+
+export interface Organization {
+  id: string;
+  federationId: string;
+  name: string;
+  code: string; // e.g., "TICO-LOM"
+  province?: string;
+  region: string;
+  address?: string;
+  logo?: string;
+  adminUserIds: string[]; // Array of user IDs with org admin rights
+  isActive: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface Division {
+  id: string;
+  organizationId: string;
+  name: string;
+  code: string; // e.g., "MI-N"
+  area?: string; // Geographic area description
+  managerUserId?: string; // Division manager
+  isDefault: boolean; // Default division for new users
+  isActive: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+// Extended existing types with org hierarchy
+export interface UserWithOrg extends User {
+  divisionId: string;
+  organizationId: string;
+  federationId: string;
+}
+
+export interface FieldWithOrg {
+  id: string;
+  name: string;
+  address: string;
+  divisionId: string;
+  organizationId: string;
+  federationId: string;
+  ownerId: string; // Field manager user ID
+  isActive: boolean;
+  createdAt: Date;
+}
+
+export interface TeamWithOrg extends Team {
+  divisionId: string;
+  organizationId: string;
+  federationId: string;
+}
+
+export interface MatchWithOrg {
+  id: string;
+  name: string;
+  fieldId: string;
+  divisionId: string;
+  organizationId: string;
+  federationId: string;
+  date: Date;
+  status: 'scheduled' | 'live' | 'completed' | 'cancelled';
+  teams: GameTeam[];
+}
