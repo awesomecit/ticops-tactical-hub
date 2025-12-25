@@ -1,8 +1,9 @@
 import React from 'react';
-import { Crown, Star, Shield, MoreHorizontal } from 'lucide-react';
+import { Crown, Star, Shield } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { TierBadge, TierType } from '@/components/ranking';
 import { TeamRole } from '@/mocks/users';
+import { MemberActionsDropdown } from './MemberActionsDropdown';
 
 interface MemberRowProps {
   id: string;
@@ -16,6 +17,10 @@ interface MemberRowProps {
   isOnline: boolean;
   isCurrentUser?: boolean;
   className?: string;
+  onPromote?: (memberId: string, newRole: TeamRole) => void;
+  onDemote?: (memberId: string, newRole: TeamRole) => void;
+  onKick?: (memberId: string) => void;
+  onMessage?: (memberId: string) => void;
 }
 
 const roleConfig = {
@@ -25,6 +30,7 @@ const roleConfig = {
 };
 
 export const MemberRow: React.FC<MemberRowProps> = ({
+  id,
   username,
   avatar,
   role,
@@ -35,6 +41,10 @@ export const MemberRow: React.FC<MemberRowProps> = ({
   isOnline,
   isCurrentUser,
   className,
+  onPromote,
+  onDemote,
+  onKick,
+  onMessage,
 }) => {
   const roleData = role ? roleConfig[role] : roleConfig.member;
   const RoleIcon = roleData.icon;
@@ -112,10 +122,17 @@ export const MemberRow: React.FC<MemberRowProps> = ({
         <p className="text-[10px] text-muted-foreground uppercase">Partite</p>
       </div>
 
-      {/* Actions */}
-      <button className="p-2 text-muted-foreground hover:text-foreground transition-colors opacity-0 group-hover:opacity-100">
-        <MoreHorizontal className="h-4 w-4" />
-      </button>
+      {/* Actions Dropdown */}
+      <MemberActionsDropdown
+        memberId={id}
+        memberUsername={username}
+        currentRole={role}
+        isCurrentUser={isCurrentUser || false}
+        onPromote={onPromote}
+        onDemote={onDemote}
+        onKick={onKick}
+        onMessage={onMessage}
+      />
     </div>
   );
 };

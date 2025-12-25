@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Calendar, MapPin, Users, Target, Plus } from 'lucide-react';
+import { Calendar, MapPin, Users, Target, Plus, Shield } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -13,6 +13,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { GlowButton } from '@/components/ui/GlowButton';
+import { Switch } from '@/components/ui/switch';
 import { 
   Select,
   SelectContent,
@@ -20,7 +21,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { RoleGate } from '@/components/auth/RoleGate';
 import { MOCK_FIELDS } from '@/mocks/fields';
+import { MOCK_TEAMS } from '@/mocks/teams';
+import { useAuthStore } from '@/stores/authStore';
 import { toast } from 'sonner';
 
 interface NewGameDialogProps {
@@ -41,6 +45,7 @@ export const NewGameDialog: React.FC<NewGameDialogProps> = ({
   onOpenChange,
 }) => {
   const { t } = useTranslation();
+  const { user } = useAuthStore();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [formData, setFormData] = React.useState({
     name: '',
@@ -50,7 +55,15 @@ export const NewGameDialog: React.FC<NewGameDialogProps> = ({
     locationId: '',
     gameMode: '',
     maxPlayers: '20',
+    isTeamMatch: false,
+    challengeTeamId: '',
   });
+
+  const isTeamLeader = user?.role === 'team_leader' || user?.role === 'admin';
+  const userTeam = MOCK_TEAMS.find((t) => t.id === user?.team?.id);
+
+  // Get opponent teams (not user's team)
+  const opponentTeams = MOCK_TEAMS.filter((t) => t.id !== user?.team?.id);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -60,13 +73,25 @@ export const NewGameDialog: React.FC<NewGameDialogProps> = ({
       return;
     }
 
+    if (formData.isTeamMatch && !formData.challengeTeamId) {
+      toast.error('Seleziona un team avversario');
+      return;
+    }
+
     setIsSubmitting(true);
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1000));
     
-    toast.success(t('games.createSuccess'), {
-      description: formData.name,
-    });
+    if (formData.isTeamMatch) {
+      const opponent = MOCK_TEAMS.find((t) => t.id === formData.challengeTeamId);
+      toast.success('Sfida inviata!', {
+        description: `Sfida a ${opponent?.name} per ${formData.name}`,
+      });
+    } else {
+      toast.success(t('games.createSuccess'), {
+        description: formData.name,
+      });
+    }
     
     setIsSubmitting(false);
     onOpenChange(false);
@@ -78,6 +103,8 @@ export const NewGameDialog: React.FC<NewGameDialogProps> = ({
       locationId: '',
       gameMode: '',
       maxPlayers: '20',
+      isTeamMatch: false,
+      challengeTeamId: '',
     });
   };
 
@@ -95,6 +122,67 @@ export const NewGameDialog: React.FC<NewGameDialogProps> = ({
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4 py-4">
+          {/* Team Match Toggle - Only for Team Leaders */}
+          <RoleGate roles={['team_leader', 'admin']}>
+            {userTeam && (
+              <div className="flex items-center justify-between p-3 bg-primary/10 rounded-sm border border-primary/30">
+                <div className="flex items-center gap-2">
+                  <Shield className="h-4 w-4 text-primary" />
+                  <div>
+                    <Label className="font-display uppercase text-xs">
+                      Partita di Team
+                    </Label>
+                    <p className="text-xs text-muted-foreground">
+                      Crea una partita per [{userTeam.tag}] {userTeam.name}
+                    </p>
+                  </div>
+                </div>
+                <Switch
+                  checked={formData.isTeamMatch}
+                  onCheckedChange={(checked) =>
+                    setFormData({ ...formData, isTeamMatch: checked, challengeTeamId: '' })
+                  }
+                />
+              </div>
+            )}
+          </RoleGate>
+
+          {/* Challenge Team Selection - Only when Team Match is enabled */}
+          {formData.isTeamMatch && (
+            <div className="space-y-2">
+              <Label className="font-display uppercase text-xs flex items-center gap-1">
+                <Shield className="h-3 w-3" />
+                Sfida Team *
+              </Label>
+              <Select
+                value={formData.challengeTeamId}
+                onValueChange={(value) =>
+                  setFormData({ ...formData, challengeTeamId: value })
+                }
+              >
+                <SelectTrigger className="bg-muted border-border">
+                  <SelectValue placeholder="Seleziona team avversario" />
+                </SelectTrigger>
+                <SelectContent>
+                  {opponentTeams.map((team) => (
+                    <SelectItem key={team.id} value={team.id}>
+                      <span className="flex items-center gap-2">
+                        <span
+                          className="h-3 w-3 rounded-full"
+                          style={{ backgroundColor: team.color }}
+                        />
+                        [{team.tag}] {team.name}
+                        <span className="text-muted-foreground text-xs">
+                          (Rank #{team.rank})
+                        </span>
+                      </span>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+
           {/* Name */}
           <div className="space-y-2">
             <Label htmlFor="name" className="font-display uppercase text-xs">
@@ -202,29 +290,35 @@ export const NewGameDialog: React.FC<NewGameDialogProps> = ({
             </Select>
           </div>
 
-          {/* Max Players */}
-          <div className="space-y-2">
-            <Label htmlFor="maxPlayers" className="font-display uppercase text-xs flex items-center gap-1">
-              <Users className="h-3 w-3" />
-              {t('games.maxPlayers')}
-            </Label>
-            <Input
-              id="maxPlayers"
-              type="number"
-              min="4"
-              max="100"
-              value={formData.maxPlayers}
-              onChange={(e) => setFormData({ ...formData, maxPlayers: e.target.value })}
-              className="bg-muted border-border"
-            />
-          </div>
+          {/* Max Players - Only for non-team matches */}
+          {!formData.isTeamMatch && (
+            <div className="space-y-2">
+              <Label htmlFor="maxPlayers" className="font-display uppercase text-xs flex items-center gap-1">
+                <Users className="h-3 w-3" />
+                {t('games.maxPlayers')}
+              </Label>
+              <Input
+                id="maxPlayers"
+                type="number"
+                min="4"
+                max="100"
+                value={formData.maxPlayers}
+                onChange={(e) => setFormData({ ...formData, maxPlayers: e.target.value })}
+                className="bg-muted border-border"
+              />
+            </div>
+          )}
 
           <DialogFooter className="gap-2 pt-4">
             <GlowButton type="button" variant="ghost" onClick={() => onOpenChange(false)}>
               {t('common.cancel')}
             </GlowButton>
             <GlowButton type="submit" variant="primary" disabled={isSubmitting}>
-              {isSubmitting ? t('common.loading') : t('games.createGame')}
+              {isSubmitting
+                ? t('common.loading')
+                : formData.isTeamMatch
+                ? 'Invia Sfida'
+                : t('games.createGame')}
             </GlowButton>
           </DialogFooter>
         </form>
