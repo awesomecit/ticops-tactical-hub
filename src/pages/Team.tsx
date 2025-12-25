@@ -36,11 +36,14 @@ import {
   TopPerformerCard,
   TeamStatsOverview,
   GameModeStats,
+  InviteMemberModal,
+  TeamSettingsForm,
 } from '@/components/team';
 import { ActivityItem, ActivityType } from '@/components/dashboard';
 import { TierType } from '@/components/ranking';
 import { SocialContactsForm } from '@/components/social';
 import { RadioActivationModal, RadioBox } from '@/components/radio';
+import { RoleGate } from '@/components/auth/RoleGate';
 import { SocialContact } from '@/types/social';
 import { useRadioStore } from '@/stores/radioStore';
 import {
@@ -144,6 +147,7 @@ const Team: React.FC = () => {
   const [memberFilter, setMemberFilter] = useState<'all' | 'online' | 'leader' | 'officer'>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [radioModalOpen, setRadioModalOpen] = useState(false);
+  const [inviteModalOpen, setInviteModalOpen] = useState(false);
 
   const currentUser = getCurrentUser();
   const team = getTeamById(currentUser.teamId || 'team_001');
@@ -335,14 +339,16 @@ const Team: React.FC = () => {
                     <Calendar className="h-4 w-4 mr-2" />
                     Crea Evento
                   </GlowButton>
-                  <GlowButton 
-                    variant="outline" 
-                    className="w-full justify-start"
-                    onClick={() => toast({ title: 'Coming Soon', description: 'Funzionalità in arrivo!' })}
-                  >
-                    <UserPlus className="h-4 w-4 mr-2" />
-                    Invita Membro
-                  </GlowButton>
+                  <RoleGate roles={['team_leader', 'admin']}>
+                    <GlowButton 
+                      variant="outline" 
+                      className="w-full justify-start"
+                      onClick={() => setInviteModalOpen(true)}
+                    >
+                      <UserPlus className="h-4 w-4 mr-2" />
+                      Invita Membro
+                    </GlowButton>
+                  </RoleGate>
                   <GlowButton 
                     variant="outline" 
                     className="w-full justify-start"
@@ -396,10 +402,12 @@ const Team: React.FC = () => {
               ))}
             </div>
 
-            <GlowButton variant="primary">
-              <Plus className="h-4 w-4 mr-2" />
-              Invita
-            </GlowButton>
+            <RoleGate roles={['team_leader', 'admin']}>
+              <GlowButton variant="primary" onClick={() => setInviteModalOpen(true)}>
+                <Plus className="h-4 w-4 mr-2" />
+                Invita
+              </GlowButton>
+            </RoleGate>
           </div>
 
           {/* Members Table */}
@@ -504,33 +512,8 @@ const Team: React.FC = () => {
               entityType="team"
             />
 
-            {/* Team Info Settings */}
-            <TacticalCard>
-              <TacticalCardHeader>
-                <TacticalCardTitle className="flex items-center gap-2">
-                  <Edit2 className="h-4 w-4" />
-                  Informazioni Team
-                </TacticalCardTitle>
-              </TacticalCardHeader>
-              <TacticalCardContent className="space-y-4">
-                <div className="space-y-2">
-                  <p className="text-sm text-muted-foreground">Nome Team</p>
-                  <p className="font-medium">{team.name}</p>
-                </div>
-                <div className="space-y-2">
-                  <p className="text-sm text-muted-foreground">Tag</p>
-                  <p className="font-mono">[{team.tag}]</p>
-                </div>
-                <div className="space-y-2">
-                  <p className="text-sm text-muted-foreground">Membri</p>
-                  <p className="font-medium">{team.memberCount}/{team.maxMembers}</p>
-                </div>
-                <GlowButton variant="outline" className="w-full mt-4">
-                  <Edit2 className="h-4 w-4 mr-2" />
-                  Modifica Info Team
-                </GlowButton>
-              </TacticalCardContent>
-            </TacticalCard>
+            {/* Team Settings Form - Only for team_leader */}
+            <TeamSettingsForm team={team} />
           </div>
 
           {/* Danger Zone */}
@@ -570,6 +553,17 @@ const Team: React.FC = () => {
           onClose={() => setRadioModalOpen(false)}
           teamId={team.id}
           teamName={team.name}
+        />
+      )}
+
+      {/* Invite Member Modal */}
+      {team && (
+        <InviteMemberModal
+          isOpen={inviteModalOpen}
+          onClose={() => setInviteModalOpen(false)}
+          teamId={team.id}
+          teamName={team.name}
+          currentMemberIds={teamMembers.map(m => m.id)}
         />
       )}
     </div>
