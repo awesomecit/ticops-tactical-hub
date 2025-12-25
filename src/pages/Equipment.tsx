@@ -28,8 +28,11 @@ import { RadioBox } from '@/components/radio';
 import { EquipmentEditModal, PreferencesModal, AddEquipmentModal } from '@/components/equipment';
 import { useRadioStore } from '@/stores/radioStore';
 import { useEquipmentStore, Equipment as EquipmentType } from '@/stores/equipmentStore';
+import { useAuthStore } from '@/stores/authStore';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
+import { RoleGate } from '@/components/auth/RoleGate';
+import { canManageTeam } from '@/lib/auth';
 
 // Icon mapping
 const iconMap: Record<string, React.ElementType> = {
@@ -59,6 +62,8 @@ const statusLabels = {
 };
 
 const Equipment: React.FC = () => {
+  const { user } = useAuthStore();
+  const canUseRadio = canManageTeam(user?.role);
   const { toast } = useToast();
   const { 
     equipment, 
@@ -212,17 +217,19 @@ const Equipment: React.FC = () => {
             <Plus className="h-4 w-4 mr-2" />
             Nuovo
           </Button>
-          <Button 
-            size="sm"
-            onClick={() => {
-              if (channels.length === 0) {
-                activateRadio('team_1');
-              }
-            }}
-          >
-            <Radio className="h-4 w-4 mr-2" />
-            {channels.length > 0 ? 'Radio Attiva' : 'Attiva Radio'}
-          </Button>
+          {canUseRadio && (
+            <Button 
+              size="sm"
+              onClick={() => {
+                if (channels.length === 0) {
+                  activateRadio('team_1');
+                }
+              }}
+            >
+              <Radio className="h-4 w-4 mr-2" />
+              {channels.length > 0 ? 'Radio Attiva' : 'Attiva Radio'}
+            </Button>
+          )}
         </div>
       </div>
 
