@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import {
   Crosshair,
   Skull,
@@ -14,6 +14,10 @@ import {
   Radio,
   Play,
   Zap,
+  Gamepad2,
+  Eye,
+  Shield,
+  LayoutGrid,
 } from 'lucide-react';
 import { useMockData } from '@/hooks/useMockData';
 import { TacticalCard, TacticalCardContent } from '@/components/ui/TacticalCard';
@@ -29,6 +33,7 @@ import {
 import { RealtimeDemo } from '@/components/realtime';
 import { OnlineUsersIndicator } from '@/components/realtime';
 import type { ActivityType } from '@/components/dashboard';
+import { cn } from '@/lib/utils';
 
 const activityIcons = {
   game: Crosshair,
@@ -37,6 +42,50 @@ const activityIcons = {
   rank: TrendingUp,
   social: UserPlus,
 };
+
+interface QuickAccessCard {
+  title: string;
+  description: string;
+  icon: React.ElementType;
+  path: string;
+  color: string;
+  bgColor: string;
+}
+
+const quickAccessCards: QuickAccessCard[] = [
+  {
+    title: 'Gameplay',
+    description: 'Vista tattica in-game',
+    icon: Gamepad2,
+    path: '/gameplay',
+    color: 'text-primary',
+    bgColor: 'bg-primary/20',
+  },
+  {
+    title: 'Spettatore',
+    description: 'Guarda partite live',
+    icon: Eye,
+    path: '/spectator',
+    color: 'text-blue-400',
+    bgColor: 'bg-blue-500/20',
+  },
+  {
+    title: 'Arbitro',
+    description: 'Gestisci partite',
+    icon: Shield,
+    path: '/referee',
+    color: 'text-amber-400',
+    bgColor: 'bg-amber-500/20',
+  },
+  {
+    title: 'Tutte le Viste',
+    description: 'Accesso rapido',
+    icon: LayoutGrid,
+    path: '/all-views',
+    color: 'text-purple-400',
+    bgColor: 'bg-purple-500/20',
+  },
+];
 
 const Dashboard: React.FC = () => {
   const { t } = useTranslation();
@@ -122,6 +171,31 @@ const Dashboard: React.FC = () => {
           trend="neutral"
           trendValue=""
         />
+      </div>
+
+      {/* Quick Access Cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {quickAccessCards.map((card) => (
+          <Link key={card.path} to={card.path}>
+            <TacticalCard className="h-full hover:border-primary/50 transition-all cursor-pointer group">
+              <TacticalCardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className={cn(
+                    "p-3 rounded-lg transition-colors",
+                    card.bgColor,
+                    "group-hover:bg-primary group-hover:text-primary-foreground"
+                  )}>
+                    <card.icon className={cn("h-6 w-6", card.color, "group-hover:text-primary-foreground")} />
+                  </div>
+                  <div>
+                    <h3 className="font-display uppercase tracking-wider text-sm">{card.title}</h3>
+                    <p className="text-xs text-muted-foreground">{card.description}</p>
+                  </div>
+                </div>
+              </TacticalCardContent>
+            </TacticalCard>
+          </Link>
+        ))}
       </div>
 
       {/* Quick Access: Gameplay Demo */}

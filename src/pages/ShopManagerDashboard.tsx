@@ -10,85 +10,67 @@ import {
   BarChart3,
   Star,
   Clock,
-  CheckCircle,
-  Truck,
   Eye
 } from 'lucide-react';
 import { TacticalCard, TacticalCardHeader, TacticalCardTitle, TacticalCardContent } from '@/components/ui/TacticalCard';
 import { GlowButton } from '@/components/ui/GlowButton';
 import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuthStore } from '@/stores/authStore';
-import { getRoleLabel } from '@/lib/auth';
+import { ProductEditModal, InventoryManager, OrdersManager, ShopAnalytics } from '@/components/shop';
 
 // Mock data for shop manager
 const mockProducts = [
   {
     id: '1',
     name: 'Replica M4A1 Full Metal',
+    description: 'Replica full metal alta qualità',
     price: 299,
     stock: 5,
     sold: 12,
     views: 234,
-    status: 'active',
+    status: 'active' as const,
+    category: 'replicas',
+    featured: true,
   },
   {
     id: '2',
     name: 'Red Dot Sight T1',
+    description: 'Red dot professionale',
     price: 89,
     stock: 15,
     sold: 28,
     views: 456,
-    status: 'active',
+    status: 'active' as const,
+    category: 'accessories',
+    featured: false,
   },
   {
     id: '3',
     name: 'Tactical Vest Plate Carrier',
+    description: 'Gilet tattico modulare',
     price: 129,
     stock: 0,
     sold: 8,
     views: 189,
-    status: 'out_of_stock',
-  },
-];
-
-const mockOrders = [
-  {
-    id: 'ORD-001',
-    customer: 'Marco R.',
-    items: 2,
-    total: 388,
-    status: 'pending',
-    date: '2025-12-25',
-  },
-  {
-    id: 'ORD-002',
-    customer: 'Luca B.',
-    items: 1,
-    total: 89,
-    status: 'shipped',
-    date: '2025-12-24',
-  },
-  {
-    id: 'ORD-003',
-    customer: 'Andrea M.',
-    items: 3,
-    total: 456,
-    status: 'delivered',
-    date: '2025-12-23',
+    status: 'out_of_stock' as const,
+    category: 'protection',
+    featured: false,
   },
 ];
 
 const ShopManagerDashboard: React.FC = () => {
   const { t } = useTranslation();
   const { user } = useAuthStore();
-  const [selectedTab, setSelectedTab] = useState('products');
+  const [selectedTab, setSelectedTab] = useState('overview');
+  const [products, setProducts] = useState(mockProducts);
+  const [editingProduct, setEditingProduct] = useState<typeof mockProducts[0] | null>(null);
+  const [showProductModal, setShowProductModal] = useState(false);
 
-  const totalRevenue = mockOrders.reduce((sum, o) => sum + o.total, 0);
-  const totalProducts = mockProducts.length;
-  const lowStock = mockProducts.filter(p => p.stock <= 5 && p.stock > 0).length;
-  const outOfStock = mockProducts.filter(p => p.stock === 0).length;
+  const totalRevenue = 2847;
+  const totalProducts = products.length;
+  const lowStock = products.filter(p => p.stock <= 5 && p.stock > 0).length;
+  const outOfStock = products.filter(p => p.stock === 0).length;
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -96,15 +78,20 @@ const ShopManagerDashboard: React.FC = () => {
         return <Badge className="bg-green-500/20 text-green-400 border-green-500/30">Attivo</Badge>;
       case 'out_of_stock':
         return <Badge className="bg-red-500/20 text-red-400 border-red-500/30">Esaurito</Badge>;
-      case 'pending':
-        return <Badge className="bg-amber-500/20 text-amber-400 border-amber-500/30">Da spedire</Badge>;
-      case 'shipped':
-        return <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30">Spedito</Badge>;
-      case 'delivered':
-        return <Badge className="bg-green-500/20 text-green-400 border-green-500/30">Consegnato</Badge>;
+      case 'draft':
+        return <Badge className="bg-muted text-muted-foreground">Bozza</Badge>;
       default:
         return <Badge variant="secondary">{status}</Badge>;
     }
+  };
+
+  const handleSaveProduct = (product: any) => {
+    if (editingProduct) {
+      setProducts(prev => prev.map(p => p.id === product.id ? product : p));
+    } else {
+      setProducts(prev => [...prev, product]);
+    }
+    setEditingProduct(null);
   };
 
   return (
@@ -116,10 +103,17 @@ const ShopManagerDashboard: React.FC = () => {
             Il Mio Negozio
           </h1>
           <p className="text-muted-foreground text-sm mt-1">
-            Bentornato, {user?.username} • {getRoleLabel(user?.role || 'player')}
+            Gestisci prodotti, ordini e inventario
           </p>
         </div>
-        <GlowButton variant="primary" className="gap-2">
+        <GlowButton 
+          variant="primary" 
+          className="gap-2"
+          onClick={() => {
+            setEditingProduct(null);
+            setShowProductModal(true);
+          }}
+        >
           <Plus className="h-4 w-4" />
           Nuovo Prodotto
         </GlowButton>
@@ -186,14 +180,20 @@ const ShopManagerDashboard: React.FC = () => {
 
       {/* Tabs */}
       <Tabs value={selectedTab} onValueChange={setSelectedTab}>
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-5">
+          <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="products">Prodotti</TabsTrigger>
           <TabsTrigger value="orders">Ordini</TabsTrigger>
-          <TabsTrigger value="stats">Statistiche</TabsTrigger>
+          <TabsTrigger value="inventory">Inventario</TabsTrigger>
+          <TabsTrigger value="analytics">Analytics</TabsTrigger>
         </TabsList>
 
+        <TabsContent value="overview" className="mt-4">
+          <ShopAnalytics />
+        </TabsContent>
+
         <TabsContent value="products" className="mt-4 space-y-4">
-          {mockProducts.map((product) => (
+          {products.map((product) => (
             <TacticalCard key={product.id}>
               <TacticalCardContent className="p-4">
                 <div className="flex items-center justify-between">
@@ -209,6 +209,12 @@ const ShopManagerDashboard: React.FC = () => {
                           <Eye className="h-3 w-3" />
                           {product.views} views
                         </span>
+                        {product.featured && (
+                          <Badge className="bg-amber-500/20 text-amber-400 border-amber-500/30">
+                            <Star className="h-3 w-3 mr-1" />
+                            In Evidenza
+                          </Badge>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -220,7 +226,15 @@ const ShopManagerDashboard: React.FC = () => {
                   </div>
                 </div>
                 <div className="mt-4 flex gap-2">
-                  <GlowButton variant="secondary" size="sm" className="flex-1 gap-2">
+                  <GlowButton 
+                    variant="secondary" 
+                    size="sm" 
+                    className="flex-1 gap-2"
+                    onClick={() => {
+                      setEditingProduct(product);
+                      setShowProductModal(true);
+                    }}
+                  >
                     <Settings className="h-4 w-4" />
                     Modifica
                   </GlowButton>
@@ -234,84 +248,26 @@ const ShopManagerDashboard: React.FC = () => {
           ))}
         </TabsContent>
 
-        <TabsContent value="orders" className="mt-4 space-y-4">
-          {mockOrders.map((order) => (
-            <TacticalCard key={order.id}>
-              <TacticalCardContent className="p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <h3 className="font-display uppercase tracking-wider">{order.id}</h3>
-                      {getStatusBadge(order.status)}
-                    </div>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      {order.customer} • {order.items} articoli
-                    </p>
-                    <p className="text-xs text-muted-foreground">{order.date}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-bold text-lg">€{order.total}</p>
-                    {order.status === 'pending' && (
-                      <GlowButton variant="primary" size="sm" className="mt-2 gap-1">
-                        <Truck className="h-3 w-3" />
-                        Spedisci
-                      </GlowButton>
-                    )}
-                  </div>
-                </div>
-              </TacticalCardContent>
-            </TacticalCard>
-          ))}
+        <TabsContent value="orders" className="mt-4">
+          <OrdersManager />
         </TabsContent>
 
-        <TabsContent value="stats" className="mt-4">
-          <TacticalCard>
-            <TacticalCardHeader>
-              <TacticalCardTitle className="flex items-center gap-2">
-                <BarChart3 className="h-5 w-5" />
-                Performance Mensile
-              </TacticalCardTitle>
-            </TacticalCardHeader>
-            <TacticalCardContent className="space-y-4">
-              <div>
-                <div className="flex justify-between text-sm mb-2">
-                  <span>Conversione Visite</span>
-                  <span className="font-bold">12%</span>
-                </div>
-                <Progress value={12} className="h-2" />
-              </div>
-              <div>
-                <div className="flex justify-between text-sm mb-2">
-                  <span>Soddisfazione Clienti</span>
-                  <span className="font-bold">95%</span>
-                </div>
-                <Progress value={95} className="h-2" />
-              </div>
-              <div>
-                <div className="flex justify-between text-sm mb-2">
-                  <span>Ordini Completati</span>
-                  <span className="font-bold">28/30</span>
-                </div>
-                <Progress value={93} className="h-2" />
-              </div>
-              <div className="pt-4 border-t border-border">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">Rating Negozio</span>
-                  <div className="flex items-center gap-1">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <Star 
-                        key={star} 
-                        className={`h-4 w-4 ${star <= 4 ? 'text-amber-400 fill-amber-400' : 'text-muted'}`} 
-                      />
-                    ))}
-                    <span className="ml-2 font-bold">4.8</span>
-                  </div>
-                </div>
-              </div>
-            </TacticalCardContent>
-          </TacticalCard>
+        <TabsContent value="inventory" className="mt-4">
+          <InventoryManager />
+        </TabsContent>
+
+        <TabsContent value="analytics" className="mt-4">
+          <ShopAnalytics />
         </TabsContent>
       </Tabs>
+
+      {/* Product Edit Modal */}
+      <ProductEditModal
+        open={showProductModal}
+        onOpenChange={setShowProductModal}
+        product={editingProduct}
+        onSave={handleSaveProduct}
+      />
     </div>
   );
 };

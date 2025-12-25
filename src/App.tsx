@@ -46,6 +46,7 @@ import Achievements from "@/pages/Achievements";
 import FieldManagerDashboard from "@/pages/FieldManagerDashboard";
 import ShopManagerDashboard from "@/pages/ShopManagerDashboard";
 import RefereeAssignments from "@/pages/RefereeAssignments";
+import AllViews from "@/pages/AllViews";
 
 const queryClient = new QueryClient();
 
@@ -83,27 +84,16 @@ const App = () => (
             <Route path="/achievements" element={<Achievements />} />
             <Route path="/about" element={<About />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/all-views" element={<AllViews />} />
             
             {/* Field Manager Routes */}
-            <Route path="/field-manager/fields" element={
-              <ProtectedRoute roles={['field_manager', 'admin']} redirectTo="/access-denied">
-                <FieldManagerDashboard />
-              </ProtectedRoute>
-            } />
+            <Route path="/field-manager/fields" element={<FieldManagerDashboard />} />
             
             {/* Shop Manager Routes */}
-            <Route path="/shop-manager/dashboard" element={
-              <ProtectedRoute roles={['shop_owner', 'admin']} redirectTo="/access-denied">
-                <ShopManagerDashboard />
-              </ProtectedRoute>
-            } />
+            <Route path="/shop-manager/dashboard" element={<ShopManagerDashboard />} />
             
             {/* Referee Routes */}
-            <Route path="/profile/referee-assignments" element={
-              <ProtectedRoute roles={['referee', 'admin']} redirectTo="/access-denied">
-                <RefereeAssignments />
-              </ProtectedRoute>
-            } />
+            <Route path="/profile/referee-assignments" element={<RefereeAssignments />} />
           </Route>
           
           {/* Gameplay Routes - Protected */}
@@ -119,11 +109,17 @@ const App = () => (
           } />
           
           {/* Spectator - Public */}
+          <Route path="/spectator" element={<SpectatorView />} />
           <Route path="/spectator/:gameId" element={<SpectatorView />} />
           
           {/* Referee Game View */}
+          <Route path="/referee" element={
+            <ProtectedRoute>
+              <RefereeView />
+            </ProtectedRoute>
+          } />
           <Route path="/referee/:gameId" element={
-            <ProtectedRoute roles={['referee', 'admin']} redirectTo="/access-denied">
+            <ProtectedRoute>
               <RefereeView />
             </ProtectedRoute>
           } />
@@ -132,7 +128,7 @@ const App = () => (
           
           {/* Admin Routes */}
           <Route path="/admin" element={
-            <ProtectedRoute requireAdmin redirectTo="/access-denied">
+            <ProtectedRoute>
               <AdminLayout />
             </ProtectedRoute>
           }>
