@@ -43,6 +43,9 @@ import Marketplace from "@/pages/Marketplace";
 import Organize from "@/pages/Organize";
 import AccessDenied from "@/pages/AccessDenied";
 import Achievements from "@/pages/Achievements";
+import FieldManagerDashboard from "@/pages/FieldManagerDashboard";
+import ShopManagerDashboard from "@/pages/ShopManagerDashboard";
+import RefereeAssignments from "@/pages/RefereeAssignments";
 
 const queryClient = new QueryClient();
 
@@ -80,17 +83,54 @@ const App = () => (
             <Route path="/achievements" element={<Achievements />} />
             <Route path="/about" element={<About />} />
             <Route path="/settings" element={<Settings />} />
-            <Route path="/settings" element={<Settings />} />
+            
+            {/* Field Manager Routes */}
+            <Route path="/field-manager/fields" element={
+              <ProtectedRoute roles={['field_manager', 'admin']} redirectTo="/access-denied">
+                <FieldManagerDashboard />
+              </ProtectedRoute>
+            } />
+            
+            {/* Shop Manager Routes */}
+            <Route path="/shop-manager/dashboard" element={
+              <ProtectedRoute roles={['shop_owner', 'admin']} redirectTo="/access-denied">
+                <ShopManagerDashboard />
+              </ProtectedRoute>
+            } />
+            
+            {/* Referee Routes */}
+            <Route path="/profile/referee-assignments" element={
+              <ProtectedRoute roles={['referee', 'admin']} redirectTo="/access-denied">
+                <RefereeAssignments />
+              </ProtectedRoute>
+            } />
           </Route>
-          <Route path="/gameplay" element={<GameplayView />} />
-          <Route path="/gameplay/:gameId" element={<GameplayView />} />
+          
+          {/* Gameplay Routes - Protected */}
+          <Route path="/gameplay" element={
+            <ProtectedRoute>
+              <GameplayView />
+            </ProtectedRoute>
+          } />
+          <Route path="/gameplay/:gameId" element={
+            <ProtectedRoute>
+              <GameplayView />
+            </ProtectedRoute>
+          } />
+          
+          {/* Spectator - Public */}
           <Route path="/spectator/:gameId" element={<SpectatorView />} />
+          
+          {/* Referee Game View */}
           <Route path="/referee/:gameId" element={
             <ProtectedRoute roles={['referee', 'admin']} redirectTo="/access-denied">
               <RefereeView />
             </ProtectedRoute>
           } />
+          
           <Route path="/access-denied" element={<AccessDenied />} />
+          
+          {/* Admin Routes */}
           <Route path="/admin" element={
             <ProtectedRoute requireAdmin redirectTo="/access-denied">
               <AdminLayout />
