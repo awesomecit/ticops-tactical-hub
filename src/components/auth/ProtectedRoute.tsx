@@ -1,46 +1,30 @@
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@/stores/authStore';
-import { hasAnyRole, isAdmin } from '@/lib/auth';
-import { UserRole } from '@/types';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
-  /** Require admin role */
+  /** Legacy props - ignored for now (all users have all roles) */
   requireAdmin?: boolean;
-  /** Require any of these roles */
-  roles?: UserRole[];
-  /** Redirect path if unauthorized (default: /) */
+  roles?: string[];
   redirectTo?: string;
 }
 
 /**
- * ProtectedRoute - Blocks access to routes based on user role
- * Redirects unauthorized users to the specified path
+ * ProtectedRoute - Only checks authentication, no role restrictions
+ * All authenticated users can access all routes
  */
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   children,
-  requireAdmin = false,
-  roles,
-  redirectTo = '/',
 }) => {
-  const { user, isAuthenticated } = useAuthStore();
+  const { isAuthenticated } = useAuthStore();
   const location = useLocation();
 
   // Not authenticated - redirect to login
-  if (!isAuthenticated || !user) {
+  if (!isAuthenticated) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // Check admin requirement
-  if (requireAdmin && !isAdmin(user.role)) {
-    return <Navigate to={redirectTo} replace />;
-  }
-
-  // Check role requirement
-  if (roles && roles.length > 0 && !hasAnyRole(user.role, roles)) {
-    return <Navigate to={redirectTo} replace />;
-  }
-
+  // All authenticated users can access everything
   return <>{children}</>;
 };

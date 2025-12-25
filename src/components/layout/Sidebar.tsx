@@ -16,58 +16,85 @@ import {
   ShoppingBag,
   CalendarClock,
   Award,
+  Gamepad2,
+  Eye,
+  Radio,
 } from 'lucide-react';
 import { useUIStore } from '@/stores/uiStore';
 import { useAuthStore } from '@/stores/authStore';
 import { cn } from '@/lib/utils';
 import { useChatStore } from '@/stores/chatStore';
-import { isAdmin, canManageTeam, canManageField, canManageShop, isReferee } from '@/lib/auth';
 import { RadioWidget } from '@/components/radio/RadioWidget';
-import { UserRole } from '@/types';
 
 interface NavItem {
   icon: React.ElementType;
-  labelKey: string;
+  label: string;
   path: string;
   badge?: number;
-  roles?: UserRole[]; // Ruoli che possono vedere questa voce
 }
 
-const getNavItems = (unreadCount: number, userRole: UserRole | undefined): NavItem[] => {
-  const baseItems: NavItem[] = [
-    { icon: LayoutDashboard, labelKey: 'nav.dashboard', path: '/' },
-    { icon: Crosshair, labelKey: 'nav.games', path: '/games' },
-    { icon: CalendarClock, labelKey: 'nav.organize', path: '/organize' },
-    { icon: Users, labelKey: 'nav.team', path: '/team' },
-    { icon: MessageSquare, labelKey: 'nav.chat', path: '/chat', badge: unreadCount },
-    { icon: Trophy, labelKey: 'nav.leaderboard', path: '/leaderboard' },
-    { icon: Award, labelKey: 'nav.achievements', path: '/achievements' },
-    { icon: MapPin, labelKey: 'nav.locations', path: '/locations' },
-    { icon: Backpack, labelKey: 'nav.equipment', path: '/equipment' },
-    { icon: ShoppingBag, labelKey: 'nav.marketplace', path: '/marketplace' },
-    { icon: User, labelKey: 'nav.profile', path: '/profile' },
-  ];
+interface NavSection {
+  title: string;
+  items: NavItem[];
+}
 
-  return baseItems;
-};
-
-const adminItems: NavItem[] = [
-  { icon: Shield, labelKey: 'nav.admin', path: '/admin' },
+const getNavSections = (unreadCount: number): NavSection[] => [
+  {
+    title: 'Principale',
+    items: [
+      { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
+      { icon: User, label: 'Profilo', path: '/profile' },
+    ],
+  },
+  {
+    title: 'Gameplay',
+    items: [
+      { icon: Crosshair, label: 'Partite', path: '/games' },
+      { icon: Gamepad2, label: 'Gameplay', path: '/gameplay' },
+      { icon: Eye, label: 'Spettatore', path: '/spectator' },
+      { icon: Shield, label: 'Arbitro', path: '/referee' },
+      { icon: CalendarClock, label: 'Organizza', path: '/organize' },
+    ],
+  },
+  {
+    title: 'Social',
+    items: [
+      { icon: Users, label: 'Team', path: '/team' },
+      { icon: MessageSquare, label: 'Chat', path: '/chat', badge: unreadCount },
+      { icon: Trophy, label: 'Classifica', path: '/leaderboard' },
+      { icon: Award, label: 'Achievements', path: '/achievements' },
+    ],
+  },
+  {
+    title: 'Commerce',
+    items: [
+      { icon: ShoppingBag, label: 'Marketplace', path: '/marketplace' },
+      { icon: Backpack, label: 'Equipaggiamento', path: '/equipment' },
+      { icon: MapPin, label: 'Campi', path: '/locations' },
+    ],
+  },
+  {
+    title: 'Gestione',
+    items: [
+      { icon: MapPin, label: 'I Miei Campi', path: '/field-manager/fields' },
+      { icon: ShoppingBag, label: 'Il Mio Negozio', path: '/shop-manager/dashboard' },
+      { icon: Shield, label: 'Incarichi Arbitro', path: '/profile/referee-assignments' },
+    ],
+  },
+  {
+    title: 'Admin',
+    items: [
+      { icon: Shield, label: 'Admin Panel', path: '/admin' },
+    ],
+  },
 ];
 
 export const Sidebar: React.FC = () => {
   const { t } = useTranslation();
   const { sidebarOpen, toggleSidebar } = useUIStore();
-  const { user, logout } = useAuthStore();
+  const { logout } = useAuthStore();
   const { getTotalUnreadCount } = useChatStore();
-  const navItems = getNavItems(getTotalUnreadCount(), user?.role);
-  
-  const userRole = user?.role;
-  const showAdminSection = isAdmin(userRole);
-  const showRadioWidget = canManageTeam(userRole);
-  const showFieldManager = canManageField(userRole);
-  const showShopOwner = canManageShop(userRole);
-  const showReferee = isReferee(userRole);
+  const navSections = getNavSections(getTotalUnreadCount());
 
   return (
     <>
@@ -83,13 +110,9 @@ export const Sidebar: React.FC = () => {
       {/* Sidebar - responsive behavior */}
       <aside
         className={cn(
-          // Base styling
           "fixed top-14 sm:top-16 left-0 bottom-0 z-40 bg-sidebar border-r border-sidebar-border transition-all duration-300",
-          // Width based on state
           sidebarOpen ? "w-[280px] lg:w-64" : "w-0 lg:w-16",
-          // Transform for mobile slide animation
           sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
-          // Overflow handling when collapsed
           !sidebarOpen && "lg:overflow-hidden"
         )}
       >
@@ -108,183 +131,19 @@ export const Sidebar: React.FC = () => {
             "flex-1 py-4 overflow-y-auto scrollbar-hide",
             sidebarOpen ? "px-3 space-y-1" : "lg:px-2 lg:space-y-2"
           )}>
-            {sidebarOpen && (
-              <div className="mb-4">
-                <span className="px-3 text-xs font-display uppercase tracking-wider text-muted-foreground">
-                  Menu
-                </span>
-              </div>
-            )}
-            
-            {navItems.map((item) => (
-              <NavLink
-                key={item.path}
-                to={item.path}
-                onClick={() => {
-                  // Close sidebar on mobile after navigation
-                  if (window.innerWidth < 1024) {
-                    toggleSidebar();
-                  }
-                }}
-                className={({ isActive }) =>
-                  cn(
-                    // Touch-friendly: min height 44px, proper padding
-                    "flex items-center gap-3 rounded-sm font-display uppercase tracking-wider text-sm transition-all duration-200 group no-select",
-                    sidebarOpen ? "px-3 py-3 min-h-[44px]" : "lg:px-2 lg:py-2 lg:justify-center",
-                    isActive
-                      ? "bg-sidebar-primary/10 text-sidebar-primary border-l-2 border-sidebar-primary"
-                      : "text-sidebar-foreground hover:bg-sidebar-accent active:bg-sidebar-accent/80 hover:text-foreground"
-                  )
-                }
-              >
-                <item.icon className="h-5 w-5 transition-transform group-hover:scale-110 flex-shrink-0" />
-                {sidebarOpen && <span className="flex-1">{t(item.labelKey)}</span>}
-                {sidebarOpen && item.badge && (
-                  <span className="h-5 min-w-5 px-1.5 bg-primary text-primary-foreground text-xs font-bold rounded-full flex items-center justify-center">
-                    {item.badge}
-                  </span>
-                )}
-                {!sidebarOpen && item.badge && (
-                  <span className="absolute -top-1 -right-1 h-4 min-w-4 px-1 bg-primary text-primary-foreground text-[10px] font-bold rounded-full flex items-center justify-center">
-                    {item.badge}
-                  </span>
-                )}
-              </NavLink>
-            ))}
-
-            {/* Radio Widget for team leaders */}
-            {showRadioWidget && (
-              <>
-                <div className="my-4 border-t border-sidebar-border" />
-                {sidebarOpen && (
-                  <div className="mb-2 px-3">
-                    <RadioWidget collapsed={false} />
-                  </div>
-                )}
-                {!sidebarOpen && (
-                  <div className="lg:flex lg:justify-center">
-                    <RadioWidget collapsed={true} />
-                  </div>
-                )}
-              </>
-            )}
-
-            {/* Field Manager section */}
-            {showFieldManager && (
-              <>
-                <div className="my-4 border-t border-sidebar-border" />
+            {navSections.map((section, sectionIndex) => (
+              <div key={section.title}>
+                {sectionIndex > 0 && <div className="my-3 border-t border-sidebar-border" />}
+                
                 {sidebarOpen && (
                   <div className="mb-2">
                     <span className="px-3 text-xs font-display uppercase tracking-wider text-muted-foreground">
-                      Gestione Campo
-                    </span>
-                  </div>
-                )}
-                <NavLink
-                  to="/field-manager/fields"
-                  onClick={() => {
-                    if (window.innerWidth < 1024) {
-                      toggleSidebar();
-                    }
-                  }}
-                  className={({ isActive }) =>
-                    cn(
-                      "flex items-center gap-3 rounded-sm font-display uppercase tracking-wider text-sm transition-all duration-200 group no-select",
-                      sidebarOpen ? "px-3 py-3 min-h-[44px]" : "lg:px-2 lg:py-2 lg:justify-center",
-                      isActive
-                        ? "bg-sidebar-primary/10 text-sidebar-primary border-l-2 border-sidebar-primary"
-                        : "text-sidebar-foreground hover:bg-sidebar-accent active:bg-sidebar-accent/80 hover:text-foreground"
-                    )
-                  }
-                >
-                  <MapPin className="h-5 w-5 transition-transform group-hover:scale-110 flex-shrink-0" />
-                  {sidebarOpen && <span className="flex-1">I Miei Campi</span>}
-                </NavLink>
-              </>
-            )}
-
-            {/* Shop Owner section */}
-            {showShopOwner && (
-              <>
-                <div className="my-4 border-t border-sidebar-border" />
-                {sidebarOpen && (
-                  <div className="mb-2">
-                    <span className="px-3 text-xs font-display uppercase tracking-wider text-muted-foreground">
-                      Gestione Negozio
-                    </span>
-                  </div>
-                )}
-                <NavLink
-                  to="/shop-manager/dashboard"
-                  onClick={() => {
-                    if (window.innerWidth < 1024) {
-                      toggleSidebar();
-                    }
-                  }}
-                  className={({ isActive }) =>
-                    cn(
-                      "flex items-center gap-3 rounded-sm font-display uppercase tracking-wider text-sm transition-all duration-200 group no-select",
-                      sidebarOpen ? "px-3 py-3 min-h-[44px]" : "lg:px-2 lg:py-2 lg:justify-center",
-                      isActive
-                        ? "bg-sidebar-primary/10 text-sidebar-primary border-l-2 border-sidebar-primary"
-                        : "text-sidebar-foreground hover:bg-sidebar-accent active:bg-sidebar-accent/80 hover:text-foreground"
-                    )
-                  }
-                >
-                  <ShoppingBag className="h-5 w-5 transition-transform group-hover:scale-110 flex-shrink-0" />
-                  {sidebarOpen && <span className="flex-1">Il Mio Negozio</span>}
-                </NavLink>
-              </>
-            )}
-
-            {/* Referee section */}
-            {showReferee && (
-              <>
-                <div className="my-4 border-t border-sidebar-border" />
-                {sidebarOpen && (
-                  <div className="mb-2">
-                    <span className="px-3 text-xs font-display uppercase tracking-wider text-muted-foreground">
-                      Arbitraggio
-                    </span>
-                  </div>
-                )}
-                <NavLink
-                  to="/profile/referee-assignments"
-                  onClick={() => {
-                    if (window.innerWidth < 1024) {
-                      toggleSidebar();
-                    }
-                  }}
-                  className={({ isActive }) =>
-                    cn(
-                      "flex items-center gap-3 rounded-sm font-display uppercase tracking-wider text-sm transition-all duration-200 group no-select",
-                      sidebarOpen ? "px-3 py-3 min-h-[44px]" : "lg:px-2 lg:py-2 lg:justify-center",
-                      isActive
-                        ? "bg-sidebar-primary/10 text-sidebar-primary border-l-2 border-sidebar-primary"
-                        : "text-sidebar-foreground hover:bg-sidebar-accent active:bg-sidebar-accent/80 hover:text-foreground"
-                    )
-                  }
-                >
-                  <Shield className="h-5 w-5 transition-transform group-hover:scale-110 flex-shrink-0" />
-                  {sidebarOpen && <span className="flex-1">I Miei Incarichi</span>}
-                </NavLink>
-              </>
-            )}
-
-            {/* Admin section - only for admins */}
-            {showAdminSection && (
-              <>
-                <div className="my-4 border-t border-sidebar-border" />
-
-                {sidebarOpen && (
-                  <div className="mb-4">
-                    <span className="px-3 text-xs font-display uppercase tracking-wider text-muted-foreground">
-                      Admin
+                      {section.title}
                     </span>
                   </div>
                 )}
 
-                {adminItems.map((item) => (
+                {section.items.map((item) => (
                   <NavLink
                     key={item.path}
                     to={item.path}
@@ -304,10 +163,33 @@ export const Sidebar: React.FC = () => {
                     }
                   >
                     <item.icon className="h-5 w-5 transition-transform group-hover:scale-110 flex-shrink-0" />
-                    {sidebarOpen && <span className="flex-1">{t(item.labelKey)}</span>}
+                    {sidebarOpen && <span className="flex-1">{item.label}</span>}
+                    {sidebarOpen && item.badge && item.badge > 0 && (
+                      <span className="h-5 min-w-5 px-1.5 bg-primary text-primary-foreground text-xs font-bold rounded-full flex items-center justify-center">
+                        {item.badge}
+                      </span>
+                    )}
+                    {!sidebarOpen && item.badge && item.badge > 0 && (
+                      <span className="absolute -top-1 -right-1 h-4 min-w-4 px-1 bg-primary text-primary-foreground text-[10px] font-bold rounded-full flex items-center justify-center">
+                        {item.badge}
+                      </span>
+                    )}
                   </NavLink>
                 ))}
-              </>
+              </div>
+            ))}
+
+            {/* Radio Widget - always visible */}
+            <div className="my-4 border-t border-sidebar-border" />
+            {sidebarOpen && (
+              <div className="mb-2 px-3">
+                <RadioWidget collapsed={false} />
+              </div>
+            )}
+            {!sidebarOpen && (
+              <div className="lg:flex lg:justify-center">
+                <RadioWidget collapsed={true} />
+              </div>
             )}
           </nav>
 
