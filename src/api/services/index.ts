@@ -6,3 +6,4 @@ export * from './users';
 export * from './teams';
 export * from './leaderboard';
 export * from './notifications';
+export * from './fields';
