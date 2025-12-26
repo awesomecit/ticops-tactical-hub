@@ -430,5 +430,17 @@
     "weeksAgo": "{{count}}sett fa",
     "monthsAgo": "{{count}}mesi fa",
     "yearsAgo": "{{count}}anni fa"
+  },
+  "fieldManager": {
+    "mapEditor": {
+      "title": "Editor Mappe Campo",
+      "subtitle": "Crea e modifica le mappe dei tuoi campi da gioco",
+      "description": "Disegna il layout del campo, definisci spawn point, obiettivi e ostacoli. Le mappe create saranno visualizzabili come layer nelle viste gameplay, spettatore e arbitro.",
+      "save": "Salva Mappa",
+      "load": "Carica Mappa",
+      "new": "Nuova Mappa",
+      "export": "Esporta",
+      "import": "Importa"
+    }
   }
 }

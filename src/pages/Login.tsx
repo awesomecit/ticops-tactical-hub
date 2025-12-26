@@ -131,7 +131,7 @@ const Login = () => {
               type="button"
               variant="outline"
               className="w-full border-primary/50 text-primary hover:bg-primary/10"
-              onClick={() => setDemoModalOpen(true)}
+              onClick={handleDemoLogin}
             >
               <Users className="w-4 h-4 mr-2" />
               🎮 Accesso Demo Rapido

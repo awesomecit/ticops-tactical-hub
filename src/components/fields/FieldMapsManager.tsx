@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   Map,
   Plus,
@@ -9,7 +10,9 @@ import {
   Download,
   Upload,
   Image,
+  Maximize2,
 } from 'lucide-react';
+import { MapEditorWrapper } from './MapEditorWrapper';
 import {
   TacticalCard,
   TacticalCardHeader,
@@ -38,6 +41,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
+import { TooltipProvider } from '@/components/ui/tooltip';
 
 interface FieldMap {
   id: string;
@@ -86,15 +90,20 @@ export const FieldMapsManager: React.FC<FieldMapsManagerProps> = ({
   fieldId,
   fieldName,
 }) => {
+  const navigate = useNavigate();
   const [maps, setMaps] = useState<FieldMap[]>(MOCK_MAPS);
   const [addMapDialogOpen, setAddMapDialogOpen] = useState(false);
+  const [editorDialogOpen, setEditorDialogOpen] = useState(false);
+  const [editingMap, setEditingMap] = useState<FieldMap | null>(null);
   const [newMap, setNewMap] = useState({ name: '', description: '' });
 
-  const handleOpenBuilder = () => {
-    toast.info('Apertura Map Builder...', {
-      description: 'Verrai reindirizzato al builder esterno',
-    });
-    // In production: window.open(BUILDER_URL + `?fieldId=${fieldId}`, '_blank');
+  const handleOpenBuilder = (map?: FieldMap) => {
+    // Naviga alla pagina editor fullscreen
+    if (map) {
+      navigate(`/field-manager/fields/${fieldId}/map-editor/${map.id}`);
+    } else {
+      navigate(`/field-manager/fields/${fieldId}/map-editor`);
+    }
   };
 
   const handleSetActive = (mapId: string) => {
@@ -152,9 +161,9 @@ export const FieldMapsManager: React.FC<FieldMapsManagerProps> = ({
             <Plus className="h-4 w-4 mr-2" />
             Nuova Mappa
           </GlowButton>
-          <GlowButton variant="primary" onClick={handleOpenBuilder}>
-            <ExternalLink className="h-4 w-4 mr-2" />
-            Apri Builder
+          <GlowButton variant="primary" onClick={() => handleOpenBuilder()}>
+            <Maximize2 className="h-4 w-4 mr-2" />
+            Editor Mappe
           </GlowButton>
         </div>
       </div>
@@ -183,9 +192,9 @@ export const FieldMapsManager: React.FC<FieldMapsManagerProps> = ({
                     </button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={handleOpenBuilder}>
+                    <DropdownMenuItem onClick={() => handleOpenBuilder(map)}>
                       <Edit2 className="h-4 w-4 mr-2" />
-                      Modifica in Builder
+                      Modifica
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => toast.info('Anteprima mappa')}>
                       <Eye className="h-4 w-4 mr-2" />
@@ -283,7 +292,7 @@ export const FieldMapsManager: React.FC<FieldMapsManagerProps> = ({
 
             <div className="p-3 bg-muted/30 rounded-sm border border-border">
               <p className="text-xs text-muted-foreground">
-                💡 Dopo aver creato la mappa, usa il <strong>Builder</strong> per configurare
+                💡 Dopo aver creato la mappa, usa l'<strong>Editor Mappe</strong> per configurare
                 spawn points, coperture, zone e obiettivi.
               </p>
             </div>
@@ -299,6 +308,8 @@ export const FieldMapsManager: React.FC<FieldMapsManagerProps> = ({
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Map Editor Dialog rimosso: ora la navigazione è su pagina dedicata */}
     </div>
   );
 };

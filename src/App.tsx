@@ -47,6 +47,7 @@ import FieldManagerDashboard from "@/pages/FieldManagerDashboard";
 import ShopManagerDashboard from "@/pages/ShopManagerDashboard";
 import RefereeAssignments from "@/pages/RefereeAssignments";
 import AllViews from "@/pages/AllViews";
+import FieldMapEditor from "@/pages/FieldMapEditor";
 
 const queryClient = new QueryClient();
 
@@ -111,6 +112,13 @@ const App = () => (
           {/* Spectator - Public */}
           <Route path="/spectator" element={<SpectatorView />} />
           <Route path="/spectator/:gameId" element={<SpectatorView />} />
+          
+          {/* Field Map Editor - Standalone fullscreen */}
+          <Route path="/field-manager/fields/:fieldId/map-editor/:mapId?" element={
+            <ProtectedRoute>
+              <FieldMapEditor />
+            </ProtectedRoute>
+          } />
           
           {/* Referee Game View */}
           <Route path="/referee" element={

@@ -430,5 +430,17 @@
     "weeksAgo": "{{count}}w ago",
     "monthsAgo": "{{count}}mo ago",
     "yearsAgo": "{{count}}y ago"
+  },
+  "fieldManager": {
+    "mapEditor": {
+      "title": "Field Map Editor",
+      "subtitle": "Create and edit your field maps",
+      "description": "Draw field layout, define spawn points, objectives and obstacles. Created maps will be viewable as layers in gameplay, spectator and referee views.",
+      "save": "Save Map",
+      "load": "Load Map",
+      "new": "New Map",
+      "export": "Export",
+      "import": "Import"
+    }
   }
 }
