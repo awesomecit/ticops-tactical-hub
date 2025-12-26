@@ -866,6 +866,95 @@ const About: React.FC = () => {
         </TacticalCard>
       </div>
 
+      {/* Open Source Credits */}
+      <div className="max-w-4xl mx-auto mb-12">
+        <TacticalCard glow="secondary" className="p-8">
+          <div className="flex items-start gap-4 mb-6">
+            <div className="p-3 rounded-lg bg-secondary/20">
+              <ExternalLink className="w-6 h-6 text-secondary" />
+            </div>
+            <div className="flex-1">
+              <h3 className="text-2xl font-display font-bold text-foreground mb-2">
+                Tecnologie Open Source
+              </h3>
+              <p className="text-muted-foreground">
+                TicOps è costruito con l'aiuto di tecnologie open-source e commerciali di alta qualità
+              </p>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            {/* tldraw Attribution */}
+            <div className="p-4 rounded-lg bg-background/50 border border-border">
+              <div className="flex items-center justify-between mb-2">
+                <h4 className="font-semibold text-foreground">Map Editor</h4>
+                <Badge variant="outline">tldraw License</Badge>
+              </div>
+              <p className="text-sm text-muted-foreground mb-3">
+                Il nostro editor di mappe tattiche è powered by{' '}
+                <a 
+                  href="https://tldraw.dev" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-primary hover:text-primary/80 underline inline-flex items-center gap-1"
+                >
+                  tldraw
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+                , un editor canvas infinito collaborativo. Utilizzato sotto licenza gratuita per progetti 
+                con fatturato annuo inferiore a $25,000 USD.
+              </p>
+              <div className="flex gap-2 text-xs text-muted-foreground">
+                <span>• Apache 2.0 (core)</span>
+                <span>• tldraw License (SDK)</span>
+              </div>
+            </div>
+
+            {/* React & Ecosystem */}
+            <div className="p-4 rounded-lg bg-background/50 border border-border">
+              <div className="flex items-center justify-between mb-2">
+                <h4 className="font-semibold text-foreground">Framework & UI</h4>
+                <Badge variant="outline">MIT License</Badge>
+              </div>
+              <p className="text-sm text-muted-foreground mb-2">
+                Costruito con React, TypeScript, Vite, Tailwind CSS, shadcn/ui, e altre 
+                librerie open-source di alta qualità.
+              </p>
+            </div>
+
+            {/* Full List Link */}
+            <div className="flex items-center justify-between p-4 rounded-lg bg-muted/20">
+              <span className="text-sm text-muted-foreground">
+                Lista completa delle dipendenze e licenze
+              </span>
+              <a 
+                href="https://github.com/yourusername/ticops-tactical-hub/blob/main/THIRD_PARTY_LICENSES.md"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-primary hover:text-primary/80 inline-flex items-center gap-1"
+              >
+                THIRD_PARTY_LICENSES.md
+                <ExternalLink className="w-3 h-3" />
+              </a>
+            </div>
+          </div>
+
+          <Separator className="my-6" />
+
+          <div className="text-xs text-muted-foreground">
+            <p className="mb-2">
+              <strong>Compliance Note:</strong> TicOps rispetta tutti i termini di licenza delle 
+              tecnologie utilizzate. I watermark richiesti sono mantenuti visibili, le attribuzioni 
+              sono complete, e le licenze complete sono disponibili nei file di progetto.
+            </p>
+            <p>
+              Se il fatturato di TicOps dovesse superare la soglia di $25,000 USD annui, 
+              acquisteremo le licenze commerciali necessarie o migreremo a tecnologie alternative.
+            </p>
+          </div>
+        </TacticalCard>
+      </div>
+
       {/* Footer */}
       <div className="text-center text-xs text-muted-foreground py-4">
         <p>© 2024 TicOps S.r.l. - Tutti i diritti riservati</p>
